@@ -1,6 +1,11 @@
-import discord; from discord.ext import commands; from discord.ext.commands import Command
-from tools.config import emoji, color; from tools.paginator import Simple
+import discord
 import datetime
+
+from discord.ext          import commands
+from discord.ext.commands import Command
+
+from tools.config         import emoji, color
+from tools.paginator      import Simple
 
 class Context(commands.Context):
 
