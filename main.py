@@ -1,6 +1,6 @@
 import discord; from discord.ext import commands
 import jishaku; import os; import dotenv
-from tools.myth import Superbot
+from tools.myth import Myth
 
 dotenv.load_dotenv()
 
