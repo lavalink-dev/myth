@@ -10,6 +10,7 @@ from asyncpg           import Pool
 from datetime          import datetime, timedelta
 
 from tools.context     import Context
+from tools.config      import color, emoji
 
 intents = discord.Intents().default()
 intents.members = True
@@ -91,12 +92,8 @@ class Myth(commands.AutoShardedBot):
 
         if len(self.message_cache[author_id]) >= 10:
             await self.pool.execute("INSERT INTO blacklist (user_id) VALUES ($1)", author_id_str)
-            await message.channel.send(
-                embed=discord.Embed(
-                    color=discord.Color.red(),
-                    description=f"> {message.author.mention}: You are now **blacklisted**, join the support [server]() for support.",
-                )
-            )
+            embed = discord.Embed(description=f"> {emoji.deny} {message.author.mention}: You got blacklisted, if you think is by accident join the [support server](https://discord.gg/strict)", color=color.deny)
+            await message.channel.send(embed=embed)
         else:
             self.message_cache[author_id].append(now)
             await self.process_commands(message)
