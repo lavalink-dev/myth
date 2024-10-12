@@ -3,7 +3,7 @@ import asyncpg
 
 from discord.ext import commands
 
-from tools.config import emojis, color
+from tools.config import emoji, color
 from tools.context import Context
 
 class VanityRoles(commands.Cog):
