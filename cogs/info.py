@@ -8,7 +8,9 @@ class Information(commands.Cog):
         self.client = client
         self.start_time = time.time()
 
-    @commands.command(description="Check the bot's latency")
+    @commands.command(
+        description="Check the bot's latency"
+    )
     async def ping(self, ctx):
         user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
         latency = round(self.client.latency * 1000)
@@ -16,16 +18,18 @@ class Information(commands.Cog):
         embed.set_author(name=ctx.author.name, icon_url=user_pfp)
         await ctx.send(embed=embed)
 
-    @commands.command(description="Add me im cool :sunglasses:", aliases=['invite', 'links'])
+    @commands.command(
+        description="Add me im cool :sunglasses:", 
+        aliases=['invite', 'links']
+    )
     async def inv(self, ctx):
-        embed = discord.Embed(description="Invite me for a cool experience :sunglasses:", color=color.default)
         view = View()
         support = Button(style=discord.ButtonStyle.link, label="Support", url="https://discord.gg/strict", emoji=f"{emoji.link}")
         inv = Button(style=discord.ButtonStyle.link, label="Invite me", url="https://discordapp.com/oauth2/authorize?client_id=1284613721888526417&scope=bot+applications.commands&permissions=8", emoji=f"{emoji.link}")
         
         view.add_item(support)
         view.add_item(inv)
-        await ctx.send(embed=embed, view=view)
+        await ctx.send(view=view)
 
     def get_uptime(self):
         current_time = time.time()
