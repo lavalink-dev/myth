@@ -1,7 +1,13 @@
-import discord; from discord.ext import commands; from discord.utils import format_dt
-from tools.context import Context; from tools.config import color, emoji; from tools.paginator import Simple
-from datetime import datetime, timedelta
+import discord
 import asyncpg
+
+from discord.ext        import commands
+from discord.utils      import format_dt
+from datetime import datetime, timedelta
+
+from tools.context     import Context
+from tools.config      import color, emoji
+from tools.paginator   import Simple
 
 class Miscellaneous(commands.Cog):
     def __init__(self, client):
@@ -10,7 +16,10 @@ class Miscellaneous(commands.Cog):
         self.deleted_messages = {}
         self.edited_messages = {}
 
-    @commands.command(description="Set your custom prefix", aliases=["sp", "sx"])
+    @commands.command(
+        description="Set your custom prefix", 
+        aliases=["sp", "sx"]
+    )
     async def selfprefix(self, ctx: Context, prefix: str = None):
         if prefix is None:
             await ctx.send_help(ctx.command.qualified_name)
@@ -32,7 +41,10 @@ class Miscellaneous(commands.Cog):
 
             await ctx.agree(f'**Set** your prefix to: `{prefix}`')
 
-    @commands.command(aliases=["bc", "botpurge", "bp"])
+    @commands.command(
+        description="Clear bot messages",
+        aliases=["bc", "botpurge", "bp"]
+    )
     @commands.has_permissions(manage_messages=True)
     async def botclear(self, ctx, amount: int = None):
         if amount is None:
@@ -51,7 +63,10 @@ class Miscellaneous(commands.Cog):
 
         await ctx.message.add_reaction(f'{emoji.agree}')
 
-    @commands.command(aliases=['s'])
+    @commands.command(
+        description="Check for old and deleted messages",
+        aliases=['s']
+    )
     async def snipe(self, ctx):
         channel_id = ctx.channel.id
         sniped_messages = self.deleted_messages.get(channel_id, [])
@@ -74,7 +89,10 @@ class Miscellaneous(commands.Cog):
         else:
             await ctx.message.add_reaction(f'{emoji.deny}')
 
-    @commands.command(aliases=['es'])
+    @commands.command(
+        description="Check for old and edited messages",
+        aliases=['es']
+    )
     async def editsnipe(self, ctx):
         channel_id = ctx.channel.id
         sniped_edits = self.edited_messages.get(channel_id, [])
@@ -99,7 +117,10 @@ class Miscellaneous(commands.Cog):
         else:
             await ctx.message.add_reaction(f'{emoji.deny}')
 
-    @commands.command(aliases=["cs"])
+    @commands.command(
+        description="Clear all snipes",
+        aliases=["cs"])
+    
     @commands.has_permissions(manage_messages=True)
     async def clearsnipe(self, ctx):
         channel_id = ctx.channel.id
@@ -118,7 +139,9 @@ class Miscellaneous(commands.Cog):
         else:
             await ctx.message.add_reaction(f'{emoji.deny}')
 
-    @commands.command()
+    @commands.command(
+        description="Set your afk"
+    )
     @commands.cooldown(1, 2, commands.BucketType.user)
     async def afk(self, ctx, *, message: str = "AFK"):
         timestamp = discord.utils.utcnow()
@@ -130,7 +153,10 @@ class Miscellaneous(commands.Cog):
         embed.set_author(name=f"{ctx.author.name} | Is now afk", icon_url=user_pfp)
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["selfclear", "me"])
+    @commands.command(
+        description="Clear your messages",
+        aliases=["selfclear", "me"]
+    )
     async def selfpurge(self, ctx, amount: str = None):
         if amount is None:
             await ctx.deny("You're **missing a number**")
@@ -161,7 +187,10 @@ class Miscellaneous(commands.Cog):
         else:
             await ctx.message.add_reaction(f"{emoji.deny}")
 
-    @commands.command(description="Allow people sending attachments", aliases=["pic", "picperms"])
+    @commands.command(
+        description="Allow people sending attachments", 
+        aliases=["pic", "picperms"]
+    )
     @commands.has_permissions(manage_channels=True)
     async def picperm(self, ctx, user: discord.Member):
         channel = ctx.channel
