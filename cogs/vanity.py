@@ -57,7 +57,7 @@ class VanityRoles(commands.Cog):
     async def clear(self, ctx):
         await self.client.pool.execute("DELETE FROM vanityroles WHERE guild_id = $1", ctx.guild.id)
         await self.client.pool.execute("DELETE FROM vanityroles_roles WHERE guild_id = $1", ctx.guild.id)
-        await ctx.send("**Cleared** all vanity settings")
+        await ctx.agree("**Cleared** all vanity settings")
 
     @vanityroles.command()
     async def settings(self, ctx):
@@ -72,6 +72,7 @@ class VanityRoles(commands.Cog):
             user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
             embed = discord.Embed(description=f"> **Vanity status:** `{status}` \n **Vanity string:** `{vanity_string}` \n **Assigned Roles:** {', '.join(role_names) if role_names else 'None'}", color=color.default)
             embed.set_author(name=f"{ctx.author.name} | Vanityroles settings", icon_url=user_pfp)
+            await ctx.send(embed=embed)
         else:
             await ctx.deny("**Could not** find any settings")
 
