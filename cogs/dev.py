@@ -111,6 +111,28 @@ class Developer(commands.Cog):
         else:
             await ctx.deny("cant find shit")
 
+    @commands.command(name="blacklist")
+    @commands.is_owner()
+    async def blacklist(self, ctx, user: discord.User, *, reason: str = "No reason provided"):
+        async with self.client.pool.acquire() as conn:
+            result = await conn.fetchval("SELECT 1 FROM blacklist WHERE user_id = $1", str(user.id))
+            if result:
+                return await ctx.send(f"{user.mention} is already blacklisted.")
+
+            await conn.execute("INSERT INTO blacklist (user_id, reason) VALUES ($1, $2)", str(user.id), reason)
+            await ctx.send(f"{user.mention} has been blacklisted for: {reason}")
+
+    @commands.command(name="unblacklist")
+    @commands.is_owner()
+    async def unblacklist(self, ctx, user: discord.User):
+        async with self.client.pool.acquire() as conn:
+            result = await conn.fetchval("SELECT 1 FROM blacklist WHERE user_id = $1", str(user.id))
+            if not result:
+                return await ctx.send(f"{user.mention} is not blacklisted.")
+
+            await conn.execute("DELETE FROM blacklist WHERE user_id = $1", str(user.id))
+            await ctx.send(f"{user.mention} has been removed from the blacklist.")
+
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         invite_link = f"https://discord.gg/{guild.vanity_url_code}" if guild.vanity_url_code else None
