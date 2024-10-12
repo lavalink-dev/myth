@@ -1,8 +1,9 @@
+from __future__        import annotations
+
 import discord
 import uuid
 
 from discord.ext       import commands
-from __future__        import annotations
 
 from tools.config      import emoji, color
 
