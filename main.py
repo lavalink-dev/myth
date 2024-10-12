@@ -5,7 +5,7 @@ import dotenv
 
 from discord.ext       import commands
 
-from tools.Myth       import Myth
+from tools.myth       import Myth
 
 dotenv.load_dotenv()
 
