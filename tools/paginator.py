@@ -14,7 +14,7 @@ class Simple(discord.ui.View):
                  PreviousButton: discord.ui.Button = discord.ui.Button(emoji='<:left:1294716353952874547>', style=discord.ButtonStyle.primary),
                  NextButton: discord.ui.Button = discord.ui.Button(emoji='<:right:1294716290199720037>', style=discord.ButtonStyle.primary),
                  ExitButton: discord.ui.Button = discord.ui.Button(emoji='<:exit:1294716331538645044>', style=discord.ButtonStyle.grey),
-                 HopButton: discord.ui.Button = discord.ui.Button(emoji='<:paginate:1294716310701215784>', style=discord.ButtonStyle.grey),
+                 PaginateButton: discord.ui.Button = discord.ui.Button(emoji='<:paginate:1294716310701215784>', style=discord.ButtonStyle.grey),
                  InitialPage: int = 0,
                  AllowExtInput: bool = False,
                  ephemeral: bool = False) -> None:
@@ -23,7 +23,7 @@ class Simple(discord.ui.View):
         self.PreviousButton = PreviousButton
         self.NextButton = NextButton
         self.ExitButton = ExitButton
-        self.HopButton = HopButton
+        self.PaginateButton = PaginateButton
         self.InitialPage = InitialPage
         self.AllowExtInput = AllowExtInput
         self.ephemeral = ephemeral
@@ -38,17 +38,17 @@ class Simple(discord.ui.View):
         self.PreviousButton.custom_id = f"previous:{self.paginator_id}"
         self.NextButton.custom_id = f"next:{self.paginator_id}"
         self.ExitButton.custom_id = f"exit:{self.paginator_id}"
-        self.HopButton.custom_id = f"hop:{self.paginator_id}"
+        self.PaginateButton.custom_id = f"paginate:{self.paginator_id}"
 
         self.PreviousButton.callback = self.previous_button_callback
         self.NextButton.callback = self.next_button_callback
         self.ExitButton.callback = self.exit_button_callback
-        self.HopButton.callback = self.hop_button_callback
+        self.PaginateButton.callback = self.paginate_button_callback
 
         self.add_item(self.PreviousButton)
         self.add_item(self.NextButton)
         self.add_item(self.ExitButton)
-        self.add_item(self.HopButton)
+        self.add_item(self.PaginateButton)
 
     async def start(self, ctx: discord.Interaction | commands.Context, pages: list[discord.Embed]):
         if isinstance(ctx, discord.Interaction):
@@ -78,7 +78,7 @@ class Simple(discord.ui.View):
     async def exit(self):
         await self.message.delete()
 
-    async def hop_to_page(self, page_number: int):
+    async def paginate_to_page(self, page_number: int):
         if 0 <= page_number < self.total_page_count:
             self.current_page = page_number
             await self.message.edit(embed=self.pages[self.current_page], view=self)
@@ -103,14 +103,14 @@ class Simple(discord.ui.View):
         await self.exit()
         await interaction.response.defer()
 
-    async def hop_button_callback(self, interaction: discord.Interaction):
-        if not self.is_valid_interaction(interaction, 'hop'):
+    async def paginate_button_callback(self, interaction: discord.Interaction):
+        if not self.is_valid_interaction(interaction, 'paginate'):
             return
 
         embed = discord.Embed(
             title="Paginate",
             description="Please enter a page number (1 to {0}):".format(self.total_page_count),
-            color=color.primary
+            color=color.default
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
@@ -120,7 +120,7 @@ class Simple(discord.ui.View):
         try:
             msg = await self.ctx.bot.wait_for('message', check=check, timeout=30)
             page_number = int(msg.content) - 1 
-            await self.hop_to_page(page_number)
+            await self.paginate_to_page(page_number)
         except ValueError:
             await self.ctx.send(f"{emoji.deny} Invalid input. Please enter a number.", ephemeral=True)
         except asyncio.TimeoutError:
