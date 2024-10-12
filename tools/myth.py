@@ -22,6 +22,7 @@ class Myth(commands.AutoShardedBot):
             help_command=None,
             intents=intents,
             owner_ids=[394152799799345152, 255841984470712330],
+            activity=discord.CustomActivity(name=f"🔗 discord.gg/strict"),  
         )
         self.pool = None 
         self.run(token)
@@ -40,8 +41,6 @@ class Myth(commands.AutoShardedBot):
                 await self.load_extension(f'{directory}.{filename[:-3]}')
 
     async def setup_hook(self):
-        activity = discord.CustomActivity(name="🔗 discord.gg/strict")
-        await self.change_presence(activity=activity)
         await self.load_extension('jishaku')
         await self.load("cogs")
         self.pool = await self._load_database()
