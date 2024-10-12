@@ -96,3 +96,15 @@ CREATE TABLE IF NOT EXISTS errors (
     error_message TEXT,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TABLE vanityroles (
+    guild_id BIGINT PRIMARY KEY,  
+    enabled BOOLEAN DEFAULT FALSE, 
+    text VARCHAR(255)              
+);
+CREATE TABLE vanityroles_roles (
+    guild_id BIGINT,            
+    role_id BIGINT,              
+    PRIMARY KEY (guild_id, role_id), 
+    FOREIGN KEY (guild_id) REFERENCES vanityroles(guild_id) ON DELETE CASCADE
+);
+
