@@ -1,7 +1,16 @@
-import discord; from discord.ext import commands; from discord.utils import format_dt, utcnow
-from tools.config import emoji, color; from tools.context import Context
-from typing import Optional; from datetime import datetime, timedelta
-import datetime; import io; import aiohttp; import asyncpg
+import discord
+import datetime
+import io
+import aiohttp
+import asyncpg
+
+from discord.ext        import commands
+from discord.utils      import format_dt, utcnow
+from typing             import Optional
+from datetime           import datetime, timedelta
+
+from tools.config       import emoji, color
+from tools.context      import Context
 
 class Moderation(commands.Cog):
     def __init__(self, client):
@@ -74,7 +83,9 @@ class Moderation(commands.Cog):
 
     # COMMANDS
 
-    @commands.command(description="Ban a user")
+    @commands.command(
+        description="Ban a user"
+    )
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx: commands.Context, member: discord.Member = None, *, reason=None):
         if member is None:
@@ -94,7 +105,9 @@ class Moderation(commands.Cog):
         else:
             await ctx.message.add_reaction(f"{emoji.agree}")
 
-    @commands.command(description="Softban a user")
+    @commands.command(
+        description="Softban a user"
+    )
     @commands.has_permissions(ban_members=True)
     async def softban(self, ctx: commands.Context, member: discord.Member = None, *, reason=None):
         if member is None:
@@ -115,7 +128,9 @@ class Moderation(commands.Cog):
         else:
             await ctx.message.add_reaction(f"{emoji.agree}")
 
-    @commands.command(description="Unban a user")
+    @commands.command(
+        description="Unban a user"
+    )
     @commands.has_permissions(ban_members=True)
     async def unban(self, ctx: commands.Context, member: discord.User = None, *, reason=None):
         if member is None:
@@ -132,7 +147,9 @@ class Moderation(commands.Cog):
         else:
             await ctx.message.add_reaction(f"{emoji.agree}")
 
-    @commands.command(description="Kick a user")
+    @commands.command(
+        description="Kick a user"
+    )
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx: commands.Context, member: discord.Member = None, *, reason=None):
         if member is None:
@@ -152,16 +169,21 @@ class Moderation(commands.Cog):
         else:
             await ctx.message.add_reaction(f"{emoji.agree}")
 
-    @commands.command(description="Recreate a channel")
+    @commands.command(
+        description="Recreate a channel"
+    )
     @commands.has_permissions(administrator=True)
     async def nuke(self, ctx):
-        channel_position = ctx.channel.position
-        new_channel = await ctx.channel.clone(reason="Nuked")
+        position = ctx.channel.position
+        new = await ctx.channel.clone(reason="Nuked")
         await ctx.channel.delete(reason="Nuked")
-        await new_channel.edit(position=channel_position)
-        await new_channel.send("first")
+        await new.edit(position=position)
+        await new.send("first")
         
-    @commands.command(description="Mute a user", aliases=["shush", "timeout", "to"])
+    @commands.command(
+        description="Mute a user", 
+        aliases=["shush", "timeout", "to"]
+    )
     @commands.has_permissions(ban_members=True)
     async def mute(self, ctx: Context, member: Optional[discord.Member] = None, duration: str = '5m'):
         if member is None:
@@ -189,7 +211,10 @@ class Moderation(commands.Cog):
         formatted_duration = f"{time_value} {time_units[unit]}"
         await ctx.message.add_reaction(f'{emoji.agree}')
 
-    @commands.command(description="Unmute a user", aliases=["untimeout", "unto"])
+    @commands.command(
+        description="Unmute a user", 
+        aliases=["untimeout", "unto"]
+    )
     @commands.has_permissions(ban_members=True)
     async def unmute(self, ctx: commands.Context, member: Optional[discord.Member] = None):
         if member is None:
@@ -198,13 +223,18 @@ class Moderation(commands.Cog):
         await member.edit(timed_out_until=None)
         await ctx.message.add_reaction(f'{emoji.agree}')
 
-    @commands.group(description="Manage threads")
+    @commands.group(
+        description="Manage threads"
+    )
     @commands.has_permissions(manage_threads=True)
     async def thread(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command.qualified_name)
 
-    @thread.command(name="lock", description="Lock a thread")
+    @thread.command(
+        name="lock", 
+        description="Lock a thread"
+    )
     @commands.has_permissions(manage_threads=True)
     async def thread_lock(self, ctx: Context, thread: discord.Thread = None):
         if thread is None:
@@ -216,7 +246,10 @@ class Moderation(commands.Cog):
         await thread.edit(locked=True)
         await ctx.message.add_reaction(f'{emoji.agree}')
 
-    @thread.command(name="unlock", description="Unlock a thread")
+    @thread.command(
+        name="unlock", 
+        description="Unlock a thread"
+    )
     @commands.has_permissions(manage_threads=True)
     async def thread_unlock(self, ctx: Context, thread: discord.Thread = None):
         if thread is None:
@@ -228,7 +261,10 @@ class Moderation(commands.Cog):
         await thread.edit(locked=False)
         await ctx.message.add_reaction(f'{emoji.agree}')
 
-    @thread.command(name="delete", description="Delete a thread")
+    @thread.command(
+        name="delete", 
+        description="Delete a thread"
+    )
     @commands.has_permissions(manage_threads=True)
     async def thread_delete(self, ctx, thread: discord.Thread = None):
         if thread is None:
@@ -240,7 +276,9 @@ class Moderation(commands.Cog):
         await thread.delete()
         await ctx.message.add_reaction(f'{emoji.agree}')
         
-    @commands.command(description="Lock a channel")
+    @commands.command(
+        description="Lock a channel"
+    )
     @commands.has_permissions(manage_channels=True)
     async def lock(self, ctx: Context, channel: discord.TextChannel = None):
         if channel is None:
@@ -250,7 +288,9 @@ class Moderation(commands.Cog):
         await channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
         await ctx.message.add_reaction(f'{emoji.agree}')
 
-    @commands.command(description="Unlock a channel")
+    @commands.command(
+        description="Unlock a channel"
+    )
     @commands.has_permissions(manage_channels=True)
     async def unlock(self, ctx: Context, channel: discord.TextChannel = None):
         if channel is None:
@@ -260,7 +300,10 @@ class Moderation(commands.Cog):
         await channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
         await ctx.message.add_reaction(f'{emoji.agree}')
         
-    @commands.command(description="Clear messages", aliases=['purge'])
+    @commands.command(
+        description="Clear messages", 
+        aliases=['purge']
+    )
     @commands.has_permissions(manage_messages=True)
     async def clear(self, ctx, amount: int = None):
         if amount is None:
@@ -270,7 +313,11 @@ class Moderation(commands.Cog):
             embed = discord.Embed(description=f"> {emoji.agree} {ctx.author.mention}: **Deleted** {len(deleted_messages) - 1} messages", color=color.agree)  
             await ctx.send(embed=embed, delete_after=2)
 
-    @commands.group(description="Manage roles", invoke_without_command=True, aliases=["r"])
+    @commands.group(
+        description="Manage roles", 
+        invoke_without_command=True, 
+        aliases=["r"]
+    )
     @commands.has_permissions(manage_roles=True)
     async def role(self, ctx, member: discord.Member = None, *, role: discord.Role = None):
         if not member or not role:
@@ -288,13 +335,19 @@ class Moderation(commands.Cog):
             await member.add_roles(role)
             await ctx.agree(f"**Added** {role.mention} to {member.mention}")
 
-    @role.command(name="create", description="Create a role")
+    @role.command(
+        name="create", 
+        description="Create a role"
+    )
     @commands.has_permissions(manage_roles=True)
     async def role_create(self, ctx, *, name):
         new_role = await ctx.guild.create_role(name=name)
         await ctx.message.add_reaction(f'{emoji.agree}')
 
-    @role.command(name="delete", description="Delete a role")
+    @role.command(
+        name="delete", 
+        description="Delete a role"
+    )
     @commands.has_permissions(manage_roles=True)
     async def role_delete(self, ctx, *, role: discord.Role = None):
         if role is None:
@@ -302,7 +355,10 @@ class Moderation(commands.Cog):
         await role.delete()
         await ctx.message.add_reaction(f'{emoji.agree}')
 
-    @role.command(name="rename", description="Rename a role")
+    @role.command(
+        name="rename", 
+        description="Rename a role"
+    )
     @commands.has_permissions(manage_roles=True)
     async def role_rename(self, ctx, role: discord.Role = None, *, name):
         if role is None:
@@ -316,7 +372,10 @@ class Moderation(commands.Cog):
             role = discord.utils.find(lambda r: role_name.lower() in r.name.lower(), ctx.guild.roles)
         return role
 
-    @role.command(name="all", description="Give a role to everyone")
+    @role.command(
+        name="all", 
+        description="Give a role to everyone"
+    )
     @commands.has_permissions(manage_roles=True)
     async def role_all(self, ctx, role: discord.Role = None):
         if role is None:
@@ -339,7 +398,10 @@ class Moderation(commands.Cog):
         embed.description = f"**Added** {role.mention} to everyone"
         await message.edit(embed=embed)
 
-    @role.command(name="bots", description="Give a role to bots")
+    @role.command(
+        name="bots", 
+        description="Give a role to bots"
+    )
     @commands.has_permissions(manage_roles=True)
     async def role_bots(self, ctx, role: discord.Role = None):
         if role is None:
@@ -363,7 +425,10 @@ class Moderation(commands.Cog):
         embed.description = f"**Added** {role.mention} to all bots"
         await message.edit(embed=embed)
 
-    @role.command(name="humans", description="Give a role to humans (non-bots)")
+    @role.command(
+        name="humans", 
+        description="Give a role to humans (non-bots)"
+    )
     @commands.has_permissions(manage_roles=True)
     async def role_humans(self, ctx, role: discord.Role = None):
         if role is None:
@@ -387,7 +452,9 @@ class Moderation(commands.Cog):
         embed.description = f"**Added** {role.mention} to all humans"
         await message.edit(embed=embed)
 
-    @commands.command(description="Set a slowmode for a channel")
+    @commands.command(
+        description="Set a slowmode for a channel"
+    )
     @commands.has_permissions(manage_channels=True)
     async def slowmode(self, ctx, duration: str = '5m'):
         time_units = {'m': 'minutes', 'h': 'hours', 'd': 'days'}
@@ -407,13 +474,19 @@ class Moderation(commands.Cog):
         await ctx.channel.edit(slowmode_delay=seconds)
         await ctx.message.add_reaction(f"{emoji.agree}")
 
-    @commands.group(description="Manage your guild", aliases=["guild"])
+    @commands.group(
+        description="Manage your guild", 
+        aliases=["guild"]
+    )
     @commands.has_permissions(manage_guild=True)
     async def set(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command.qualified_name)
 
-    @set.command(description="Change the avatar of your guild", aliases=["avatar"])
+    @set.command(
+        description="Change the avatar of your guild", 
+        aliases=["avatar"]
+    )
     @commands.has_permissions(manage_guild=True)
     async def pfp(self, ctx, url: str = None):
         if url is None and not ctx.message.attachments:
@@ -428,7 +501,10 @@ class Moderation(commands.Cog):
             except discord.HTTPException:
                 await ctx.deny("**Could not** change the avatar of the guild")
 
-    @set.command(description="Change the banner of your guild", aliases=["bnner"])
+    @set.command(
+        description="Change the banner of your guild", 
+        aliases=["bnner"]
+    )
     @commands.has_permissions(manage_guild=True)
     async def banner(self, ctx, url: str = None):
         if url is None and not ctx.message.attachments:
@@ -443,7 +519,10 @@ class Moderation(commands.Cog):
             except discord.HTTPException:
                 await ctx.deny("**Could not** change the banner of the guild, make sure your server is boosted to level 2")
 
-    @set.command(description="Change the splash of your guild", aliases=["splsh"])
+    @set.command(
+        description="Change the splash of your guild", 
+        aliases=["splsh"]
+    )
     @commands.has_permissions(manage_guild=True)
     async def splash(self, ctx, url: str = None):
         if url is None and not ctx.message.attachments:
@@ -458,13 +537,18 @@ class Moderation(commands.Cog):
             except discord.HTTPException:
                 await ctx.send("**Could not** change the splash of the guild, make sure your server is boosted to level 1")
 
-    @set.command(description="Change the name of your guild")
+    @set.command(
+        description="Change the name of your guild"
+    )
     @commands.has_permissions(manage_guild=True)
     async def name(self, ctx, *, name: str):
         await ctx.guild.edit(name=name)
         await ctx.message.add_reaction(f'{emoji.agree}')
 
-    @commands.command(description="Remove peoples ability to send attachments", aliases=["imute"])
+    @commands.command(
+        description="Remove peoples ability to send attachments",
+        aliases=["imute"]
+    )
     @commands.has_permissions(manage_channels=True)
     async def imagemute(self, ctx, user: discord.Member, channel: discord.TextChannel = None):
         channel = channel or ctx.channel
@@ -475,7 +559,10 @@ class Moderation(commands.Cog):
         await channel.set_permissions(user, overwrite=overwrite)
         await ctx.agree(f"**Muted** {user.mention}'s ability to send images in {channel.mention}")
 
-    @commands.command(description="Remove peoples ability to react", aliases=["rmute"])
+    @commands.command(
+        description="Remove peoples ability to react", 
+        aliases=["rmute"]
+    )
     @commands.has_permissions(manage_channels=True)
     async def reactionmute(self, ctx, user: discord.Member, channel: discord.TextChannel = None):
         channel = channel or ctx.channel
