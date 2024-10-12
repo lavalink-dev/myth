@@ -1,6 +1,10 @@
-import discord; from discord.ext import commands
+import discord
 import asyncpg
-from tools.context import Context; from tools.config import emoji, color
+
+from discord.ext       import commands
+
+from tools.context     import Context
+from tools.config      import emoji, color
 
 class Events(commands.Cog):
     def __init__(self, client):
