@@ -91,3 +91,8 @@ CREATE TABLE IF NOT EXISTS blacklist (
     user_id TEXT PRIMARY KEY,
     reason TEXT
 );
+CREATE TABLE IF NOT EXISTS errors (
+    error_id TEXT PRIMARY KEY,
+    error_message TEXT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
