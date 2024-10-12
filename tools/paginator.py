@@ -1,27 +1,29 @@
-from __future__        import annotations
+from __future__ import annotations
 
 import discord
 import uuid
 
-from discord.ext       import commands
+from discord.ext import commands
 
-from tools.config      import emoji, color
+from tools.config import emoji, color
 
 
 class Simple(discord.ui.View):
     def __init__(self, *,
                  timeout: int = None,
-                 PreviousButton: discord.ui.Button = discord.ui.Button(emoji='<:left:1284955832911663225>', style=discord.ButtonStyle.primary),
-                 NextButton: discord.ui.Button = discord.ui.Button(emoji='<:right:1284955811084505220>', style=discord.ButtonStyle.primary),
-                 ExitButton: discord.ui.Button = discord.ui.Button(emoji='<:exit:1284955853778190398>', style=discord.ButtonStyle.grey),
+                 PreviousButton: discord.ui.Button = discord.ui.Button(emoji='<:left:1294716353952874547>', style=discord.ButtonStyle.primary),
+                 NextButton: discord.ui.Button = discord.ui.Button(emoji='<:right:1294716290199720037>', style=discord.ButtonStyle.primary),
+                 ExitButton: discord.ui.Button = discord.ui.Button(emoji='<:exit:1294716331538645044>', style=discord.ButtonStyle.grey),
+                 HopButton: discord.ui.Button = discord.ui.Button(emoji='<:paginate:1294716310701215784>', style=discord.ButtonStyle.grey),
                  InitialPage: int = 0,
-                 AllowExtInput: bool = True,
+                 AllowExtInput: bool = False,
                  ephemeral: bool = False) -> None:
         super().__init__(timeout=timeout)
 
         self.PreviousButton = PreviousButton
         self.NextButton = NextButton
         self.ExitButton = ExitButton
+        self.HopButton = HopButton
         self.InitialPage = InitialPage
         self.AllowExtInput = AllowExtInput
         self.ephemeral = ephemeral
@@ -31,20 +33,22 @@ class Simple(discord.ui.View):
         self.message = None
         self.current_page = None
         self.total_page_count = None
-
         self.paginator_id = str(uuid.uuid4())
 
         self.PreviousButton.custom_id = f"previous:{self.paginator_id}"
         self.NextButton.custom_id = f"next:{self.paginator_id}"
         self.ExitButton.custom_id = f"exit:{self.paginator_id}"
+        self.HopButton.custom_id = f"hop:{self.paginator_id}"
 
         self.PreviousButton.callback = self.previous_button_callback
         self.NextButton.callback = self.next_button_callback
         self.ExitButton.callback = self.exit_button_callback
+        self.HopButton.callback = self.hop_button_callback
 
         self.add_item(self.PreviousButton)
         self.add_item(self.NextButton)
         self.add_item(self.ExitButton)
+        self.add_item(self.HopButton)
 
     async def start(self, ctx: discord.Interaction | commands.Context, pages: list[discord.Embed]):
         if isinstance(ctx, discord.Interaction):
@@ -62,46 +66,75 @@ class Simple(discord.ui.View):
             self.current_page = self.total_page_count - 1
         else:
             self.current_page -= 1
-
         await self.message.edit(embed=self.pages[self.current_page], view=self)
-
-    async def exit(self):
-        await self.message.delete()
 
     async def next(self):
         if self.current_page == self.total_page_count - 1:
             self.current_page = 0
         else:
             self.current_page += 1
-
         await self.message.edit(embed=self.pages[self.current_page], view=self)
 
-    async def next_button_callback(self, interaction: discord.Interaction):
-        if interaction.data['custom_id'] != f"next:{self.paginator_id}":
-            return
+    async def exit(self):
+        await self.message.delete()
 
-        if interaction.user != self.ctx.author and not self.AllowExtInput:
-            embed = discord.Embed(description=f"{emoji.deny} {interaction.user.mention}: You **cannot** intract with this", color=color.deny)
-            return await interaction.response.send_message(embed=embed, ephemeral=True)
+    async def hop_to_page(self, page_number: int):
+        if 0 <= page_number < self.total_page_count:
+            self.current_page = page_number
+            await self.message.edit(embed=self.pages[self.current_page], view=self)
+        else:
+            await self.ctx.send(f"{emoji.deny} Invalid page number", ephemeral=True)
+
+    async def previous_button_callback(self, interaction: discord.Interaction):
+        if not self.is_valid_interaction(interaction, 'previous'):
+            return
+        await self.previous()
+        await interaction.response.defer()
+
+    async def next_button_callback(self, interaction: discord.Interaction):
+        if not self.is_valid_interaction(interaction, 'next'):
+            return
         await self.next()
         await interaction.response.defer()
 
     async def exit_button_callback(self, interaction: discord.Interaction):
-        if interaction.data['custom_id'] != f"exit:{self.paginator_id}":
+        if not self.is_valid_interaction(interaction, 'exit'):
             return
-
-        if interaction.user != self.ctx.author and not self.AllowExtInput:
-            embed = discord.Embed(description=f"{emoji.deny} {interaction.user.mention}: You **cannot** intract with this", color=color.default)
-            return await interaction.response.send_message(embed=embed, ephemeral=True)
         await self.exit()
         await interaction.response.defer()
 
-    async def previous_button_callback(self, interaction: discord.Interaction):
-        if interaction.data['custom_id'] != f"previous:{self.paginator_id}":
+    async def hop_button_callback(self, interaction: discord.Interaction):
+        if not self.is_valid_interaction(interaction, 'hop'):
             return
 
+        embed = discord.Embed(
+            title="Paginate",
+            description="Please enter a page number (1 to {0}):".format(self.total_page_count),
+            color=color.primary
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+
+        def check(m: discord.Message):
+            return m.author == interaction.user and m.channel == interaction.channel
+
+        try:
+            msg = await self.ctx.bot.wait_for('message', check=check, timeout=30)
+            page_number = int(msg.content) - 1 
+            await self.hop_to_page(page_number)
+        except ValueError:
+            await self.ctx.send(f"{emoji.deny} Invalid input. Please enter a number.", ephemeral=True)
+        except asyncio.TimeoutError:
+            await self.ctx.send(f"{emoji.deny} Timeout. No input received.", ephemeral=True)
+
+    def is_valid_interaction(self, interaction: discord.Interaction, button_id: str):
+        if interaction.data['custom_id'] != f"{button_id}:{self.paginator_id}":
+            return False
+
         if interaction.user != self.ctx.author and not self.AllowExtInput:
-            embed = discord.Embed(description=f"{emoji.deny} {interaction.user.mention}: You **cannot** intract with this", color=color.deny)
-            return await interaction.response.send_message(embed=embed, ephemeral=True)
-        await self.previous()
-        await interaction.response.defer()
+            embed = discord.Embed(
+                description=f"{emoji.deny} {interaction.user.mention}: You **cannot** interact with this.",
+                color=color.deny)
+            interaction.response.send_message(embed=embed, ephemeral=True)
+            return False
+
+        return True
