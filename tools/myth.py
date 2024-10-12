@@ -99,7 +99,7 @@ class Myth(commands.AutoShardedBot):
             )
         else:
             self.message_cache[author_id].append(now)
-            await self.client.process_commands(message)
+            await self.process_commands(message)
 
     async def setup_hook(self):
         await self.load_extension('jishaku')
