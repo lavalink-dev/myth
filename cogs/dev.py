@@ -146,8 +146,7 @@ class Developer(commands.Cog):
         description="Check for all the blacklisted users"
     )
     async def blacklisted(self, ctx: commands.Context):
-        async with self.pool.acquire() as conn:
-            rows = await conn.fetch("SELECT user_id, reason FROM blacklist")
+        rows = await self.client.pool.fetch("SELECT user_id, reason FROM blacklist")
 
         if not rows:
             embed = discord.Embed(description="Nones blacklisted", color=color.default)
