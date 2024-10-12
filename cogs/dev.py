@@ -35,6 +35,8 @@ class Developer(commands.Cog):
             error_message = error_data['error_message']
             timestamp = error_data['timestamp']
             embed = discord.Embed(description=f"> Error ID: `{error_id}` \n> Occurred at: `{timestamp}` \n```{error_message}```", color=color.default)
+            embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
+            embed.set_author(name=f"Error Occurred")
             await ctx.send(embed=embed)
         else:
             await ctx.message.add_reaction(emoji.warn)
