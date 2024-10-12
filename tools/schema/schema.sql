@@ -87,3 +87,7 @@ CREATE TABLE IF NOT EXISTS prefixes (
     user_id TEXT PRIMARY KEY,
     prefix TEXT
 );
+CREATE TABLE IF NOT EXISTS blacklist (
+    user_id TEXT PRIMARY KEY,
+    reason TEXT
+);
