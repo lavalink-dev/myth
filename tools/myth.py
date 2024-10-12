@@ -17,6 +17,7 @@ intents.members = True
 intents.message_content = True
 intents.messages = True
 intents.dm_messages = True
+intents.presences = True
 
 class Myth(commands.AutoShardedBot):
     def __init__(self, token):
