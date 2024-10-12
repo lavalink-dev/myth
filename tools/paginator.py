@@ -137,5 +137,3 @@ class Simple(discord.ui.View):
             return False
 
         return True
-
-        return True
