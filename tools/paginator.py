@@ -107,15 +107,8 @@ class Simple(discord.ui.View):
         if not self.is_valid_interaction(interaction, 'paginate'):
             return
 
-        options = [
-            discord.SelectOption(label=f"Page {i + 1}", value=str(i))
-            for i in range(self.total_page_count)
-        ]
-        select = discord.ui.Select(
-            placeholder="Select a page",
-            options=options,
-            custom_id=f"select:{self.paginator_id}"
-        )
+        options = [discord.SelectOption(label=f"Page {i + 1}", value=str(i)) for i in range(self.total_page_count)]
+        select = discord.ui.Select(placeholder="Select a page", options=options, custom_id=f"select:{self.paginator_id}")
 
         async def select_callback(interaction: discord.Interaction):
             page_number = int(select.values[0])
@@ -131,7 +124,7 @@ class Simple(discord.ui.View):
         view.add_item(select)
         user_pfp = self.author.avatar.url if self.author.avatar else self.author.default_avatar.url
         embed.set_author(name=f"{self.author.name} | paginate", icon_url=user_pfp)
-        embed = discord.Embed(description="Choose a page for you to go on"
+        embed = discord.Embed(description="Choose a page for you to go on", color=color.default)
         await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
 
     def is_valid_interaction(self, interaction: discord.Interaction, button_id: str):
