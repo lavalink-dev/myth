@@ -330,7 +330,7 @@ class Config(commands.Cog):
         for role in roles:
             existing = await self.client.pool.fetchrow("SELECT * FROM autorole_settings WHERE guild_id = $1 AND role_id = $2", ctx.guild.id, role.id)
 
-            if existing_role:
+            if existing:
                 existing.append(role.mention)
             else:
                 await self.client.pool.execute("INSERT INTO autorole_settings (guild_id, role_id) VALUES ($1, $2)", ctx.guild.id, role.id)
