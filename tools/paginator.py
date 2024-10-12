@@ -122,6 +122,10 @@ class Simple(discord.ui.View):
         async def select_callback(interaction: discord.Interaction):
             page_number = int(select.values[0])
             await self.paginate_to_page(page_number)
+
+            # Disable the Select menu after a choice is made
+            select.disabled = True
+            await interaction.message.edit(view=self)
             await interaction.response.defer()
 
         select.callback = select_callback
