@@ -69,9 +69,7 @@ class Myth(commands.AutoShardedBot):
 
         author_id_str = str(message.author.id)
 
-        check = await self.pool.fetchrow(
-            "SELECT * FROM blacklist WHERE user_id = $1", author_id_str
-        )
+        check = await self.pool.fetchrow("SELECT * FROM blacklist WHERE user_id = $1", author_id_str)
         if check:
             return
 
@@ -92,7 +90,7 @@ class Myth(commands.AutoShardedBot):
 
         if len(self.message_cache[author_id]) >= 10:
             await self.pool.execute("INSERT INTO blacklist (user_id) VALUES ($1)", author_id_str)
-            embed = discord.Embed(description=f"> {emoji.deny} {message.author.mention}: You got blacklisted, if you think is by accident join the [support server](https://discord.gg/strict)", color=color.deny)
+            embed = discord.Embed(description=f"> {emoji.deny} {message.author.mention}: **You got blacklisted,** if you think is by accident join the [support server](https://discord.gg/strict)", color=color.deny)
             await message.channel.send(embed=embed)
         else:
             self.message_cache[author_id].append(now)
