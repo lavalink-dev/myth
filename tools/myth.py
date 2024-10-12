@@ -37,7 +37,7 @@ class Myth(commands.AutoShardedBot):
     async def load(self, directory):
         for filename in os.listdir(directory):
             if filename.endswith('.py'):
-                await self.bot.load_extension(f'{directory}.{filename[:-3]}')
+                await self.load_extension(f'{directory}.{filename[:-3]}')
 
     async def setup_hook(self):
         activity = discord.CustomActivity(name="🔗 discord.gg/strict")
