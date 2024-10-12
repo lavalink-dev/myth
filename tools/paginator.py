@@ -127,13 +127,15 @@ class Simple(discord.ui.View):
         embed = discord.Embed(description="Choose a page for you to go on", color=color.default)
         await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
 
-    def is_valid_interaction(self, interaction: discord.Interaction, button_id: str):
+    async def is_valid_interaction(self, interaction: discord.Interaction, button_id: str):
         if interaction.data['custom_id'] != f"{button_id}:{self.paginator_id}":
             return False
 
         if interaction.user != self.ctx.author and not self.AllowExtInput:
-            embed = discord.Embed(description=f"{emoji.deny} {interaction.user.mention}: You **cannot** interact with this.", color=color.deny)
+            embed = discord.Embed(description=f"{emoji.deny} {interaction.user.mention}: You **cannot** interact with this", color=color.deny)
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return False
+
+        return True
 
         return True
