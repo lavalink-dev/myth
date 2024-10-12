@@ -6,7 +6,7 @@ from discord.ext import commands
 from tools.config import emoji, color
 from tools.context import Context
 
-class VanityRoles(commands.Cog):
+class Vanityroles(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.cache = {}
@@ -34,8 +34,12 @@ class VanityRoles(commands.Cog):
         else:
             await ctx.deny("**Invalid option,** use on/off")
 
-    @vanityroles.command()
-    async def string(self, ctx, *, vanity_string: str):
+    @vanityroles.command(
+        name="string",
+        description="Set the vanity string",
+        aliases=["message", "msg"]
+    )
+    async def vanityroles_string(self, ctx, *, vanity_string: str):
         if not vanity_string.startswith(".gg/") and not vanity_string.startswith("/"):
             await ctx.send("**Vanity string** needs to start with .gg/ or /")
             return
@@ -43,24 +47,36 @@ class VanityRoles(commands.Cog):
         await self.client.pool.execute("UPDATE vanityroles SET text = $1 WHERE guild_id = $2", vanity_string, ctx.guild.id)
         await ctx.agree(f"**Set** the vanity string to: `{vanity_string}`")
 
-    @vanityroles.command()
-    async def add(self, ctx, *, role: discord.Role):
+    @vanityroles.command(
+        name="add",
+        description="Add a role to vanityroles"
+    )
+    async def vanityroles_add(self, ctx, *, role: discord.Role):
         await self.client.pool.execute("INSERT INTO vanityroles_roles (guild_id, role_id) VALUES ($1, $2) ON CONFLICT (guild_id, role_id) DO NOTHING", ctx.guild.id, role.id)
         await ctx.agree(f"**Added** {role.mention} to vanityroles")
 
-    @vanityroles.command()
-    async def remove(self, ctx, *, role: discord.Role):
+    @vanityroles.command(
+        name="remove",
+        description="Remove a role from vanityroles"
+    )
+    async def vanityroles_remove(self, ctx, *, role: discord.Role):
         await self.client.pool.execute("DELETE FROM vanityroles_roles WHERE guild_id = $1 AND role_id = $2", ctx.guild.id, role.id)
         await ctx.agree(f"**Removed** {role.mention} from vanityroles")
 
-    @vanityroles.command()
-    async def clear(self, ctx):
+    @vanityroles.command(
+        name="clear",
+        description="Clear all vanityroles settings"
+    )
+    async def vanityroles_clear(self, ctx):
         await self.client.pool.execute("DELETE FROM vanityroles WHERE guild_id = $1", ctx.guild.id)
         await self.client.pool.execute("DELETE FROM vanityroles_roles WHERE guild_id = $1", ctx.guild.id)
         await ctx.agree("**Cleared** all vanity settings")
 
-    @vanityroles.command()
-    async def settings(self, ctx):
+    @vanityroles.command(
+        name="settings",
+        description="Check our your vanityroles settings"
+    )
+    async def vanityroles_settings(self, ctx):
         data = await self.client.pool.fetchrow("SELECT enabled, text FROM vanityroles WHERE guild_id = $1", ctx.guild.id)
         roles = await self.client.pool.fetch("SELECT role_id FROM vanityroles_roles WHERE guild_id = $1", ctx.guild.id)
 
