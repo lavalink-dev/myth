@@ -1,9 +1,10 @@
-from __future__ import annotations
-
-import discord; from discord.ext import commands
+import discord
 import uuid
 
-from tools.config import emoji, color
+from discord.ext       import commands
+from __future__        import annotations
+
+from tools.config      import emoji, color
 
 
 class Simple(discord.ui.View):
