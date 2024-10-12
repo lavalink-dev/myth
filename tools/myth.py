@@ -19,7 +19,8 @@ intents.dm_messages = True
 
 class Myth(commands.AutoShardedBot):
     def __init__(self, token):
-        self.cache = Cache()
+        self.message_cache = {}  
+        self.cache_expiry_seconds = 60  
         
         super().__init__(
             command_prefix=self.get_prefix,
