@@ -15,7 +15,7 @@ intents.message_content = True
 intents.messages = True
 intents.dm_messages = True
 
-class Superbot(commands.AutoShardedBot):
+class Myth(commands.AutoShardedBot):
     def __init__(self, token):
         super().__init__(
             command_prefix=self.get_prefix,
@@ -33,19 +33,19 @@ class Superbot(commands.AutoShardedBot):
         async with self.pool.acquire() as conn:
             result = await conn.fetchrow("SELECT prefix FROM prefixes WHERE user_id = $1", user_id)
         return result['prefix'] if result else ';'
-        
-    async def load_cogs(self):
-        for filename in os.listdir('./cogs'):
-            if filename.endswith('.py'):
-                await self.load_extension(f'cogs.{filename[:-3]}')
 
-    async def on_ready(self):
+    async def load(self, directory):
+        for filename in os.listdir(directory):
+            if filename.endswith('.py'):
+                await self.bot.load_extension(f'{directory}.{filename[:-3]}')
+
+    async def setup_hook(self):
         activity = discord.CustomActivity(name="🔗 discord.gg/strict")
         await self.change_presence(activity=activity)
         await self.load_extension('jishaku')
-        await self.load_cogs()
-        self.pool = await self._load_database()
-        print(f"[ + ] {self.user} is ready")
+        await self.load("cogs")
+        self.bot.pool = await self._load_database()
+        print(f"[ + ] {self.bot.user} is ready")
  
     async def get_context(self, origin, cls=Context):
         return await super().get_context(origin, cls=cls)
