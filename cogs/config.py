@@ -1,7 +1,14 @@
-import discord; from discord.ext import commands, tasks; from discord.utils import format_dt
-import asyncpg; import asyncio; import re
-from tools.context import Context; from tools.config import emoji, color
+import discord
+import asyncpg
+import asyncio
+import re
+
+from discord.ext import commands, tasks
+from discord.utils import format_dt
 from datetime import datetime, timedelta
+
+from tools.context import Context
+from tools.config import emoji, color
 
 class Config(commands.Cog):
     def __init__(self, client):
@@ -31,28 +38,39 @@ class Config(commands.Cog):
 
         return message
 
-    @commands.group(description="Set the welcome", aliases=["greet", "welc", "gate"])
+    @commands.group(
+        description="Set the welcome", 
+        aliases=["welc"]
+    )
     @commands.has_permissions(manage_channels=True)
     async def welcome(self, ctx: Context):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command.qualified_name)
 
-    @welcome.command(name="channel", description="Set the welcome channel", aliases=["chnl", "chnnel"])
+    @welcome.command(
+        name="channel", 
+        description="Set the welcome channel", 
+        aliases=["chnnel"]
+    )
     @commands.has_permissions(manage_channels=True)
     async def welcome_channel(self, ctx, channel: discord.TextChannel = None):
         if channel is None:
             await ctx.warn("**Mention** a channel")
             return
             
-        existing_settings = await self.client.pool.fetchrow("SELECT channel_id FROM welcome_settings WHERE guild_id = $1", ctx.guild.id)
+        existing = await self.client.pool.fetchrow("SELECT channel_id FROM welcome_settings WHERE guild_id = $1", ctx.guild.id)
         
-        if existing_settings:
-            await ctx.deny(f"Welcome channel is **already** set to: <#{existing_settings['channel_id']}>")
+        if existing:
+            await ctx.deny(f"Welcome channel is **already** set to: <#{existing['channel_id']}>")
         else:
             await self.client.pool.execute("INSERT INTO welcome_settings (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2", ctx.guild.id, channel.id)
             await ctx.agree(f"**Set** the welcome channel to: {channel.mention}")
 
-    @welcome.command(name="message", description="Set the welcome message", aliases=["msg"])
+    @welcome.command(
+        name="message",
+        description="Set the welcome message", 
+        aliases=["msg"]
+    )
     @commands.has_permissions(manage_channels=True)
     async def welcome_message(self, ctx, *, message = None):
         if message is None:
@@ -62,23 +80,32 @@ class Config(commands.Cog):
         await self.client.pool.execute("INSERT INTO welcome_settings (guild_id, message) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET message = $2", ctx.guild.id, message)
         await ctx.agree(f"**Set** the welcome message to: `{message}`")
         
-    @welcome.command(name="clear", description="Clear all welcome settings")
+    @welcome.command(
+        name="clear", 
+        description="Clear all welcome settings"
+    )
     @commands.has_permissions(manage_channels=True)
     async def welcome_clear(self, ctx):
         await self.client.pool.execute("DELETE FROM welcome_settings WHERE guild_id = $1", ctx.guild.id)
         await ctx.agree("**Cleared** all welcome settings")
 
-    @welcome.command(name="remove", description="Remove the welcome channel")
+    @welcome.command(
+        name="remove", 
+        description="Remove the welcome channel"
+    )
     @commands.has_permissions(manage_channels=True)
     async def welcome_remove(self, ctx):
-        existing_settings = await self.client.pool.fetchrow("SELECT channel_id FROM welcome_settings WHERE guild_id = $1", ctx.guild.id)
-        if existing_settings:
+        existing = await self.client.pool.fetchrow("SELECT channel_id FROM welcome_settings WHERE guild_id = $1", ctx.guild.id)
+        if existing:
             await self.client.pool.execute("DELETE FROM welcome_settings WHERE guild_id = $1", ctx.guild.id)
             await ctx.agree("**Removed** the welcome channel")
         else:
             await ctx.deny("A channel isn't **set**")
 
-    @welcome.command(name="test", description="Try testing the welcome")
+    @welcome.command(
+        name="test", 
+        description="Try testing the welcome"
+    )
     @commands.has_permissions(manage_channels=True)
     async def welcome_test(self, ctx):
         settings = await self.client.pool.fetchrow("SELECT channel_id, message FROM welcome_settings WHERE guild_id = $1", ctx.guild.id)
@@ -99,28 +126,39 @@ class Config(commands.Cog):
         await ctx.agree(f"**Sent** the welcome message to: {channel.mention}")
         await channel.send(message)
 
-    @commands.group(description="Configure goodbye", aliases=["glc", "leave"])
+    @commands.group(
+        description="Set the goodbye", 
+        aliases=["leave"]
+    )
     @commands.has_permissions(manage_channels=True)
     async def goodbye(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command.qualified_name)
 
-    @goodbye.command(name="channel", description="Set the goodbye channel", aliases=["chnl", "chnnel"])
+    @goodbye.command(
+        name="channel", 
+        description="Set the goodbye channel", 
+        aliases=["chnnel"]
+    )
     @commands.has_permissions(manage_channels=True)
     async def goodbye_channel(self, ctx, channel: discord.TextChannel = None):
         if channel is None:
             await ctx.warn("**Mention** a channel")
             return
             
-        existing_settings = await self.client.pool.fetchrow("SELECT channel_id FROM goodbye_settings WHERE guild_id = $1", ctx.guild.id)
+        existing = await self.client.pool.fetchrow("SELECT channel_id FROM goodbye_settings WHERE guild_id = $1", ctx.guild.id)
         
-        if existing_settings:
-            await ctx.deny(f"Goodbye channel is **already** set to: <#{existing_settings['channel_id']}>")
+        if existing:
+            await ctx.deny(f"Goodbye channel is **already** set to: <#{existing['channel_id']}>")
         else:
             await self.client.pool.execute("INSERT INTO goodbye_settings (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2", ctx.guild.id, channel.id)
             await ctx.agree(f"**Set** the goodbye channel to: {channel.mention}")
 
-    @goodbye.command(name="message", description="Set the goodbye message", aliases=["msg"])
+    @goodbye.command(
+        name="message", 
+        description="Set the goodbye message", 
+        aliases=["msg"]
+    )
     @commands.has_permissions(manage_channels=True)
     async def goodbye_message(self, ctx, *, message = None):
         if message is None:
@@ -130,23 +168,32 @@ class Config(commands.Cog):
         await self.client.pool.execute("INSERT INTO goodbye_settings (guild_id, message) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET message = $2", ctx.guild.id, message)
         await ctx.agree(f"**Set** the goodbye message to: `{message}`")
 
-    @goodbye.command(name="clear", description="Clear all goodbye settings")
+    @goodbye.command(
+        name="clear", 
+        description="Clear all goodbye settings"
+    )
     @commands.has_permissions(manage_channels=True)
     async def goodbye_clear(self, ctx):
         await self.client.pool.execute("DELETE FROM goodbye_settings WHERE guild_id = $1", ctx.guild.id)
         await ctx.agree("**Cleared** all goodbye settings")
 
-    @goodbye.command(name="remove", description="Remove the goodbye channel")
+    @goodbye.command(
+        name="remove", 
+        description="Remove the goodbye channel"
+    )
     @commands.has_permissions(manage_channels=True)
     async def goodbye_remove(self, ctx):
-        existing_settings = await self.client.pool.fetchrow("SELECT channel_id FROM goodbye_settings WHERE guild_id = $1", ctx.guild.id)
-        if existing_settings:
+        existing = await self.client.pool.fetchrow("SELECT channel_id FROM goodbye_settings WHERE guild_id = $1", ctx.guild.id)
+        if existing:
             await self.client.pool.execute("DELETE FROM goodbye_settings WHERE guild_id = $1", ctx.guild.id)
             await ctx.agree("**Removed** the goodbye channel")
         else:
             await ctx.deny("A channel isn't **set**")
 
-    @goodbye.command(name="test", description="Try testing the goodbye")
+    @goodbye.command(
+        name="test", 
+        description="Try testing the goodbye"
+    )
     @commands.has_permissions(manage_channels=True)
     async def goodbye_test(self, ctx):
         settings = await self.client.pool.fetchrow("SELECT channel_id, message FROM goodbye_settings WHERE guild_id = $1", ctx.guild.id)
@@ -167,28 +214,37 @@ class Config(commands.Cog):
         await ctx.agree(f"**Sent** the goodbye message to: {channel.mention}")
         await channel.send(message)
 
-    @commands.group(description="Set the boost settings", aliases=["b"])
+    @commands.group(
+        description="Set the boost"
+    )
     @commands.has_permissions(manage_channels=True)
     async def boost(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command.qualified_name)
 
-    @boost.command(name="channel", description="Set the boost channel", aliases=["chnl", "chnnel"])
+    @boost.command(
+        name="channel", 
+        description="Set the boost channel", 
+        aliases=["chnnel"]
+    )
     @commands.has_permissions(manage_channels=True)
     async def boost_channel(self, ctx, channel: discord.TextChannel = None):
         if channel is None:
             await ctx.warn("**Mention** a channel")
             return
             
-        existing_settings = await self.client.pool.fetchrow("SELECT channel_id FROM boost_settings WHERE guild_id = $1", ctx.guild.id)
+        existing = await self.client.pool.fetchrow("SELECT channel_id FROM boost_settings WHERE guild_id = $1", ctx.guild.id)
         
-        if existing_settings:
-            await ctx.deny(f"Boost channel is **already** set to: <#{existing_settings['channel_id']}>")
+        if existing:
+            await ctx.deny(f"Boost channel is **already** set to: <#{existing['channel_id']}>")
         else:
             await self.client.pool.execute("INSERT INTO boost_settings (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2", ctx.guild.id, channel.id)
             await ctx.agree(f"**Set** the boost channel to: {channel.mention}")
 
-    @boost.command(name="message", description="Set the boost message", aliases=["msg"])
+    @boost.command(
+        name="message", description="Set the boost message", 
+        aliases=["msg"]
+    )
     @commands.has_permissions(manage_channels=True)
     async def boost_message(self, ctx, *, message = None):
         if message is None:
@@ -198,23 +254,32 @@ class Config(commands.Cog):
         await self.client.pool.execute("INSERT INTO boost_settings (guild_id, message) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET message = $2", ctx.guild.id, message)
         await ctx.agree(f"**Set** the boost message to: `{message}`")
 
-    @boost.command(name="clear", description="Clear all boost settings")
+    @boost.command(
+        name="clear", 
+        description="Clear all boost settings"
+    )
     @commands.has_permissions(manage_channels=True)
     async def boost_clear(self, ctx):
         await self.client.pool.execute("DELETE FROM boost_settings WHERE guild_id = $1", ctx.guild.id)
         await ctx.agree("**Cleared** all boost settings")
 
-    @boost.command(name="remove", description="Remove the goodbye channel")
+    @boost.command(
+        name="remove", 
+        description="Remove the goodbye channel"
+    )
     @commands.has_permissions(manage_channels=True)
     async def boost_remove(self, ctx):
-        existing_settings = await self.client.pool.fetchrow("SELECT channel_id FROM boost_settings WHERE guild_id = $1", ctx.guild.id)
-        if existing_settings:
+        existing = await self.client.pool.fetchrow("SELECT channel_id FROM boost_settings WHERE guild_id = $1", ctx.guild.id)
+        if existing:
             await self.client.pool.execute("DELETE FROM boost_settings WHERE guild_id = $1", ctx.guild.id)
             await ctx.agree("**Removed** the boost channel")
         else:
             await ctx.deny("A channel isn't **set**")
 
-    @boost.command(name="test", description="Try testing the boost")
+    @boost.command(
+        name="test", 
+        description="Try testing the boost"
+    )
     @commands.has_permissions(manage_channels=True)
     async def boost_test(self, ctx):
         settings = await self.client.pool.fetchrow("SELECT channel_id, message FROM boost_settings WHERE guild_id = $1", ctx.guild.id)
@@ -235,41 +300,47 @@ class Config(commands.Cog):
         await ctx.agree(f"**Sent** the boost message to: {channel.mention}")
         await channel.send(message)
 
-    @commands.group(description="Add roles to new users", aliases=["ar"])
+    @commands.group(
+        description="Add roles to new users", 
+        aliases=["ar"]
+    )
     @commands.has_permissions(administrator=True)
     async def autorole(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command.qualified_name)
 
-    @autorole.command(name="add", description="Add a role to autorole")
+    @autorole.command(
+        name="add", 
+        description="Add a role to autorole"
+    )
     @commands.has_permissions(administrator=True)
     async def autorole_add(self, ctx: Context, *roles: discord.Role):
         if not roles:
             await ctx.warn("**Mention** a role")
             return
 
-        bot_highest_role = ctx.guild.me.top_role
-        if any(role >= bot_highest_role for role in roles):
+        highest = ctx.guild.me.top_role
+        if any(role >= highest for role in roles):
             await ctx.deny("Put the bot's role **higher** than the role you want to give out")
             return
 
-        added_roles = []
-        already_existing_roles = []
+        added = []
+        existing = []
 
         for role in roles:
-            existing_role = await self.client.pool.fetchrow("SELECT * FROM autorole_settings WHERE guild_id = $1 AND role_id = $2", ctx.guild.id, role.id)
+            existing = await self.client.pool.fetchrow("SELECT * FROM autorole_settings WHERE guild_id = $1 AND role_id = $2", ctx.guild.id, role.id)
 
             if existing_role:
-                already_existing_roles.append(role.mention)
+                existing.append(role.mention)
             else:
                 await self.client.pool.execute("INSERT INTO autorole_settings (guild_id, role_id) VALUES ($1, $2)", ctx.guild.id, role.id)
-                added_roles.append(role.mention)
+                added.append(role.mention)
 
-        if added_roles:
-            await ctx.agree(f"**Added** {', '.join(added_roles)} to autorole")
+        if added:
+            await ctx.agree(f"**Added** {', '.join(added)} to autorole")
         
-        if already_existing_roles:
-            await ctx.warn(f"**Already** giving out: {', '.join(already_existing_roles)}")
+        if added:
+            await ctx.warn(f"**Already** giving out: {', '.join(existing)}")
 
     @autorole.command(name="fix", description="Remove deleted roles from autorole")
     @commands.has_permissions(administrator=True)
