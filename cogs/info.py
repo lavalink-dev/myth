@@ -40,9 +40,9 @@ class Information(commands.Cog):
         guilds = len(self.client.guilds)
         latency = round(self.client.latency * 1000)
 
-        uptime_start = self.client.uptime()
+        uptime_start = self.client.uptime()  
         uptime = format_dt(uptime_start, style='R')
-        lines2 = self.client.lines()
+        lines2 = self.client.lines() 
         
         total_commands = 0
         for command in self.client.commands:
