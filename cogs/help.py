@@ -68,12 +68,15 @@ class Help(commands.Cog):
     def __init__(self, client):
         self.client = client
     
-    @commands.command(aliases=['help'])
+    @commands.command(
+        description="Get info on commands",
+        aliases=['help']
+    )
     async def h(self, ctx, *, command_name: Optional[str] = None):
         if command_name:
             await ctx.send_help(command_name)
         else:
-            blacklisted = ["dev", "Jishaku", "Help", "events"]
+            blacklisted = ["Developer", "Jishaku", "Help", "Events"]
             embed = discord.Embed(
                 title="",
                 description=(
