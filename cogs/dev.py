@@ -7,6 +7,7 @@ from discord.utils     import oauth_url
 
 from tools.config      import emoji, color
 from tools.context     import Context
+from tools.paginator   import Simple
 
 class Developer(commands.Cog):
     def __init__(self, client):
