@@ -1,12 +1,20 @@
-import discord; from discord.ext import commands; from discord.ext.commands import Command, Group, has_permissions; from discord.utils import oauth_url
-from tools.config import emoji, color; from tools.context import Context
-import asyncio; import aiohttp
+import discord
+import aiohttp
+import asyncio
 
-class dev(commands.Cog):
+from discord.ext import commands
+from discord.utils import oauth_url
+
+from tools.config import emoji, color
+from tools.context import Context
+
+class Developer(commands.Cog):
     def __init__(self, client):
         self.client = client
     
-    @commands.command()
+    @commands.command(
+        desription="Change the bots pfp"
+    )
     @commands.is_owner()
     async def botpfp(self, ctx, url):
         try:
@@ -23,7 +31,9 @@ class dev(commands.Cog):
         except Exception as e:
             await ctx.warn(f'```{e}```')
 
-    @commands.command()
+    @commands.command(
+        desription="Change the bots banner"
+    )
     @commands.is_owner()
     async def botbanner(self, ctx, url: str):
         try:
@@ -41,7 +51,10 @@ class dev(commands.Cog):
         except Exception as e:
             await ctx.warn(f'```{e}```')
 
-    @commands.command(aliases=["lastestgd", "lgd"])
+    @commands.command(
+        description="Check out the lastest guilds",
+        aliases=["lastestgd", "lgd"]
+    )
     @commands.is_owner()
     async def latestguilds(self, ctx):
         guilds = sorted(self.client.guilds, key=lambda g: g.me.joined_at, reverse=True)[:5]
@@ -63,7 +76,9 @@ class dev(commands.Cog):
 
         await ctx.send("\n\n".join(description))
 
-    @commands.command()
+    @commands.command(
+        description="Make the bot leave a guild"
+    )
     @commands.is_owner()
     async def botleave(self, ctx, guild_id: int = None):
         guild = None
@@ -79,7 +94,9 @@ class dev(commands.Cog):
         await ctx.agree(f"left: {guild.name} ({guild.id})")
         await guild.leave()
 
-    @commands.command()
+    @commands.command(
+        description="Leave servers under 10 humans"
+    )
     @commands.is_owner()
     async def massleave(self, ctx):
         left_guilds = []
