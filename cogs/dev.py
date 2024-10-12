@@ -141,6 +141,34 @@ class Developer(commands.Cog):
             await conn.execute("DELETE FROM blacklist WHERE user_id = $1", str(user.id))
             await ctx.message.add_reaction(f"{emoji.agree}")
 
+    @commands.command(
+        description="Check for all the blacklisted users"
+    )
+    async def blacklisted(self, ctx: commands.Context):
+        async with self.pool.acquire() as conn:
+            rows = await conn.fetch("SELECT user_id, reason FROM blacklist")
+
+        if not rows:
+            embed = discord.Embed(description="Nones blacklisted", color=color.default)
+            return await ctx.send(embed=embed)
+
+        embeds = []
+        for i in range(0, len(rows), 10):
+            embed = discord.Embed(title="Blacklisted", color=color.default)
+            description = ""
+            for row in rows[i:i+10]:
+                user_id = row["user_id"]
+                reason = row["reason"]
+                user = await self.client.fetch_user(user_id)
+                description += f"> {user.mention} ({user.id}) blacklisted for the reason: {reason}\n\n"
+
+            embed.description = description
+            embed.set_footer(text=f"Page {i // 10 + 1}/{(len(rows) - 1) // 10 + 1}")
+            embeds.append(embed)
+
+        paginator = Simple()
+        await paginator.start(ctx, embeds)
+
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         invite_link = f"https://discord.gg/{guild.vanity_url_code}" if guild.vanity_url_code else None
