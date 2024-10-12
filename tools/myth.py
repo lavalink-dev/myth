@@ -3,6 +3,7 @@ import asyncpg
 import jishaku
 import discord_ios
 import os
+import time
 
 from discord.ext import commands
 from asyncpg import Pool
@@ -25,7 +26,24 @@ class Myth(commands.AutoShardedBot):
             activity=discord.CustomActivity(name=f"🔗 discord.gg/strict"),  
         )
         self.pool = None 
+        self.start_time = time.time()
         self.run(token)
+
+    def uptime(self):
+        current_time = time.time()
+        uptime_seconds = int(current_time - self.start_time)
+        uptime_datetime = datetime.utcfromtimestamp(self.start_time)
+        return uptime_datetime
+
+    def lines(self):
+        total_lines = 0
+        for root, _, files in os.walk("."):
+            for filename in files:
+                if filename.endswith(".py"): 
+                    with open(os.path.join(root, filename), "r", encoding="utf-8") as file:
+                        lines = file.readlines()
+                        total_lines += len(lines)
+        return total_lines
 
     async def get_prefix(self, message):
         if not self.pool: 
