@@ -31,12 +31,6 @@ class Information(commands.Cog):
         view.add_item(inv)
         await ctx.send(view=view)
 
-    def get_uptime(self):
-        current_time = time.time()
-        uptime_seconds = int(current_time - self.start_time)
-        uptime_datetime = datetime.utcfromtimestamp(self.start_time)
-        return uptime_datetime
-
     @commands.command(description="Check the bot's info", aliases=["bi"])
     async def botinfo(self, ctx):
         user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
@@ -45,16 +39,11 @@ class Information(commands.Cog):
         members = sum(guild.member_count for guild in self.client.guilds)
         guilds = len(self.client.guilds)
         latency = round(self.client.latency * 1000)
-        uptime_start = self.get_uptime()
+
+        uptime_start = self.client.get_uptime()
         uptime = format_dt(uptime_start, style='R')
+        tlines = self.client.count_total_lines()
         
-        tlines = 0
-        for filename in os.listdir("cogs"):
-            if filename.endswith(".py"):
-                with open(f"cogs/{filename}", "r", encoding="utf-8") as file:
-                    lines = file.readlines()
-                    tlines += len(lines)
-                    
         total_commands = 0
         for command in self.client.commands:
             if not command.hidden and command.cog_name != "Jishaku":
@@ -62,7 +51,7 @@ class Information(commands.Cog):
 
                 if isinstance(command, commands.Group):
                     for subcommand in command.commands:
-                        if not subcommand.hidden and subcommand.cog_name != "Jishaku":
+                        if not subcommand.hidden and command.cog_name != "Jishaku":
                             total_commands += 1
 
         view = View()
