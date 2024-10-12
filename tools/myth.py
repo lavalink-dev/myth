@@ -44,7 +44,7 @@ class Myth(commands.AutoShardedBot):
         await self.change_presence(activity=activity)
         await self.load_extension('jishaku')
         await self.load("cogs")
-        self.bot.pool = await self._load_database()
+        self.pool = await self._load_database()
         print(f"[ + ] {self.bot.user} is ready")
  
     async def get_context(self, origin, cls=Context):
