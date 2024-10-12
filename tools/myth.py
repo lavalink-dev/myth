@@ -90,7 +90,7 @@ class Myth(commands.AutoShardedBot):
         ]
 
         if len(self.message_cache[author_id]) >= 10:
-            await self.client.pool.execute("INSERT INTO blacklist (user_id) VALUES ($1)", author_id_str)
+            await self.pool.execute("INSERT INTO blacklist (user_id) VALUES ($1)", author_id_str)
             await message.channel.send(
                 embed=discord.Embed(
                     color=discord.Color.red(),
