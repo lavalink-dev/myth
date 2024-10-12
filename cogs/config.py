@@ -3,12 +3,12 @@ import asyncpg
 import asyncio
 import re
 
-from discord.ext import commands, tasks
-from discord.utils import format_dt
-from datetime import datetime, timedelta
+from discord.ext       import commands, tasks
+from discord.utils     import format_dt
+from datetime          import datetime, timedelta
 
-from tools.context import Context
-from tools.config import emoji, color
+from tools.context     import Context
+from tools.config      import emoji, color
 
 class Config(commands.Cog):
     def __init__(self, client):
