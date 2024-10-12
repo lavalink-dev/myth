@@ -51,7 +51,7 @@ class VanityRoles(commands.Cog):
     @vanityroles.command()
     async def remove(self, ctx, *, role: discord.Role):
         await self.client.pool.execute("DELETE FROM vanityroles_roles WHERE guild_id = $1 AND role_id = $2", ctx.guild.id, role.id)
-        await ctx.agree(f"**Added** {role.mention} from vanityroles")
+        await ctx.agree(f"**Removed** {role.mention} from vanityroles")
 
     @vanityroles.command()
     async def clear(self, ctx):
@@ -66,11 +66,12 @@ class VanityRoles(commands.Cog):
 
         if data:
             status = "Enabled" if data['enabled'] else "Disabled"
-            vanity_string = data['text'] or "None"
-            role_names = [ctx.guild.get_role(role['role_id']).name for role in roles if ctx.guild.get_role(role['role_id'])]
+            string = data['text'] or "None"
+            roles = [ctx.guild.get_role(role['role_id']).mention for role in roles if ctx.guild.get_role(role['role_id'])]
+            
             
             user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
-            embed = discord.Embed(description=f"> **Vanity status:** `{status}` \n **Vanity string:** `{vanity_string}` \n **Assigned Roles:** {', '.join(role_names) if role_names else 'None'}", color=color.default)
+            embed = discord.Embed(description=f"> **Vanity status:** `{status}` \n> **Vanity string:** `{string}` \n> **Assigned Roles:** {', '.join(roles) if roles else 'None'}", color=color.default)
             embed.set_author(name=f"{ctx.author.name} | Vanityroles settings", icon_url=user_pfp)
             await ctx.send(embed=embed)
         else:
