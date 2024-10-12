@@ -19,6 +19,8 @@ intents.dm_messages = True
 
 class Myth(commands.AutoShardedBot):
     def __init__(self, token):
+        self.cache = Cache()
+        
         super().__init__(
             command_prefix=self.get_prefix,
             help_command=None,
@@ -59,39 +61,44 @@ class Myth(commands.AutoShardedBot):
             if filename.endswith('.py'):
                 await self.load_extension(f'{directory}.{filename[:-3]}')
 
-    async def on_message(self, message: discord.Message) -> None:
+    async def on_message(self, message: discord.Message):
         if message.author.bot:
             return
-        check = await self.pool.fetchrow(
-            "SELECT * FROM blacklist WHERE user_id = $1", message.author.id
+
+        author_id_str = str(message.author.id)
+
+        check = await self.client.pool.fetchrow(
+            "SELECT * FROM blacklist WHERE user_id = $1", author_id_str
         )
         if check:
             return
 
-        prefix = await self.get_prefix(message)
+        prefix = await self.client.get_prefix(message)
         if not message.content.startswith(tuple(prefix)):
             return
 
         now = time.time()
         author_id = message.author.id
 
+        if author_id not in self.message_cache:
+            self.message_cache[author_id] = []
+
         self.message_cache[author_id] = [
-            timestamp
-            for timestamp in self.message_cache[author_id]
+            timestamp for timestamp in self.message_cache[author_id]
             if now - timestamp < self.cache_expiry_seconds
         ]
 
         if len(self.message_cache[author_id]) >= 10:
-            await self.pool.execute("INSERT INTO blacklist VALUES ($1)", author_id)
+            await self.client.pool.execute("INSERT INTO blacklist (user_id) VALUES ($1)", author_id_str)
             await message.channel.send(
                 embed=discord.Embed(
-                    color=color.default,
-                    description=f"You're blacklisted **GET OUT**",
+                    color=discord.Color.red(),
+                    description=f"> {message.author.mention}: You are now **blacklisted**, join the support [server]() for support.",
                 )
             )
         else:
             self.message_cache[author_id].append(now)
-            await self.process_commands(message)
+            await self.client.process_commands(message)
 
     async def setup_hook(self):
         await self.load_extension('jishaku')
