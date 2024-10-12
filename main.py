@@ -1,6 +1,11 @@
-import discord; from discord.ext import commands
-import jishaku; import os; import dotenv
-from tools.myth import Myth
+import discord
+import jishaku 
+import os 
+import dotenv
+
+from discord.ext       import commands
+
+from tools.Myth       import Myth
 
 dotenv.load_dotenv()
 
