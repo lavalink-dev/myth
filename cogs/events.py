@@ -71,4 +71,4 @@ class Events(commands.Cog):
             await message.channel.send(embed=embed)
 
 async def setup(client):
-    await client.add_cog(events(client))
+    await client.add_cog(Events(client))
