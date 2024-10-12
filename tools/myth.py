@@ -1,6 +1,12 @@
-import discord; from discord.ext import commands
-import asyncpg; import jishaku; import discord_ios; import os
+import discord
+import asyncpg
+import jishaku
+import discord_ios
+import os
+
+from discord.ext import commands
 from asyncpg import Pool
+
 from tools.context import Context
 
 intents = discord.Intents().default()
@@ -25,7 +31,7 @@ class Superbot(commands.AutoShardedBot):
             return ';'
         user_id = str(message.author.id)
         async with self.pool.acquire() as conn:
-            result = await conn.fetchrow('SELECT prefix FROM prefixes WHERE user_id = $1', user_id)
+            result = await conn.fetchrow("SELECT prefix FROM prefixes WHERE user_id = $1", user_id)
         return result['prefix'] if result else ';'
         
     async def load_cogs(self):
