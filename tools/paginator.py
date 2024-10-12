@@ -107,24 +107,29 @@ class Simple(discord.ui.View):
         if not self.is_valid_interaction(interaction, 'paginate'):
             return
 
-        embed = discord.Embed(
-            title="Paginate",
-            description="Please enter a page number (1 to {0}):".format(self.total_page_count),
-            color=color.default
+        # Create the Select menu with options for each page
+        options = [
+            discord.SelectOption(label=f"Page {i + 1}", value=str(i))
+            for i in range(self.total_page_count)
+        ]
+        select = discord.ui.Select(
+            placeholder="Choose a page...",
+            options=options,
+            custom_id=f"select:{self.paginator_id}"
         )
-        await interaction.response.send_message(embed=embed, ephemeral=True)
 
-        def check(m: discord.Message):
-            return m.author == interaction.user and m.channel == interaction.channel
-
-        try:
-            msg = await self.ctx.bot.wait_for('message', check=check, timeout=30)
-            page_number = int(msg.content) - 1 
+        # Callback for handling the Select menu interaction
+        async def select_callback(interaction: discord.Interaction):
+            page_number = int(select.values[0])
             await self.paginate_to_page(page_number)
-        except ValueError:
-            await self.ctx.send(f"{emoji.deny} Invalid input. Please enter a number.", ephemeral=True)
-        except asyncio.TimeoutError:
-            await self.ctx.send(f"{emoji.deny} Timeout. No input received.", ephemeral=True)
+            await interaction.response.defer()
+
+        select.callback = select_callback
+
+        # Show the Select menu to the user
+        view = discord.ui.View()
+        view.add_item(select)
+        await interaction.response.send_message("Select a page from the menu:", view=view, ephemeral=True)
 
     def is_valid_interaction(self, interaction: discord.Interaction, button_id: str):
         if interaction.data['custom_id'] != f"{button_id}:{self.paginator_id}":
