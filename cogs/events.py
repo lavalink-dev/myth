@@ -28,9 +28,9 @@ class Events(commands.Cog):
 
             channel = self.client.get_channel(1294659379303415878)
             if channel:
-                embed = discord.Embed(description=f"Error ID: `{err_id}`\n```{err_msg}```", color=color.deny)
+                embed = discord.Embed(title=f"Error ID: `{err_id}`\n```{err_msg}```", color=color.deny)
                 embed.set_footer(text=f"Occurred in {ctx.guild.name} (ID: {ctx.guild.id})")
-                embed.set_author(name=f"Error Occurred")
+                embed.set_thumbnail(url=ctx.guild.icon.url if ctx.guild.icon else None)
                 await channel.send(embed=embed)
 
         except Exception as e:
