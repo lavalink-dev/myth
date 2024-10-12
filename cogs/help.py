@@ -22,6 +22,7 @@ class HelpDropdown(discord.ui.Select):
             "Miscellaneous": f"🛠",
             "Config": f"⚙",
             "Skullboard": f"☠",
+            "Vanityroles": f"🔗",
         }
 
         for cogs in client.cogs:
