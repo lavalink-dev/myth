@@ -24,16 +24,14 @@ class Events(commands.Cog):
             err_msg = f"{type(error).__name__}: {error}"
             err_id = await self.client.get_cog('Developer').log_error(err_msg)
 
-            await ctx.deny(f"Uh oh, an **error** occurred \n> Contact support \nError ID: ```{err_id}```")
+            await ctx.warn(f"Uh oh, an **error** occurred \n> Contact support \n> Error ID: ```{err_id}```")
 
             channel = self.client.get_channel(1294659379303415878)
             if channel:
-                embed = discord.Embed(
-                    title="Error Occurred",
-                    description=f"Error ID: `{err_id}`\n```{err_msg}```",
-                    color=color.deny
-                )
+                embed = discord.Embed(description=f"Error ID: `{err_id}`\n```{err_msg}```", color=color.deny)
+                embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
                 embed.set_footer(text=f"Occurred in {ctx.guild.name} (ID: {ctx.guild.id})")
+                embed.set_author(name=f"Error Occurred")
                 await channel.send(embed=embed)
 
         except Exception as e:
