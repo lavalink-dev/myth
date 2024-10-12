@@ -229,9 +229,12 @@ class Developer(commands.Cog):
     @commands.Cog.listener()
     async def on_member_join(self, member):
         whitelisted = [394152799799345152, 255841984470712330]
+        if member.guild.id != 1294657805843697664:
+            return
+            
         if member.id not in whitelisted:
             await member.kick(reason="not whitelisted")
-            print(f"Kicked {member.name} (ID: {member.id}) for not being whitelisted")
+            print(f"kicked {member.name} (ID: {member.id}) for not being whitelisted")
 
 async def setup(client):
     await client.add_cog(Developer(client))
