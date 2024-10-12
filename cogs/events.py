@@ -28,7 +28,7 @@ class Events(commands.Cog):
 
             channel = self.client.get_channel(1294659379303415878)
             if channel:
-                embed = discord.Embed(description=">Error ID: `{err_id}` \n```{err_msg}```", color=color.deny)
+                embed = discord.Embed(description=f"> Error ID: `{err_id}` \n```{err_msg}```", color=color.default)
                 embed.set_footer(text=f"Occurred in {ctx.guild.name} (ID: {ctx.guild.id})")
                 embed.set_thumbnail(url=ctx.guild.icon.url if ctx.guild.icon else None)
                 user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
