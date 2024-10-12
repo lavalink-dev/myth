@@ -3,7 +3,7 @@ import asyncpg
 
 from discord.ext        import commands
 from discord.utils      import format_dt
-from datetime import datetime, timedelta
+from datetime           import datetime, timedelta
 
 from tools.context     import Context
 from tools.config      import color, emoji
