@@ -12,26 +12,37 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: Context, error):
+        ignored = (
+            commands.CommandNotFound, 
+            commands.MissingPermissions, 
+            commands.UserInputError
+        )
+
+        if isinstance(error, ignored):
+            return  
+
+        try:
+            err_msg = f"{type(error).__name__}: {error}"
+            err_id = await self.error_tracker.log_error(err_msg)
+
+            await ctx.deny(f"Uh oh an **error** occurred \n> Contact support \n Error ID: ```{err_id}```")
+        
+        except Exception as e:
+            await ctx.deny("Could **not** log the error")
+
         if isinstance(error, commands.CommandOnCooldown):
             command_name = ctx.command.name
             cooldown_time = error.retry_after
             await ctx.deny(f"**{command_name}** is on cooldown, try again in `{cooldown_time:.2f}s`")
 
-        elif isinstance(error, commands.MissingPermissions):
-            missing_perms = format(error.missing_permissions).replace('[', '').replace("'", '').replace(']', '').replace('_', ' ')
-            await ctx.deny(f"You're **missing** `{missing_perms}` permission(s)")
-
-        elif isinstance(error, commands.UserInputError):
-            await ctx.warn("**Invalid** input")
-
         elif isinstance(error, commands.BadArgument):
-            await ctx.deny(f"**Invalid** argument \n ```{error}```")
+            await ctx.deny(f"**Invalid** argument \n```{type(error).__name__}: {error}```")
 
         elif isinstance(error, commands.BadUnionArgument):
-            await ctx.deny(f"**Invalid** argument {error}\n ```{error}```")
+            await ctx.deny(f"**Invalid** union argument** \n```{type(error).__name__}: {error}```")
 
         elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.deny(f"**Missing required argument** \n ```{error.param.name}```")
+            await ctx.deny(f"**Missing required argument** \n```{error.param.name}```")
 
         elif isinstance(error, commands.TooManyArguments):
             await ctx.deny("**Too many arguments provided**")
@@ -50,9 +61,6 @@ class Events(commands.Cog):
 
         elif isinstance(error, commands.MemberNotFound):
             await ctx.deny("**Could not** find the user")
-
-        else:
-            print(str(error))
 
     @commands.Cog.listener()
     async def on_message(self, message):
