@@ -2,7 +2,7 @@ import discord; from discord.ext import commands
 import asyncpg
 from tools.context import Context; from tools.config import emoji, color
 
-class events(commands.Cog):
+class Events(commands.Cog):
     def __init__(self, client):
         self.client = client
 
@@ -21,13 +21,13 @@ class events(commands.Cog):
             await ctx.warn("**Invalid** input")
 
         elif isinstance(error, commands.BadArgument):
-            await ctx.deny(f"**Invalid** argument {error}")
+            await ctx.deny(f"**Invalid** argument \n ```{error}```")
 
         elif isinstance(error, commands.BadUnionArgument):
-            await ctx.deny(f"**Invalid** argument {error}")
+            await ctx.deny(f"**Invalid** argument {error}\n ```{error}```")
 
         elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.deny(f"**Missing required argument** {error.param.name}")
+            await ctx.deny(f"**Missing required argument** \n ```{error.param.name}```")
 
         elif isinstance(error, commands.TooManyArguments):
             await ctx.deny("**Too many arguments provided**")
