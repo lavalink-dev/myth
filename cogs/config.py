@@ -320,7 +320,7 @@ class Config(commands.Cog):
             return
 
         highest = ctx.guild.me.top_role
-        if any(role >= highest for role in roles):
+        if any(role.position >= highest.position for role in roles):
             await ctx.deny("Put the bot's role **higher** than the role you want to give out")
             return
 
@@ -328,9 +328,9 @@ class Config(commands.Cog):
         existing = []
 
         for role in roles:
-            existing = await self.client.pool.fetchrow("SELECT * FROM autorole_settings WHERE guild_id = $1 AND role_id = $2", ctx.guild.id, role.id)
+            record = await self.client.pool.fetchrow("SELECT * FROM autorole_settings WHERE guild_id = $1 AND role_id = $2", ctx.guild.id, role.id)
 
-            if existing:
+            if record:
                 existing.append(role.mention)
             else:
                 await self.client.pool.execute("INSERT INTO autorole_settings (guild_id, role_id) VALUES ($1, $2)", ctx.guild.id, role.id)
@@ -339,10 +339,13 @@ class Config(commands.Cog):
         if added:
             await ctx.agree(f"**Added** {', '.join(added)} to autorole")
         
-        if added:
+        if existing:
             await ctx.warn(f"**Already** giving out: {', '.join(existing)}")
 
-    @autorole.command(name="fix", description="Remove deleted roles from autorole")
+    @autorole.command(
+        name="fix", 
+        description="Remove deleted roles from autorole"
+    )
     @commands.has_permissions(administrator=True)
     async def autorole_fix(self, ctx: Context):
         autorole_records = await self.client.pool.fetch("SELECT role_id FROM autorole_settings WHERE guild_id = $1", ctx.guild.id)
@@ -359,7 +362,10 @@ class Config(commands.Cog):
         else:
             await ctx.deny("**No** deleted roles")
 
-    @autorole.command(name="remove", description="Remove a role from autorole")
+    @autorole.command(
+        name="remove", 
+        description="Remove a role from autorole"
+    )
     @commands.has_permissions(administrator=True)
     async def autorole_remove(self, ctx: Context, *roles: discord.Role):
         if not roles:
@@ -376,7 +382,10 @@ class Config(commands.Cog):
 
         await ctx.agree(f"**Removed** {role.mention} from autorole")
 
-    @autorole.command(name="list", description="Check the autorole list")
+    @autorole.command(
+        name="list", 
+        description="Check the autorole list"
+    )
     @commands.has_permissions(administrator=True)
     async def autorole_list(self, ctx):
         roles = await self.client.pool.fetch("SELECT role_id FROM autorole_settings WHERE guild_id = $1", ctx.guild.id)
@@ -393,19 +402,29 @@ class Config(commands.Cog):
         embed.add_field(name="", value=f"> {roles_list}")
         await ctx.send(embed=embed)
 
-    @autorole.command(name="clear", description="Clear all autorole settings")
+    @autorole.command(
+        name="clear", 
+        description="Clear all autorole settings"
+    )
     @commands.has_permissions(manage_channels=True)
     async def autorole_clear(self, ctx: Context):
         await self.client.pool.execute("DELETE FROM autorole_settings WHERE guild_id = $1", ctx.guild.id)
         await ctx.agree("**Cleared** all autorole settings")
 
-    @commands.group(description="Track available and old stuff", aliases=["track", "trackers"])
+    @commands.group(
+        description="Track available and old stuff", 
+        aliases=["track", "trackers"]
+    )
     @commands.has_permissions(manage_channels=True)
     async def tracker(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command.qualified_name)
 
-    @tracker.command(name="vanity", description="Track available and old vanities", aliases=["van"])
+    @tracker.command(
+        name="vanity", 
+        description="Track available and old vanities", aliases=["van"]
+    )
+    @commands.has_permissions(manage_channels=True)
     async def tracker_vanity(self, ctx: commands.Context, channel: commands.TextChannelConverter = None):
         guild_id = ctx.guild.id
 
@@ -421,7 +440,12 @@ class Config(commands.Cog):
         await self.client.pool.execute("INSERT INTO vanity_settings (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = EXCLUDED.channel_id", guild_id, channel.id)
         await ctx.agree(f"**Set** the vanity channel to: {channel.mention}")
 
-    @tracker.command(name="username", description="Track available and old usernames", aliases=["user", "users", "usernames"])
+    @tracker.command(
+        name="username", 
+        description="Track available and old usernames", 
+        aliases=["user", "users", "usernames"]
+    )
+    @commands.has_permissions(manage_channels=True)
     async def tracker_username(self, ctx: commands.Context, channel: commands.TextChannelConverter = None):
         guild_id = ctx.guild.id
 
@@ -437,7 +461,11 @@ class Config(commands.Cog):
         await self.client.pool.execute("INSERT INTO username_settings (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = EXCLUDED.channel_id", guild_id, channel.id)
         await ctx.agree(f"**Set** the username channel to: {channel.mention}")
 
-    @tracker.command(name="clear", description="Clear all tracker settings")
+    @tracker.command(
+        name="clear", 
+        description="Clear all tracker settings"
+    )
+    @commands.has_permissions(manage_channels=True)
     async def tracker_clear(self, ctx: commands.Context, option: str):
         guild_id = ctx.guild.id
 
