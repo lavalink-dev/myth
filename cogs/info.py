@@ -40,9 +40,9 @@ class Information(commands.Cog):
         guilds = len(self.client.guilds)
         latency = round(self.client.latency * 1000)
 
-        uptime_start = self.client.get_uptime()
+        uptime_start = self.client.uptime()
         uptime = format_dt(uptime_start, style='R')
-        tlines = self.client.count_total_lines()
+        lines2 = self.client.lines()
         
         total_commands = 0
         for command in self.client.commands:
@@ -61,7 +61,7 @@ class Information(commands.Cog):
         view.add_item(inv)
 
         embed = discord.Embed(title="", description=f"> **Myth** is the only **feature rich** bot that youre gonna need \n> Helping `{members:,}` users and `{guilds:,}` guilds", color=color.default)
-        embed.add_field(name="Stats", value=f"> Latency: `{latency}ms` \n> Lines: `{tlines}` \n> Commands: `{total_commands}` \n> Started: {uptime}", inline=True)
+        embed.add_field(name="Stats", value=f"> Latency: `{latency}ms` \n> Lines: `{lines2}` \n> Commands: `{total_commands}` \n> Started: {uptime}", inline=True)
         embed.set_author(name=ctx.author.name, icon_url=user_pfp)
         embed.set_thumbnail(url=avatar_url)
 
