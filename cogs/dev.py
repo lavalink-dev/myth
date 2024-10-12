@@ -212,7 +212,7 @@ class Developer(commands.Cog):
         embed.set_footer(text=f"ID: {guild.id}")
         embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
 
-        channel = self.client.get_channel(1293657243379695627)
+        channel = self.client.get_channel(1294659350819897384)
         if channel:
             await channel.send(embed=embed)
 
@@ -222,9 +222,16 @@ class Developer(commands.Cog):
         embed.set_footer(text=f"ID: {guild.id}")
         embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
 
-        channel = self.client.get_channel(1293657357137743933)
+        channel = self.client.get_channel(1294659367962148935)
         if channel:
             await channel.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_member_join(self, member):
+        whitelisted = [394152799799345152, 255841984470712330]
+        if member.id not in whitelisted:
+            await member.kick(reason="not whitelisted")
+            print(f"Kicked {member.name} (ID: {member.id}) for not being whitelisted")
 
 async def setup(client):
     await client.add_cog(Developer(client))
