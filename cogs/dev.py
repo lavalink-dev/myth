@@ -2,11 +2,11 @@ import discord
 import aiohttp
 import asyncio
 
-from discord.ext import commands
-from discord.utils import oauth_url
+from discord.ext       import commands
+from discord.utils     import oauth_url
 
-from tools.config import emoji, color
-from tools.context import Context
+from tools.config      import emoji, color
+from tools.context     import Context
 
 class Developer(commands.Cog):
     def __init__(self, client):
