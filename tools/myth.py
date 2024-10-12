@@ -59,13 +59,39 @@ class Myth(commands.AutoShardedBot):
             if filename.endswith('.py'):
                 await self.load_extension(f'{directory}.{filename[:-3]}')
 
-    async def on_command(self, ctx):
-        async with self.pool.acquire() as conn:
-            result = await conn.fetchval("SELECT 1 FROM blacklist WHERE user_id = $1", str(ctx.author.id))
-            if result:
-                await ctx.deny(f"You're blacklisted, if this is a false blacklist contact support")
-            else:
-                await self.invoke(ctx)
+    async def on_message(self, message: discord.Message) -> None:
+        if message.author.bot:
+            return
+        check = await self.pool.fetchrow(
+            "SELECT * FROM blacklist WHERE user_id = $1", message.author.id
+        )
+        if check:
+            return
+
+        prefix = await self.get_prefix(message)
+        if not message.content.startswith(tuple(prefix)):
+            return
+
+        now = time.time()
+        author_id = message.author.id
+
+        self.message_cache[author_id] = [
+            timestamp
+            for timestamp in self.message_cache[author_id]
+            if now - timestamp < self.cache_expiry_seconds
+        ]
+
+        if len(self.message_cache[author_id]) >= 10:
+            await self.pool.execute("INSERT INTO blacklist VALUES ($1)", author_id)
+            await message.channel.send(
+                embed=discord.Embed(
+                    color=color.default,
+                    description=f"You're blacklisted **GET OUT**",
+                )
+            )
+        else:
+            self.message_cache[author_id].append(now)
+            await self.process_commands(message)
 
     async def setup_hook(self):
         await self.load_extension('jishaku')
