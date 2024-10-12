@@ -124,7 +124,7 @@ class Simple(discord.ui.View):
         view.add_item(select)
         user_pfp = (interaction.user.avatar.url if interaction.user.avatar else interaction.user.default_avatar.url)
         embed = discord.Embed(description="Choose a page for you to go on", color=color.default)
-        embed.set_author(name=f"{self.author.name} | paginate", icon_url=user_pfp)
+        embed.set_author(name=f"{interaction.user.name} | paginate", icon_url=user_pfp)
         await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
 
     async def is_valid_interaction(self, interaction: discord.Interaction, button_id: str):
