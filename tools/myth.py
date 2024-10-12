@@ -59,6 +59,14 @@ class Myth(commands.AutoShardedBot):
             if filename.endswith('.py'):
                 await self.load_extension(f'{directory}.{filename[:-3]}')
 
+    async def on_command(self, ctx):
+        async with self.pool.acquire() as conn:
+            result = await conn.fetchval("SELECT 1 FROM blacklist WHERE user_id = $1", str(ctx.author.id))
+            if result:
+                await ctx.deny(f"You're blacklisted, if this is a false blacklist contact support")
+            else:
+                await self.invoke(ctx)
+
     async def setup_hook(self):
         await self.load_extension('jishaku')
         await self.load("cogs")
