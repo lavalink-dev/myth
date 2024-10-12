@@ -68,13 +68,13 @@ class Myth(commands.AutoShardedBot):
 
         author_id_str = str(message.author.id)
 
-        check = await self.client.pool.fetchrow(
+        check = await self.pool.fetchrow(
             "SELECT * FROM blacklist WHERE user_id = $1", author_id_str
         )
         if check:
             return
 
-        prefix = await self.client.get_prefix(message)
+        prefix = await self.get_prefix(message)
         if not message.content.startswith(tuple(prefix)):
             return
 
