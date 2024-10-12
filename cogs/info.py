@@ -1,15 +1,24 @@
-import discord; from discord.ext import commands; from discord.utils import format_dt, get; from discord.ui import Button, View
-from tools.config import emoji, color; from tools.context import Context; from tools.paginator import Simple
-import psutil; import sqlite3; import platform; import time; import os
-from datetime import datetime, timedelta
+import discord 
+import psutil 
+import platform
+import time
+
+from discord.ext       import commands 
+from discord.utils     import format_dt, get
+from discord.ui        import Button, View
+from datetime          import datetime, timedelta
+
+from tools.config       import emoji, color
+from tools.context      import Context
+from tools.paginator    import Simple
 
 class Information(commands.Cog):
     def __init__(self, client):
         self.client = client
-        self.start_time = time.time()
 
     @commands.command(
-        description="Check the bot's latency"
+        description="Check the bot's latency",
+        aliases=["p", "latency"]
     )
     async def ping(self, ctx):
         user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
@@ -31,7 +40,10 @@ class Information(commands.Cog):
         view.add_item(inv)
         await ctx.send(view=view)
 
-    @commands.command(description="Check the bot's info", aliases=["bi"])
+    @commands.command(
+        description="Check the bot's info", 
+        aliases=["bi", "bot"]
+    )
     async def botinfo(self, ctx):
         user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
         avatar_url = self.client.user.avatar.url if self.client.user.avatar else self.client.user.default_avatar.url
@@ -67,7 +79,10 @@ class Information(commands.Cog):
 
         await ctx.send(embed=embed, view=view)
         
-    @commands.command(description="Check a user's info", aliases=["ui"])
+    @commands.command(
+        description="Check a user's info", 
+        aliases=["ui"]
+    )
     async def userinfo(self, ctx, user: discord.User = None):
         if user is None:
             user = ctx.author
@@ -140,7 +155,9 @@ class Information(commands.Cog):
 
         await ctx.send(embed=embed)
         
-    @commands.command(aliases=["serverinfo", "si"])
+    @commands.command(
+        aliases=["serverinfo", "si"]
+    )
     async def server(self, ctx):
         guild = ctx.guild
 
@@ -190,7 +207,10 @@ class Information(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.command(description="Check a users avatar", aliases=["av", "ava", "pfp"])
+    @commands.command(
+        description="Check a users avatar", 
+        aliases=["av", "ava", "pfp"]
+    )
     async def avatar(self, ctx, user: discord.User = None):
         if user is None:
             user = ctx.author
@@ -208,7 +228,10 @@ class Information(commands.Cog):
             view.add_item(Button(label="Server Avatar", url=user.display_avatar.url, emoji=f"{emoji.link}"))
         await ctx.send(embed=embed, view=view)
 
-    @commands.command(description="Check a users banner", aliases=["bnner", "bnr", "bn"])
+    @commands.command(
+        description="Check a users banner", 
+        aliases=["bnner", "bnr", "bn"]
+    )
     async def banner(self, ctx, user: discord.Member = None):
         if user is None:
             user = ctx.author
@@ -232,7 +255,10 @@ class Information(commands.Cog):
         else:
             await ctx.deny(f"{ctx.author.mention} **does not** have a banner")
 
-    @commands.command(description="Check the server avatar", aliases=["sa", "servericon"])
+    @commands.command(
+        description="Check the server avatar", 
+        aliases=["sa", "servericon"]
+    )
     async def serveravatar(self, ctx: Context):
         if ctx.guild:
             if ctx.guild.icon:
@@ -247,7 +273,10 @@ class Information(commands.Cog):
             else:
                 await ctx.deny(f"`{ctx.guild.name}` **does not** have an avatar")
 
-    @commands.command(description="Check the server banner", aliases=["sb"])
+    @commands.command(
+        description="Check the server banner", 
+        aliases=["sb"]
+    )
     async def serverbanner(self, ctx: Context):
         if ctx.guild:
             if ctx.guild.banner:
@@ -262,7 +291,10 @@ class Information(commands.Cog):
             else:
                 await ctx.deny(f"`{ctx.guild.name}` **does not** have a banner")
 
-    @commands.command(description="Check banned users", aliases=["banlist"])
+    @commands.command(
+        description="Check banned users", 
+        aliases=["banlist"]
+    )
     @commands.has_permissions(ban_members=True)
     async def bans(self, ctx: commands.Context):
         banned_users = [ban async for ban in ctx.guild.bans()]
@@ -280,7 +312,10 @@ class Information(commands.Cog):
         else:
             await ctx.send(embed=pages[0])
 
-    @commands.command(description="Check users who boosted", aliases=["boosts"])
+    @commands.command(
+        description="Check users who boosted", 
+        aliases=["boosts"]
+    )
     async def boosters(self, ctx: Context):
         boosters = ctx.guild.premium_subscribers
         booster_list = [f"> {booster.mention}" for booster in boosters] or ["> None"]
@@ -297,7 +332,9 @@ class Information(commands.Cog):
         else:
             await ctx.send(embed=pages[0])
 
-    @commands.command(description="Check all bots in the server")
+    @commands.command(
+        description="Check all bots in the server"
+    )
     async def bots(self, ctx: Context):
         bots = [member for member in ctx.guild.members if member.bot]
         bot_list = [f"> {bot.mention}" for bot in bots] or ["> None"]
@@ -314,7 +351,9 @@ class Information(commands.Cog):
         else:
             await ctx.send(embed=pages[0])
             
-    @commands.command()
+    @commands.command(
+        description="Check all users in a role"
+    )
     async def inrole(self, ctx: Context, role: discord.Role):
         members_with_role = [f"> {member.mention}" for member in ctx.guild.members if role in member.roles]
         user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
@@ -334,7 +373,9 @@ class Information(commands.Cog):
         else:
             await ctx.deny(f"**None** is in role with the role: {role.mention}")
 
-    @commands.command(description="Check all emojis in the server")
+    @commands.command(
+        description="Check all emojis in the server"
+    )
     async def emojis(self, ctx: Context):
         emojis = ctx.guild.emojis
         emoji_list = [f"> {emoji} ({emoji.id})" for emoji in emojis] or ["> None"]
@@ -352,7 +393,9 @@ class Information(commands.Cog):
         else:
             await ctx.send(embed=pages[0])
 
-    @commands.command(description="Check all roles in the server")
+    @commands.command(
+        description="Check all roles in the server"
+    )
     async def roles(self, ctx: Context):
         roles = [role for role in ctx.guild.roles if role.name != "@everyone"]
         role_list = [f"> {role.mention}" for role in roles] or ["> None"]
@@ -370,12 +413,18 @@ class Information(commands.Cog):
         else:
             await ctx.send(embed=pages[0])
 
-    @commands.command(description="Check your join position", aliases=["joinpos"])
+    @commands.command(
+        description="Check your join position", 
+        aliases=["joinpos"]
+    )
     async def joinposition(self, ctx: Context):
         join_position = (sorted(ctx.guild.members, key=lambda m: m.joined_at).index(ctx.author) + 1)
         await ctx.invisible(f"You joined **{join_position}** that's a really cool position :sunglasses:")
 
-    @commands.command(description="Get info on a role", aliases=["ri"])
+    @commands.command(
+        description="Get info on a role", 
+        aliases=["ri"]
+    )
     async def roleinfo(self, ctx, *, role: discord.Role):
         guild = ctx.guild
 
@@ -410,7 +459,10 @@ class Information(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.command(description="Get info on a channel", aliases=["ci"])
+    @commands.command(
+        description="Get info on a channel", 
+        aliases=["ci"]
+    )
     async def channelinfo(self, ctx, channel: discord.TextChannel = None):
         channel = channel or ctx.channel
 
@@ -430,29 +482,36 @@ class Information(commands.Cog):
         
         await ctx.send(embed=embed)
 
-    @commands.command(description="Check for the yougest user in the server")
+    @commands.command(
+        description="Check for the yougest user in the server"
+    )
     async def youngest(self, ctx):
         youngest = sorted(ctx.guild.members, key=lambda m: m.created_at, reverse=True)[0]
         account_age = format_dt(youngest.created_at, 'F')
         account_age2 = format_dt(youngest.created_at, 'R')
         await ctx.invisible(f"The youngest user in the server is {youngest.mention}, who created their account {account_age2} ({account_age})")
 
-    @commands.command(description="Check for the oldest user in the server")
+    @commands.command(
+        description="Check for the oldest user in the server"
+    )
     async def oldest(self, ctx):
         oldest = sorted(ctx.guild.members, key=lambda m: m.created_at)[0]
         account_age = format_dt(oldest.created_at, 'F')
         account_age2 = format_dt(oldest.created_at, 'R')
         await ctx.invisible(f"The oldest member in the server is {oldest.mention}, who created their account {account_age2} ({account_age})")
 
-    @commands.command(description="Check how many invites you have in the server")
+    @commands.command(
+        description="Check how many invites you have in the server"
+    )
     async def invites(self, ctx, user: discord.Member = None):
         user = user or ctx.author 
         invites = await ctx.guild.invites()
         allinvites = sum(invite.uses for invite in invites if invite.inviter == user)
-
         await ctx.invisible(f"You invited `{allinvites}` people")
 
-    @commands.command(description="Check all shards of the bot")
+    @commands.command(
+        description="Check all shards of the bot"
+    )
     async def shards(self, ctx):
         embed = discord.Embed(description=f"> Shard count: `{self.client.shard_count}`", color=color.default)
         user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
