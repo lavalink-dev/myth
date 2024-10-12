@@ -72,7 +72,7 @@ class Config(commands.Cog):
         aliases=["msg"]
     )
     @commands.has_permissions(manage_channels=True)
-    async def welcome_message(self, ctx, *, message = None):
+    async def welcome_message(self, ctx, *, message):
             
         await self.client.pool.execute("INSERT INTO welcome_settings (guild_id, message) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET message = $2", ctx.guild.id, message)
         await ctx.agree(f"**Set** the welcome message to: `{message}`")
