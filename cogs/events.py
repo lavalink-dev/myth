@@ -13,6 +13,7 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx: Context, error):
         ignored = (
+            commands.CommandNotFound,
             commands.MissingPermissions, 
             commands.UserInputError
         )
