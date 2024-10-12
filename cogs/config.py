@@ -416,6 +416,7 @@ class Config(commands.Cog):
         aliases=["track", "trackers"]
     )
     @commands.has_permissions(manage_channels=True)
+    @commands.has_permissions(manage_channels=True)
     async def tracker(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command.qualified_name)
@@ -480,35 +481,47 @@ class Config(commands.Cog):
         else:
             await ctx.deny("**Invalid option,** use either vanity or username")
 
-    @commands.group(description="Ping people in channels on their join", aliases=["poj", "joinping", "ghostping"])
+    @commands.group(
+        description="Ping people in channels on their join", 
+        aliases=["poj", "joinping", "ghostping"]
+    )
     @commands.has_permissions(manage_channels=True)
     async def pingonjoin(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command.qualified_name)
 
-    @pingonjoin.command(name="add", description="Add a channel to pingonjoin")
+    @pingonjoin.command(
+        name="add", 
+        description="Add a channel to pingonjoin"
+    )
     @commands.has_permissions(manage_channels=True)
     async def pingonjoin_add(self, ctx, channel: discord.TextChannel):
-        existing_settings = await self.client.pool.fetchrow("SELECT * FROM pingonjoin_settings WHERE guild_id = $1 AND channel_id = $2", ctx.guild.id, channel.id)
+        existing = await self.client.pool.fetchrow("SELECT * FROM pingonjoin_settings WHERE guild_id = $1 AND channel_id = $2", ctx.guild.id, channel.id)
 
-        if existing_settings:
+        if existing:
             await ctx.deny(f"That channel is **already** added to pingonjoin")
         else:
             await self.client.pool.fetchrow("INSERT INTO pingonjoin_settings (guild_id, channel_id) VALUES ($1, $2)", ctx.guild.id, channel.id)
             await ctx.agree(f"**Added** {channel.mention} to pingonjoin")
 
-    @pingonjoin.command(name="remove", description="Remove a channel from pingonjoin")
+    @pingonjoin.command(
+        name="remove", 
+        description="Remove a channel from pingonjoin"
+    )
     @commands.has_permissions(manage_channels=True)
     async def pingonjoin_remove(self, ctx, channel: discord.TextChannel):
-        existing_settings = await self.client.pool.fetchrow("SELECT * FROM pingonjoin_settings WHERE guild_id = $1 AND channel_id = $2", ctx.guild.id, channel.id)
+        existing = await self.client.pool.fetchrow("SELECT * FROM pingonjoin_settings WHERE guild_id = $1 AND channel_id = $2", ctx.guild.id, channel.id)
 
-        if existing_settings:
+        if existing:
             await self.client.pool.fetchrow("DELETE FROM pingonjoin_settings WHERE guild_id = $1 AND channel_id = $2", ctx.guild.id, channel.id)
             await ctx.agree(f"**Removed** {channel.mention} from pingonjoin")
         else:
             await ctx.deny(f"A channel isn't **added**")
 
-    @pingonjoin.command(name="list", description="Check the pingonjoin channel list")
+    @pingonjoin.command(
+        name="list", 
+        description="Check the pingonjoin channel list"
+    )
     @commands.has_permissions(manage_channels=True)
     async def pingonjoin_list(self, ctx):
         channels = await self.client.pool.fetch("SELECT channel_id FROM pingonjoin_settings WHERE guild_id = $1", ctx.guild.id)
@@ -526,19 +539,28 @@ class Config(commands.Cog):
         
         await ctx.send(embed=embed)
             
-    @pingonjoin.command(name="clear", description="Clear all pingonjoin settings")
+    @pingonjoin.command(
+        name="clear", 
+        description="Clear all pingonjoin settings"
+    )
     @commands.has_permissions(manage_channels=True)
     async def pingonjoin_clear(self, ctx):
         await self.client.pool.execute("DELETE FROM pingonjoin_settings WHERE guild_id = $1", ctx.guild.id)
         await ctx.agree("**Cleared** all pingonjoin settings")
 
-    @commands.group(description="Respond to certain messages", aliases=["autoresp", "ap"])
+    @commands.group(
+        description="Respond to certain messages", 
+        aliases=["autoresp", "ap"]
+    )
     @commands.has_permissions(manage_messages=True)
     async def autorespond(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command.qualified_name)
 
-    @autorespond.command(name="add", description="Add a response to a trigger")
+    @autorespond.command(
+        name="add", 
+        description="Add a response to a trigger"
+    )
     @commands.has_permissions(manage_messages=True)
     async def autorespond_add(self, ctx, *, args):
         args_split = args.split(',')
@@ -549,13 +571,19 @@ class Config(commands.Cog):
         await self.client.pool.fetchrow('INSERT INTO autorespond_settings (guild_id, trigger, response) VALUES ($1, $2, $3)', ctx.guild.id, trigger, response)
         await ctx.agree(f"`{trigger}` will **now** respond to: `{response}`")
 
-    @autorespond.command(name="remove", description="Remove a response from a trigger")
+    @autorespond.command(
+        name="remove", 
+        description="Remove a response from a trigger"
+    )
     @commands.has_permissions(manage_messages=True)
     async def autorespond_remove(self, ctx, *, trigger):
         result = await self.client.pool.fetchrow('DELETE FROM autorespond_settings WHERE guild_id = $1 AND trigger = $2', ctx.guild.id, trigger)
         await ctx.agree(f"**Removed** trigger" if result != 'DELETE 0' else "Trigger not found")
 
-    @autorespond.command(name="list", description="Check the autorespond list")
+    @autorespond.command(
+        name="list", 
+        description="Check the autorespond list"
+    )
     @commands.has_permissions(manage_messages=True)
     async def autorespond_list(self, ctx):
         responses = await self.client.pool.fetchrow("SELECT trigger, response FROM autorespond_settings WHERE guild_id = $1", ctx.guild.id)
@@ -573,13 +601,19 @@ class Config(commands.Cog):
         
         await ctx.send(embed=embed)
 
-    @autorespond.command(name="clear", description="Clear all autorespond settings")
+    @autorespond.command(
+        name="clear", 
+        description="Clear all autorespond settings"
+    )
     @commands.has_permissions(manage_messages=True)
     async def autorespond_clear(self, ctx):
         await self.client.pool.fetchrow("DELETE FROM autorespond_settings WHERE guild_id = $1", ctx.guild.id)
-        await ctx.agree("**Cleared** all autorespond settings.")
+        await ctx.agree("**Cleared** all autorespond settings")
 
-    @commands.group(description="React to certain messages with emojis", aliases=["autorea", "ac"])
+    @commands.group(
+        description="React to certain messages with emojis", 
+        aliases=["autorea", "ac"]
+    )
     @commands.has_permissions(manage_messages=True)
     async def autoreact(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
@@ -596,13 +630,19 @@ class Config(commands.Cog):
         await self.client.pool.fetchrow('INSERT INTO autoreact_settings (guild_id, trigger, emoji) VALUES ($1, $2, $3)', ctx.guild.id, trigger, emoji)
         await ctx.agree(f"'{trigger}' will **now** react to: '{emoji}'")
 
-    @autoreact.command(name="remove", description="Remove a reaction from a trigger")
+    @autoreact.command(
+        name="remove", 
+        description="Remove a reaction from a trigger"
+    )
     @commands.has_permissions(manage_messages=True)
     async def autoreact_remove(self, ctx, *, trigger):
         result = await self.client.pool.fetchrow('DELETE FROM autoreact_settings WHERE guild_id = $1 AND trigger = $2', ctx.guild.id, trigger)
         await ctx.agree(f"**Removed** trigger" if result != 'DELETE 0' else "Trigger not found")
 
-    @autoreact.command(name="list", description="Check the autoreact list")
+    @autoreact.command(
+        name="list", 
+        description="Check the autoreact list"
+    )
     @commands.has_permissions(manage_messages=True)
     async def autoreact_list(self, ctx):
         reacts = await self.client.pool.fetchrow("SELECT trigger, emoji FROM autoreact_settings WHERE guild_id = $1", ctx.guild.id)
@@ -620,19 +660,27 @@ class Config(commands.Cog):
         
         await ctx.send(embed=embed)
 
-    @autoreact.command(name="clear", description="Clear all autoreact settings")
+    @autoreact.command(
+        name="clear", 
+        description="Clear all autoreact settings"
+    )
     @commands.has_permissions(manage_messages=True)
     async def autoreact_clear(self, ctx):
         await self.client.pool.fetchrow("DELETE FROM autoreact_settings WHERE guild_id = $1", ctx.guild.id)
         await ctx.agree("**Cleared** all autoreact settings")
 
-    @commands.group(description="Change messages for multiple commands")
+    @commands.group(
+        description="Change messages for multiple commands"
+    )
     @commands.has_permissions(manage_guild=True)
     async def invoke(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command.qualified_name)
 
-    @invoke.command(name="ban", description="Change the response from ban")
+    @invoke.command(
+        name="ban", 
+        description="Change the response from ban"
+    )
     @commands.has_permissions(manage_guild=True)
     async def invoke_ban(self, ctx, *, message = None):
         if message is None:
@@ -642,7 +690,10 @@ class Config(commands.Cog):
         await self.client.pool.fetchrow("INSERT INTO invoke_settings (guild_id, command, message) VALUES ($1, $2, $3) ON CONFLICT (guild_id, command) DO UPDATE SET message = EXCLUDED.message", ctx.guild.id, "ban", message)
         await ctx.agree(f"**Set** the ban message to: `{message}`")
 
-    @invoke.command(name="softban", description="Change the response from softban")
+    @invoke.command(
+        name="softban", 
+        description="Change the response from softban"
+    )
     @commands.has_permissions(manage_guild=True)
     async def invoke_softban(self, ctx, *, message = None):
         if message is None:
@@ -652,7 +703,10 @@ class Config(commands.Cog):
         await self.client.pool.fetchrow("INSERT INTO invoke_settings (guild_id, command, message) VALUES ($1, $2, $3) ON CONFLICT (guild_id, command) DO UPDATE SET message = EXCLUDED.message", ctx.guild.id, "softban", message)
         await ctx.agree(f"**Set** the softban message to: `{message}`")
 
-    @invoke.command(name="unban", description="Change the response from unban")
+    @invoke.command(
+        name="unban", 
+        description="Change the response from unban"
+    )
     @commands.has_permissions(manage_guild=True)
     async def invoke_unban(self, ctx, *, message = None):
         if message is None:
@@ -662,7 +716,10 @@ class Config(commands.Cog):
         await self.client.pool.fetchrow("INSERT INTO invoke_settings (guild_id, command, message) VALUES ($1, $2, $3) ON CONFLICT (guild_id, command) DO UPDATE SET message = EXCLUDED.message", ctx.guild.id, "unban", message)
         await ctx.agree(f"**Set** the unban message to: `{message}`")
 
-    @invoke.command(name="kick", description="Change the response from kick")
+    @invoke.command(
+        name="kick", 
+        description="Change the response from kick"
+    )
     @commands.has_permissions(manage_guild=True)
     async def invoke_kick(self, ctx, *, message = None):
         if message is None:
@@ -672,7 +729,10 @@ class Config(commands.Cog):
         await self.client.pool.fetchrow("INSERT INTO invoke_settings (guild_id, command, message) VALUES ($1, $2, $3) ON CONFLICT (guild_id, command) DO UPDATE SET message = EXCLUDED.message", ctx.guild.id, "kick", message)
         await ctx.agree(f"**Set** the kick message to: `{message}`")
 
-    @invoke.command(name="clear")
+    @invoke.command(
+        name="clear",
+        description="Clear all invoke settings"
+    )
     @commands.has_permissions(manage_guild=True)
     async def invoke_clear(self, ctx, command = None):
         if command is None or command not in ["ban", "softban", "unban", "kick"]:
@@ -682,18 +742,26 @@ class Config(commands.Cog):
         await self.db.execute("DELETE FROM invoke_settings WHERE guild_id = $1 AND command = $2", ctx.guild.id, command)
         await ctx.agree(f"**Cleared** all {command} settings")
 
-    @commands.group(description="DM people when they join")
+    @commands.group(
+        description="DM people when they join"
+    )
     @commands.has_permissions(manage_guild=True)
     async def joindm(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command.qualified_name)
 
-    @joindm.command(name="clear", description="Clear all joindm settings")
+    @joindm.command(
+        name="clear", 
+        description="Clear all joindm settings"
+    )
     async def joindm_clear(self, ctx):
         await self.client.pool.fetchrow('DELETE FROM joindm_settings WHERE guild_id = $1', ctx.guild.id)
         await ctx.agree("**Cleared** all joindm settings")
 
-    @joindm.command(name="message", description="Set the joindm message")
+    @joindm.command(
+        name="message", 
+        description="Set the joindm message"
+    )
     async def joindm_message(self, ctx, *, message=None):
         if message is None:
             await ctx.warn("**You're** missing text")
