@@ -23,10 +23,20 @@ class Events(commands.Cog):
 
         try:
             err_msg = f"{type(error).__name__}: {error}"
-            err_id = await self.error_tracker.log_error(err_msg)
+            err_id = await self.client.get_cog('Developer').log_error(err_msg)
 
-            await ctx.deny(f"Uh oh an **error** occurred \n> Contact support \n Error ID: ```{err_id}```")
-        
+            await ctx.deny(f"Uh oh, an **error** occurred \n> Contact support \nError ID: ```{err_id}```")
+
+            channel = self.client.get_channel(1294659379303415878)
+            if channel:
+                embed = discord.Embed(
+                    title="Error Occurred",
+                    description=f"Error ID: `{err_id}`\n```{err_msg}```",
+                    color=color.deny
+                )
+                embed.set_footer(text=f"Occurred in {ctx.guild.name} (ID: {ctx.guild.id})")
+                await channel.send(embed=embed)
+
         except Exception as e:
             await ctx.deny("Could **not** log the error")
 
@@ -39,7 +49,7 @@ class Events(commands.Cog):
             await ctx.deny(f"**Invalid** argument \n```{type(error).__name__}: {error}```")
 
         elif isinstance(error, commands.BadUnionArgument):
-            await ctx.deny(f"**Invalid** union argument** \n```{type(error).__name__}: {error}```")
+            await ctx.deny(f"**Invalid** union argument \n```{type(error).__name__}: {error}```")
 
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.deny(f"**Missing required argument** \n```{error.param.name}```")
