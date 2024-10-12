@@ -228,7 +228,7 @@ class Developer(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        whitelisted = [394152799799345152, 255841984470712330]
+        whitelisted = [394152799799345152, 255841984470712330, 1168186952772747364]
         if member.guild.id != 1294657805843697664:
             return
             
