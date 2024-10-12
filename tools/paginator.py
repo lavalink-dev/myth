@@ -107,43 +107,40 @@ class Simple(discord.ui.View):
         if not self.is_valid_interaction(interaction, 'paginate'):
             return
 
-        # Create the Select menu with options for each page
         options = [
             discord.SelectOption(label=f"Page {i + 1}", value=str(i))
             for i in range(self.total_page_count)
         ]
         select = discord.ui.Select(
-            placeholder="Choose a page...",
+            placeholder="Select a page",
             options=options,
             custom_id=f"select:{self.paginator_id}"
         )
 
-        # Callback for handling the Select menu interaction
         async def select_callback(interaction: discord.Interaction):
             page_number = int(select.values[0])
             await self.paginate_to_page(page_number)
 
-            # Disable the Select menu after a choice is made
             select.disabled = True
             await interaction.message.edit(view=self)
             await interaction.response.defer()
 
         select.callback = select_callback
 
-        # Show the Select menu to the user
         view = discord.ui.View()
         view.add_item(select)
-        await interaction.response.send_message("Select a page from the menu:", view=view, ephemeral=True)
+        user_pfp = self.author.avatar.url if self.author.avatar else self.author.default_avatar.url
+        embed.set_author(name=f"{self.author.name} | paginate", icon_url=user_pfp)
+        embed = discord.Embed(description="Choose a page for you to go on"
+        await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
 
     def is_valid_interaction(self, interaction: discord.Interaction, button_id: str):
         if interaction.data['custom_id'] != f"{button_id}:{self.paginator_id}":
             return False
 
         if interaction.user != self.ctx.author and not self.AllowExtInput:
-            embed = discord.Embed(
-                description=f"{emoji.deny} {interaction.user.mention}: You **cannot** interact with this.",
-                color=color.deny)
-            interaction.response.send_message(embed=embed, ephemeral=True)
+            embed = discord.Embed(description=f"{emoji.deny} {interaction.user.mention}: You **cannot** interact with this.", color=color.deny)
+            await interaction.response.send_message(embed=embed, ephemeral=True)
             return False
 
         return True
