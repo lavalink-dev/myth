@@ -20,9 +20,9 @@ class Developer(commands.Cog):
         return f"error-{random_id}"
 
     async def log_error(self, error_message: str):
-        error_id = self.gen_id()
-        await self.client.pool.execute("INSERT INTO error_logs (error_id, error_message) VALUES ($1, $2)", error_id, error_message)
-        return error_id
+        err_id = self.gen_id()
+        await self.client.pool.execute("INSERT INTO error_logs (error_id, error_message) VALUES ($1, $2)", err_id, err_msg)
+        return err_id
 
     @commands.command(
         description="Get an error from an error id"
