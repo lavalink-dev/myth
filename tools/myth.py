@@ -27,7 +27,11 @@ class Myth(commands.AutoShardedBot):
             command_prefix=self.get_prefix,
             help_command=None,
             intents=intents,
-            owner_ids=[394152799799345152, 255841984470712330],
+            owner_ids=[
+                394152799799345152, # main
+                255841984470712330, # solix
+                1168186952772747364 # alt
+            ],
             activity=discord.CustomActivity(name=f"🔗 discord.gg/strict"),  
         )
         self.pool = None 
