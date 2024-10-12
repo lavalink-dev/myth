@@ -45,7 +45,7 @@ class Myth(commands.AutoShardedBot):
         await self.load_extension('jishaku')
         await self.load("cogs")
         self.pool = await self._load_database()
-        print(f"[ + ] {self.bot.user} is ready")
+        print(f"[ + ] {self.user} is ready")
  
     async def get_context(self, origin, cls=Context):
         return await super().get_context(origin, cls=cls)
