@@ -21,7 +21,7 @@ class Developer(commands.Cog):
 
     async def log_error(self, error_message: str):
         err_id = self.gen_id()
-        await self.client.pool.execute("INSERT INTO error_logs (error_id, error_message) VALUES ($1, $2)", err_id, err_msg)
+        await self.client.pool.execute("INSERT INTO errors (error_id, error_message) VALUES ($1, $2)", err_id, error_message)
         return err_id
 
     @commands.command(
@@ -29,15 +29,15 @@ class Developer(commands.Cog):
     )
     @commands.is_owner()
     async def error(self, ctx: Context, error_id: str):
-        error_data = await self.client.pool.fetchrow("SELECT error_message, timestamp FROM error_logs WHERE error_id = $1", error_id)
+        error_data = await self.client.pool.fetchrow("SELECT error_message, timestamp FROM errors WHERE error_id = $1", error_id)
 
         if error_data:
             error_message = error_data['error_message']
             timestamp = error_data['timestamp']
-            embed = discord.Embed(description=f"> Error ID: `{error_id} \n> Occurred at: `{timestamp}` \n```{error_message}```"
+            embed = discord.Embed(description=f"> Error ID: `{error_id}` \n> Occurred at: `{timestamp}` \n```{error_message}```", color=color.default)
             await ctx.send(embed=embed)
         else:
-            await ctx.message.add_reaction(f"{emoji.warn}")
+            await ctx.message.add_reaction(emoji.warn)
     
     @commands.command(
         desription="Change the bots pfp"
