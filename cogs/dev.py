@@ -141,4 +141,4 @@ class Developer(commands.Cog):
             await channel.send(embed=embed)
 
 async def setup(client):
-    await client.add_cog(dev(client))
+    await client.add_cog(Developer(client))
