@@ -1,7 +1,11 @@
-import discord; from discord.ext import commands
+import discord
 import asyncpg
-from datetime import datetime
-from tools.context import Context; from tools.config import emoji, color
+
+from discord.ext       import commands
+from datetime          import datetime
+
+from tools.context     import Context    
+from tools.config      import emoji, color
 
 class Skullboard(commands.Cog):
     def __init__(self, client):
@@ -9,13 +13,19 @@ class Skullboard(commands.Cog):
         self.user_reactions = {}
         self.skull_messages = {}
 
-    @commands.group(description="Showcase your funny messages in your guild", aliases=["sk", "starboard"])
+    @commands.group(
+        description="Showcase your funny messages in your guild", 
+        aliases=["sk", "starboard"]
+    )
     @commands.has_permissions(manage_channels=True)
     async def skullboard(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command.qualified_name)
 
-    @skullboard.command(name="emoji", description='Set the skullboard emoji')
+    @skullboard.command(
+        name="emoji",
+        description="Set the skullboard emoji"
+    )
     @commands.has_permissions(manage_channels=True)
     async def skullboard_emoji(self, ctx, emoji: str):
         guild_id = ctx.guild.id
@@ -28,17 +38,24 @@ class Skullboard(commands.Cog):
         
         await ctx.agree(f'**Set** the skullboard emoji to: {emoji}')
 
-    @skullboard.command(name="channel", description="Set the skullboard channel", aliases=["chnl", "chnnel"])
+    @skullboard.command(
+        name="channel", 
+        description="Set the skullboard channel", 
+        aliases=["chnnel"]
+    )
     @commands.has_permissions(manage_channels=True)
     async def skullboard_channel(self, ctx, channel: discord.TextChannel):
-        existing_settings = await self.client.pool.fetchrow("SELECT channel_id FROM skullboard_settings WHERE guild_id = $1", ctx.guild.id)
-        if existing_settings:
-            await ctx.deny(f"Skullboard channel is **already** set to: <#{existing_settings['channel_id']}>")
+        existing = await self.client.pool.fetchrow("SELECT channel_id FROM skullboard_settings WHERE guild_id = $1", ctx.guild.id)
+        if existing:
+            await ctx.deny(f"Skullboard channel is **already** set to: <#{existing['channel_id']}>")
         else:
             await self.client.pool.execute("INSERT INTO skullboard_settings (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2", ctx.guild.id, channel.id)
             await ctx.agree(f"**Set** the skullboard channel to: {channel.mention}")
 
-    @skullboard.command(name="count", description='Set the skullboard reaction count')
+    @skullboard.command(
+        name="count", 
+        description="Set the skullboard reaction count"
+    )
     @commands.has_permissions(manage_channels=True)
     async def skullboard_count(self, ctx, count: int):
         guild_id = ctx.guild.id
@@ -51,17 +68,23 @@ class Skullboard(commands.Cog):
         
         await ctx.agree(f'**Set** the skullboard count to: {count}')
 
-    @skullboard.command(name="clear", description="Clear all skullboard settings")
+    @skullboard.command(
+        name="clear", 
+        description="Clear all skullboard settings"
+    )
     @commands.has_permissions(manage_channels=True)
     async def skullboard_clear(self, ctx: Context):
         await self.client.pool.execute("DELETE FROM skullboard_settings WHERE guild_id = $1", ctx.guild.id)
         await ctx.agree("**Cleared** all skullboard settings")
 
-    @skullboard.command(name="remove", description="Remove the skullboard channel")
+    @skullboard.command(
+        name="remove", 
+        description="Remove the skullboard channel"
+    )
     @commands.has_permissions(manage_channels=True)
     async def skullboard_remove(self, ctx):
-        existing_settings = await self.client.pool.fetchrow("SELECT channel_id FROM skullboard_settings WHERE guild_id = $1", ctx.guild.id)
-        if existing_settings:
+        existing = await self.client.pool.fetchrow("SELECT channel_id FROM skullboard_settings WHERE guild_id = $1", ctx.guild.id)
+        if existing:
             await self.client.pool.execute("DELETE FROM skullboard_settings WHERE guild_id = $1", ctx.guild.id)
             await ctx.agree("**Removed** the skullboard channel")
         else:
