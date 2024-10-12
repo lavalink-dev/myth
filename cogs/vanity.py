@@ -149,4 +149,4 @@ class Vanityroles(commands.Cog):
         return self.cache[guild_id]
 
 async def setup(client):
-    await client.add_cog(VanityRoles(client))
+    await client.add_cog(Vanityroles(client))
