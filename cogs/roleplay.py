@@ -1,6 +1,11 @@
-import discord; from discord.ext import commands
-import requests; import aiohttp; import aiohttp
-from tools.config import emoji, color; from tools.context import Context
+import discord 
+import requests
+import aiohttp
+
+from discord.ext       import commands
+
+from tools.config      import emoji, color
+from tools.context     import Context
 
 class Roleplay(commands.Cog):
     def __init__(self, client):
