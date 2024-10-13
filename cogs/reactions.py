@@ -60,18 +60,23 @@ class Reactionroles(commands.Cog):
       name="list",
       description="Check out the reactionrole list"
     )
-    @commands.has_permissions(manage_roles=True)
+    @commands.has_permissions(administrator=True)
     async def reactionroles_list(self, ctx):
         records = await self.client.pool.fetch("SELECT * FROM reactionroles_settings WHERE guild_id = $1", ctx.guild.id)
+
         if not records:
-            await ctx.send("No reaction roles found.")
+            await ctx.deny("**No** reactionroles are currently added")
             return
-        
-        embed = discord.Embed(title="Reaction Roles", description="Here are all the reaction roles for this server:")
+
+        roles_list = '\n> '.join([ctx.guild.get_role(role['role_id']).mention for role in roles])
+        user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
+
+        embed = discord.Embed(color=color.default)
+        embed.set_author(name=f"{ctx.author.name} | Reactionroles list", icon_url=user_pfp)
         for record in records:
             role = ctx.guild.get_role(record["role_id"])
             if role:
-                embed.add_field(name=f"Message ID: {record['message_id']}", value=f"Emoji: {record['emoji']} | Role: {role.name}", inline=False)
+                embed.add_field(name=f"Message ID: {record['message_id']}", value=f"> Emoji: {record['emoji']} | Role: {role.name}", inline=False)
         await ctx.send(embed=embed)
 
     @commands.Cog.listener()
