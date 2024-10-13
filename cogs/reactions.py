@@ -95,7 +95,7 @@ class Reactionroles(commands.Cog):
             return
         
         guild = self.client.get_guild(payload.guild_id)
-        role_data = await await self.client.pool.fetchrow("SELECT role_id FROM reactionroles_settings WHERE guild_id = $1 AND message_id = $2 AND emoji = $3", payload.guild_id, payload.message_id, str(payload.emoji))
+        role_data = await self.client.pool.fetchrow("SELECT role_id FROM reactionroles_settings WHERE guild_id = $1 AND message_id = $2 AND emoji = $3", payload.guild_id, payload.message_id, str(payload.emoji))
         
         if role_data:
             role = guild.get_role(role_data["role_id"])
