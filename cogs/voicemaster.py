@@ -25,10 +25,27 @@ class VoiceMaster(commands.Cog):
         category_id = category.id if category else None
         interface_id = interface.id if interface else None
         channel_id = channel.id if channel else None
-        await self.client.pool.execute("REPLACE INTO voicemaster (guild_id, category_id, interface_id, create_channel_id) VALUES ($1, $2, $3, $4)", guild.id, category_id, interface_id, channel_id)
+        
+        await self.client.pool.execute(
+            """
+            INSERT INTO voicemaster (guild_id, category_id, interface_id, create_channel_id) 
+            VALUES ($1, $2, $3, $4)
+            ON CONFLICT (guild_id) 
+            DO UPDATE SET category_id = $2, interface_id = $3, create_channel_id = $4
+            """, 
+            guild.id, category_id, interface_id, channel_id
+        )
 
     async def set_owner(self, channel_id, owner_id):
-        await self.client.pool.execute("REPLACE INTO vc_owners (channel_id, owner_id) VALUES ($1, $2)", channel_id, owner_id)
+        await self.client.pool.execute(
+            """
+            INSERT INTO vc_owners (channel_id, owner_id) 
+            VALUES ($1, $2)
+            ON CONFLICT (channel_id) 
+            DO UPDATE SET owner_id = $2
+            """, 
+            channel_id, owner_id
+        )
 
     async def get_owner(self, channel_id):
         row = await self.client.pool.fetchrow("SELECT owner_id FROM vc_owners WHERE channel_id = $1", channel_id)
