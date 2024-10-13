@@ -39,7 +39,7 @@ class Reactionroles(commands.Cog):
     )
     @commands.has_permissions(manage_roles=True)
     async def reactionroles_remove(self, ctx, role: discord.Role, message: discord.Message, emoji: str):
-        await await self.client.pool.execute("DELETE FROM reactionroles_settings WHERE guild_id = $1 AND message_id = $2 AND emoji = $3 AND role_id = $4", ctx.guild.id, message.id, emoji, role.id)
+        await self.client.pool.execute("DELETE FROM reactionroles_settings WHERE guild_id = $1 AND message_id = $2 AND emoji = $3 AND role_id = $4", ctx.guild.id, message.id, emoji, role.id)
 
         try:
             await message.clear_reaction(emoji)
