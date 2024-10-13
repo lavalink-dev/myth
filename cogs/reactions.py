@@ -25,7 +25,7 @@ class Reactionroles(commands.Cog):
     )
     @commands.has_permissions(manage_roles=True)
     async def reactionroles_add(self, ctx, role: discord.Role, message: discord.Message, emoji: str):
-        await self.client.pool.execute("INSERT INTO reaction_roles (guild_id, message_id, emoji, role_id) VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING", ctx.guild.id, message.id, emoji, role.id)
+        await self.client.pool.execute("INSERT INTO reactionroles_settings (guild_id, message_id, emoji, role_id) VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING", ctx.guild.id, message.id, emoji, role.id)
       
         try:
             await message.add_reaction(emoji)
@@ -39,10 +39,7 @@ class Reactionroles(commands.Cog):
     )
     @commands.has_permissions(manage_roles=True)
     async def reactionroles_remove(self, ctx, role: discord.Role, message: discord.Message, emoji: str):
-        await await self.client.pool.execute(
-            "DELETE FROM reaction_roles WHERE guild_id = $1 AND message_id = $2 AND emoji = $3 AND role_id = $4",
-            ctx.guild.id, message.id, emoji, role.id
-        )
+        await await self.client.pool.execute("DELETE FROM reactionroles_settings WHERE guild_id = $1 AND message_id = $2 AND emoji = $3 AND role_id = $4", ctx.guild.id, message.id, emoji, role.id)
 
         try:
             await message.clear_reaction(emoji)
@@ -56,7 +53,7 @@ class Reactionroles(commands.Cog):
     )
     @commands.has_permissions(manage_roles=True)
     async def reactionroles_clear(self, ctx):
-        await self.db.execute("DELETE FROM reaction_roles WHERE guild_id = $1", ctx.guild.id)
+        await self.db.execute("DELETE FROM reactionroles_settings WHERE guild_id = $1", ctx.guild.id)
         await ctx.agree("**Cleared** all reactionroles settings")
 
     @reactionroles.command(
@@ -65,7 +62,7 @@ class Reactionroles(commands.Cog):
     )
     @commands.has_permissions(manage_roles=True)
     async def reactionroles_list(self, ctx):
-        records = await self.client.pool.fetch("SELECT * FROM reaction_roles WHERE guild_id = $1", ctx.guild.id)
+        records = await self.client.pool.fetch("SELECT * FROM reactionroles_settings WHERE guild_id = $1", ctx.guild.id)
         if not records:
             await ctx.send("No reaction roles found.")
             return
@@ -83,10 +80,7 @@ class Reactionroles(commands.Cog):
             return  
         
         guild = self.client.get_guild(payload.guild_id)
-        role_data = await self.client.pool.fetchrow(
-            "SELECT role_id FROM reaction_roles WHERE guild_id = $1 AND message_id = $2 AND emoji = $3",
-            payload.guild_id, payload.message_id, str(payload.emoji)
-        )
+        role_data = await self.client.pool.fetchrow("SELECT role_id FROM reactionroles_settings WHERE guild_id = $1 AND message_id = $2 AND emoji = $3", payload.guild_id, payload.message_id, str(payload.emoji))
         
         if role_data:
             role = guild.get_role(role_data["role_id"])
@@ -101,7 +95,7 @@ class Reactionroles(commands.Cog):
             return
         
         guild = self.client.get_guild(payload.guild_id)
-        role_data = await await self.client.pool.fetchrow("SELECT role_id FROM reaction_roles WHERE guild_id = $1 AND message_id = $2 AND emoji = $3", payload.guild_id, payload.message_id, str(payload.emoji))
+        role_data = await await self.client.pool.fetchrow("SELECT role_id FROM reactionroles_settings WHERE guild_id = $1 AND message_id = $2 AND emoji = $3", payload.guild_id, payload.message_id, str(payload.emoji))
         
         if role_data:
             role = guild.get_role(role_data["role_id"])
