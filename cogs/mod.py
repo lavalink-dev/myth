@@ -3,6 +3,7 @@ import datetime
 import io
 import aiohttp
 import asyncpg
+import asyncio
 
 from discord.ext        import commands
 from discord.utils      import format_dt, utcnow
@@ -379,23 +380,25 @@ class Moderation(commands.Cog):
     @commands.has_permissions(manage_roles=True)
     async def role_all(self, ctx, role: discord.Role = None):
         if role is None:
-            await ctx.send(f"**Mention** a role")
+            await ctx.warn(f"**Mention** a role")
             return
         elif ctx.author.top_role.position <= role.position:
-            await ctx.send(f"You **cannot** interact with this role since it's higher than yours")
+            await ctx.deny(f"You **cannot** interact with this role since it's higher than yours")
             return
 
         index = 0
-        embed = discord.Embed(description=f"> {emoji.agree} {ctx.author.mention}: **Adding** {role.mention} to everyone", color=color.agree)
+        embed = discord.Embed(description=f"> :clock3: {ctx.author.mention}: **Adding** {role.mention} to everyone", color=color.default)
         message = await ctx.send(embed=embed)
 
         for member in ctx.guild.members:
-            await member.add_roles(role, reason=f"Mass role all from: {ctx.author.name}")
-            index += 1
-            embed.description = f"> {emoji.agree}: **Added** {role.mention} to {index} people"
-            await message.edit(embed=embed)
+            if role not in member.roles: 
+                await member.add_roles(role, reason=f"Mass role all from: {ctx.author.name}")
+                index += 1
+                embed.description = f"> {emoji.agree} {ctx.author.mentioon}: **Added** {role.mention} to {index} people"
+                await message.edit(embed=embed)
+                await asyncio.sleep(0.3) 
 
-        embed.description = f"**Added** {role.mention} to everyone"
+        embed.description = f"> {emoji.agree} {ctx.author.mentioon}: **Added** {role.mention} to everyone!"
         await message.edit(embed=embed)
 
     @role.command(
@@ -405,24 +408,25 @@ class Moderation(commands.Cog):
     @commands.has_permissions(manage_roles=True)
     async def role_bots(self, ctx, role: discord.Role = None):
         if role is None:
-            await ctx.send(f"**Mention** a role")
+            await ctx.warn(f"**Mention** a role")
             return
         elif ctx.author.top_role.position <= role.position:
-            await ctx.send(f"You **cannot** interact with this role since it's higher than yours")
+            await ctx.deny(f"You **cannot** interact with this role since it's higher than yours")
             return
 
         index = 0
-        embed = discord.Embed(description=f"> {emoji.agree} {ctx.author.mention}: **Adding** {role.mention} to bots", color=color.agree)
+        embed = discord.Embed(description=f"> :clock3: {ctx.author.mention}: **Adding** {role.mention} to bots", color=color.agree)
         message = await ctx.send(embed=embed)
 
         for member in ctx.guild.members:
-            if member.bot:
+            if member.bot and role not in member.roles:
                 await member.add_roles(role, reason=f"Mass bot role from: {ctx.author.name}")
                 index += 1
-                embed.description = f"> {emoji.agree}: **Added** {role.mention} to {index} bots"
+                embed.description = f"> {emoji.agree} {ctx.author.mentioon}: **Added** {role.mention} to {index} bots"
                 await message.edit(embed=embed)
+                await asyncio.sleep(0.3)
 
-        embed.description = f"**Added** {role.mention} to all bots"
+        embed.description = f"> {emoji.agree} {ctx.author.mentioon}: **Added** {role.mention} to all the bots!"
         await message.edit(embed=embed)
 
     @role.command(
@@ -439,17 +443,18 @@ class Moderation(commands.Cog):
             return
 
         index = 0
-        embed = discord.Embed(description=f"> {emoji.agree} {ctx.author.mention}: **Adding** {role.mention} to humans", color=color.agree)
+        embed = discord.Embed(description=f"> :clock3: {ctx.author.mention}: **Adding** {role.mention} to humans", color=color.agree)
         message = await ctx.send(embed=embed)
 
         for member in ctx.guild.members:
-            if not member.bot:
+            if not member.bot and role not in member.roles:  
                 await member.add_roles(role, reason=f"Mass human role from: {ctx.author.name}")
                 index += 1
-                embed.description = f"> {emoji.agree}: **Added** {role.mention} to {index} humans"
+                embed.description = f"> {emoji.agree} {ctx.author.mentioon}: **Added** {role.mention} to {index} humans"
                 await message.edit(embed=embed)
+                await asyncio.sleep(0.3)
 
-        embed.description = f"**Added** {role.mention} to all humans"
+        embed.description = f"> {emoji.agree} {ctx.author.mentioon}: **Added** {role.mention} to all humans!"
         await message.edit(embed=embed)
 
     @commands.command(
