@@ -394,11 +394,11 @@ class Moderation(commands.Cog):
             if role not in member.roles: 
                 await member.add_roles(role, reason=f"Mass role all from: {ctx.author.name}")
                 index += 1
-                embed.description = f"> {emoji.agree} {ctx.author.mentioon}: **Added** {role.mention} to {index} people"
+                embed.description = f"> {emoji.agree} {ctx.author.mention}: **Added** {role.mention} to {index} people"
                 await message.edit(embed=embed)
                 await asyncio.sleep(0.3) 
 
-        embed.description = f"> {emoji.agree} {ctx.author.mentioon}: **Added** {role.mention} to everyone!"
+        embed.description = f"> {emoji.agree} {ctx.author.mention}: **Added** {role.mention} to everyone!"
         await message.edit(embed=embed)
 
     @role.command(
@@ -422,11 +422,11 @@ class Moderation(commands.Cog):
             if member.bot and role not in member.roles:
                 await member.add_roles(role, reason=f"Mass bot role from: {ctx.author.name}")
                 index += 1
-                embed.description = f"> {emoji.agree} {ctx.author.mentioon}: **Added** {role.mention} to {index} bots"
+                embed.description = f"> {emoji.agree} {ctx.author.mention}: **Added** {role.mention} to {index} bots"
                 await message.edit(embed=embed)
                 await asyncio.sleep(0.3)
 
-        embed.description = f"> {emoji.agree} {ctx.author.mentioon}: **Added** {role.mention} to all the bots!"
+        embed.description = f"> {emoji.agree} {ctx.author.mention}: **Added** {role.mention} to all the bots!"
         await message.edit(embed=embed)
 
     @role.command(
@@ -450,11 +450,11 @@ class Moderation(commands.Cog):
             if not member.bot and role not in member.roles:  
                 await member.add_roles(role, reason=f"Mass human role from: {ctx.author.name}")
                 index += 1
-                embed.description = f"> {emoji.agree} {ctx.author.mentioon}: **Added** {role.mention} to {index} humans"
+                embed.description = f"> {emoji.agree} {ctx.author.mention}: **Added** {role.mention} to {index} humans"
                 await message.edit(embed=embed)
                 await asyncio.sleep(0.3)
 
-        embed.description = f"> {emoji.agree} {ctx.author.mentioon}: **Added** {role.mention} to all humans!"
+        embed.description = f"> {emoji.agree} {ctx.author.mention}: **Added** {role.mention} to all humans!"
         await message.edit(embed=embed)
 
     @commands.command(
