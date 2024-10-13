@@ -113,3 +113,13 @@ CREATE TABLE IF NOT EXISTS reactionroles_settings (
     emoji TEXT,
     role_id BIGINT
 );
+CREATE TABLE IF NOT EXISTS voicemaster (
+    guild_id BIGINT PRIMARY KEY,         
+    category_id BIGINT,                   
+    interface_id BIGINT,                  
+    create_channel_id BIGINT                 
+);
+CREATE TABLE IF NOT EXISTS vc_owners (
+    channel_id BIGINT PRIMARY KEY,          
+    owner_id BIGINT                         
+);
