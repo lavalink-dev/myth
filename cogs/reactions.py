@@ -68,7 +68,6 @@ class Reactionroles(commands.Cog):
             await ctx.deny("**No** reactionroles are currently added")
             return
 
-        roles_list = '\n> '.join([ctx.guild.get_role(role['role_id']).mention for role in roles])
         user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
 
         embed = discord.Embed(color=color.default)
@@ -76,7 +75,7 @@ class Reactionroles(commands.Cog):
         for record in records:
             role = ctx.guild.get_role(record["role_id"])
             if role:
-                embed.add_field(name=f"Message ID: {record['message_id']}", value=f"> Emoji: {record['emoji']} | Role: {role.name}", inline=False)
+                embed.add_field(name=f"Message ID: `{record['message_id']}`", value=f"> Emoji: {record['emoji']} \n> Role: {role.mention}", inline=False)
         await ctx.send(embed=embed)
 
     @commands.Cog.listener()
