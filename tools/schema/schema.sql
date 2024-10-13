@@ -107,4 +107,9 @@ CREATE TABLE IF NOT EXISTS vanityroles_roles (
     PRIMARY KEY (guild_id, role_id), 
     FOREIGN KEY (guild_id) REFERENCES vanityroles(guild_id) ON DELETE CASCADE
 );
-
+CREATE TABLE reactionroles_settings (
+    guild_id BIGINT PRIMARY KEY,
+    message_id BIGINT,
+    emoji TEXT,
+    role_id BIGINT
+);
