@@ -171,7 +171,7 @@ class VoiceMaster(commands.Cog):
     async def on_interaction(self, interaction: discord.Interaction):
         custom_id = interaction.data.get('custom_id')
         guild = interaction.guild
-        vc_category, interface_channel, create_channel = self.load_data(guild)
+        category, interface, channel = self.load(guild)
 
         if custom_id in ["lock", "unlock", "hide", "reveal", "rename", "decrease", "increase", "info", "kick", "delete"]:
             user_channel = interaction.user.voice.channel if interaction.user.voice else None
