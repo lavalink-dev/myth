@@ -266,4 +266,4 @@ class VoiceMaster(commands.Cog):
         await interaction.response.send_message(embed=discord.Embed(description=f"> {emoji.agree} {interaction.user.mention}: **Set** the member limit to: {new_limit}", color=color.agree), ephemeral=True)
 
 async def setup(client):
-    await client.add_cog(Config(client))
+    await client.add_cog(VoiceMaster(client))
