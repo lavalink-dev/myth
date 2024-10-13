@@ -387,14 +387,14 @@ class Moderation(commands.Cog):
             return
 
         index = 0
-        embed = discord.Embed(description=f"> :clock3: {ctx.author.mention}: **Adding** {role.mention} to everyone", color=color.default)
+        embed = discord.Embed(description=f"> :clock3: {ctx.author.mention}: **Adding** {role.mention} to everyone", color=color.agree)
         message = await ctx.send(embed=embed)
 
         for member in ctx.guild.members:
             if role not in member.roles: 
                 await member.add_roles(role, reason=f"Mass role all from: {ctx.author.name}")
                 index += 1
-                embed.description = f"> {emoji.agree} {ctx.author.mention}: **Added** {role.mention} to {index} people"
+                embed.description = f"> :clock3: {ctx.author.mention}: **Added** {role.mention} to {index} people"
                 await message.edit(embed=embed)
                 await asyncio.sleep(0.3) 
 
@@ -422,7 +422,7 @@ class Moderation(commands.Cog):
             if member.bot and role not in member.roles:
                 await member.add_roles(role, reason=f"Mass bot role from: {ctx.author.name}")
                 index += 1
-                embed.description = f"> {emoji.agree} {ctx.author.mention}: **Added** {role.mention} to {index} bots"
+                embed.description = f"> :clock3: {ctx.author.mention}: **Added** {role.mention} to {index} bots"
                 await message.edit(embed=embed)
                 await asyncio.sleep(0.3)
 
@@ -450,7 +450,7 @@ class Moderation(commands.Cog):
             if not member.bot and role not in member.roles:  
                 await member.add_roles(role, reason=f"Mass human role from: {ctx.author.name}")
                 index += 1
-                embed.description = f"> {emoji.agree} {ctx.author.mention}: **Added** {role.mention} to {index} humans"
+                embed.description = f"> :clock3: {ctx.author.mention}: **Added** {role.mention} to {index} humans"
                 await message.edit(embed=embed)
                 await asyncio.sleep(0.3)
 
