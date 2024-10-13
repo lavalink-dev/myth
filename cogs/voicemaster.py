@@ -171,15 +171,17 @@ class VoiceMaster(commands.Cog):
     async def on_interaction(self, interaction: discord.Interaction):
         custom_id = interaction.data.get('custom_id')
         guild = interaction.guild
-        category, interface, channel = self.load(guild)
+
+        category, interface, create_channel = await self.load(guild)
 
         if custom_id in ["lock", "unlock", "hide", "reveal", "rename", "decrease", "increase", "info", "kick", "delete"]:
             user_channel = interaction.user.voice.channel if interaction.user.voice else None
-            if user_channel and user_channel.category == vc_category and user_channel != create_channel:
-                owner_id = self.get_owner(user_channel.id)
+            if user_channel and user_channel.category == category and user_channel != create_channel:
+                owner_id = await self.get_owner(user_channel.id)
                 if owner_id != interaction.user.id and custom_id != "delete":
-                    await interaction.response.send_message(embed=discord.Embed(description=f"> {emoji.deny} {interaction.user.mention}: You are **not** the owner of this voice channel", color=color.deny), ephemeral=True)
+                    await interaction.response.send_message(embed=discord.Embed(description=f"> You are **not** the owner of this voice channel", color=discord.Color.red()), ephemeral=True)
                     return
+                    
                 if custom_id == "lock":
                     await self.lock(interaction, user_channel)
                 elif custom_id == "unlock":
