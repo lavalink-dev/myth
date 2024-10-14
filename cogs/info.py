@@ -24,7 +24,7 @@ class Information(commands.Cog):
         user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
         latency = round(self.client.latency * 1000)
         
-        embed = discord.Embed(description=f"> :mag: Latency: **{latency}ms***", color=color.default)
+        embed = discord.Embed(description=f"> :mag: Latency: **{latency}ms**", color=color.default)
         embed.set_author(name=ctx.author.name, icon_url=user_pfp)
         await ctx.send(embed=embed)
 
