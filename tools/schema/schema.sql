@@ -123,3 +123,13 @@ CREATE TABLE IF NOT EXISTS vc_owners (
     channel_id BIGINT PRIMARY KEY,          
     owner_id BIGINT                         
 );
+CREATE TABLE IF NOT EXISTS automod (
+    guild_id BIGINT NOT NULL,
+    word TEXT NOT NULL,
+    PRIMARY KEY (guild_id, word)
+);
+CREATE TABLE IF NOT EXISTS antilink (
+    guild_id BIGINT NOT NULL,
+    pattern TEXT NOT NULL,
+    PRIMARY KEY (guild_id, pattern)
+);
