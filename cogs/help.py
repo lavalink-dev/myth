@@ -25,6 +25,7 @@ class HelpDropdown(discord.ui.Select):
             "Vanityroles": f"🔗",
             "Reactionroles": f"😶",
             "VoiceMaster": f"🔊",
+            "AutoMod": f"🤖",
         }
 
         for cogs in client.cogs:
