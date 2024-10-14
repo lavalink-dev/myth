@@ -33,7 +33,6 @@ class Information(commands.Cog):
     async def ping(self, ctx):
         user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
         latency = round(self.client.latency * 1000)
-
         started = time.monotonic()
 
         conn = await asyncpg.connect(
@@ -42,10 +41,9 @@ class Information(commands.Cog):
             database=DB_NAME, 
             host=DB_HOST
         )
+        
         result = await self.client.pool.fetchrow("SELECT channel_id FROM welcome_settings LIMIT 1")
-
         db = round((time.monotonic() - started) * 1000)  
-
         respond = "query executed" if result else "could not find data"
 
         embed = discord.Embed(description=f"> :mag: Latency: **{latency}ms**\n> <:info:1295041765547442246> Database: **{db}ms**", color=color.default)
