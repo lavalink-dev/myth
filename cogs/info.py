@@ -2,25 +2,15 @@ import discord
 import psutil 
 import platform
 import time
-import asyncpg
-import os
 
 from discord.ext       import commands 
 from discord.utils     import format_dt, get
 from discord.ui        import Button, View
 from datetime          import datetime, timedelta
-from dotenv            import load_dotenv
 
 from tools.config      import emoji, color
 from tools.context     import Context
 from tools.paginator   import Simple
-
-load_dotenv()
-
-DB_USER = os.getenv("DATABASE_USER")
-DB_PASSWORD = os.getenv("DATABASE_PASSWORD")
-DB_NAME = os.getenv("DATABASE")
-DB_HOST = os.getenv("DATABASE_HOST")
 
 class Information(commands.Cog):
     def __init__(self, client):
@@ -33,20 +23,8 @@ class Information(commands.Cog):
     async def ping(self, ctx):
         user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
         latency = round(self.client.latency * 1000)
-        started = time.monotonic()
-
-        conn = await asyncpg.connect(
-            user=DB_USER, 
-            password=DB_PASSWORD, 
-            database=DB_NAME, 
-            host=DB_HOST
-        )
         
-        result = await self.client.pool.fetchrow("SELECT channel_id FROM welcome_settings LIMIT 1")
-        db = round((time.monotonic() - started) * 1000)  
-        respond = "query executed" if result else "could not find data"
-
-        embed = discord.Embed(description=f"> :mag: Latency: **{latency}ms**\n> <:info:1295041765547442246> Database: **{db}ms**", color=color.default)
+        embed = discord.Embed(description=f"> :mag: Latency: **{latency}ms***", color=color.default)
         embed.set_author(name=ctx.author.name, icon_url=user_pfp)
         await ctx.send(embed=embed)
 
