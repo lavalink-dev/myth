@@ -2,6 +2,7 @@ import discord
 import psutil 
 import platform
 import time
+import asyncpg
 
 from discord.ext       import commands 
 from discord.utils     import format_dt, get
@@ -17,15 +18,25 @@ class Information(commands.Cog):
         self.client = client
 
     @commands.command(
-        description="Check the bot's latency",
+        description="Check the bot's latency and query the database",
         aliases=["p", "latency"]
     )
     async def ping(self, ctx):
         user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
         latency = round(self.client.latency * 1000)
-        embed = discord.Embed(description=f"> :mag: {ctx.author.mention}: Latency: **{latency}ms**", color=color.default)
+
+        conn = await asyncpg.connect(
+            user=DB_USER, 
+            password=DB_PASSWORD, 
+            database=DB_NAME, 
+            host=DB_HOST
+        )
+        result = await self.client.pool.fetchrow("SELECT welcome_settings FROM some_table LIMIT 1")
+        db = result[0]["welcome_settings"] if result else "No data found"
+
+        embed = discord.Embed(description=f"> :mag: {ctx.author.mention}: Latency: **{latency}ms**\n> DB Response: **{db}**", color=color.default)
         embed.set_author(name=ctx.author.name, icon_url=user_pfp)
-        await ctx.send(embed=embed)
+        await ctx.send(embed=embed))
 
     @commands.command(
         description="Add me im cool :sunglasses:", 
