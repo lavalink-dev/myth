@@ -48,10 +48,7 @@ class Information(commands.Cog):
 
         respond = "query executed" if result else "could not find data"
 
-        embed = discord.Embed(
-            description=f"> :mag: Latency: **{latency}ms**\n> <:info:1295041765547442246> Database: **{db}ms**",
-            color=color.default
-        )
+        embed = discord.Embed(description=f"> :mag: Latency: **{latency}ms**\n> <:info:1295041765547442246> Database: **{db}ms**", color=color.default)
         embed.set_author(name=ctx.author.name, icon_url=user_pfp)
         await ctx.send(embed=embed)
 
