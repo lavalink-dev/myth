@@ -31,12 +31,12 @@ class Information(commands.Cog):
             database=DB_NAME, 
             host=DB_HOST
         )
-        result = await self.client.pool.fetchrow("SELECT welcome_settings FROM some_table LIMIT 1")
+        result = await self.client.pool.fetchrow("SELECT channel_id FROM welcome_settings LIMIT 1")
         db = result[0]["welcome_settings"] if result else "No data found"
 
         embed = discord.Embed(description=f"> :mag: {ctx.author.mention}: Latency: **{latency}ms**\n> DB Response: **{db}**", color=color.default)
         embed.set_author(name=ctx.author.name, icon_url=user_pfp)
-        await ctx.send(embed=embed))
+        await ctx.send(embed=embed)
 
     @commands.command(
         description="Add me im cool :sunglasses:", 
