@@ -34,7 +34,7 @@ class Information(commands.Cog):
         user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
         latency = round(self.client.latency * 1000)
 
-        time = time.monotonic()
+        started = time.monotonic()
 
         conn = await asyncpg.connect(
             user=DB_USER, 
@@ -44,11 +44,14 @@ class Information(commands.Cog):
         )
         result = await self.client.pool.fetchrow("SELECT channel_id FROM welcome_settings LIMIT 1")
 
-        db = round((time.monotonic() - time) * 1000)
+        db = round((time.monotonic() - started) * 1000)  
 
-        db_response_time = "Query executed" if result else "No data found"
+        respond = "query executed" if result else "could not find data"
 
-        embed = discord.Embed(description=f"> :mag: Latency: **{latency}ms**\n> <:info:1295041765547442246> Database: **{db}**", color=color.default)
+        embed = discord.Embed(
+            description=f"> :mag: Latency: **{latency}ms**\n> <:info:1295041765547442246> Database: **{db}ms**",
+            color=color.default
+        )
         embed.set_author(name=ctx.author.name, icon_url=user_pfp)
         await ctx.send(embed=embed)
 
