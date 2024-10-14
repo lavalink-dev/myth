@@ -17,10 +17,10 @@ from tools.paginator   import Simple
 
 load_dotenv()
 
-DB_USER = os.getenv('DATABASE_USER')
-DB_PASSWORD = os.getenv('DATABASE_PASSWORD')
-DB_NAME = os.getenv('DATABASE')
-DB_HOST = os.getenv('DATABASE_HOST')
+DB_USER = os.getenv("DATABASE_USER")
+DB_PASSWORD = os.getenv("DATABASE_PASSWORD")
+DB_NAME = os.getenv("DATABASE")
+DB_HOST = os.getenv("DATABASE_HOST")
 
 class Information(commands.Cog):
     def __init__(self, client):
@@ -41,9 +41,9 @@ class Information(commands.Cog):
             host=DB_HOST
         )
         result = await self.client.pool.fetchrow("SELECT channel_id FROM welcome_settings LIMIT 1")
-        db = result[0]["welcome_settings"] if result else "No data found"
+        db = result["channel_id"] if result else "No data found"
 
-        embed = discord.Embed(description=f"> :mag: {ctx.author.mention}: Latency: **{latency}ms**\n> DB Response: **{db}**", color=color.default)
+        embed = discord.Embed(description=f"> :mag: Latency: **{latency}ms**\n> <:info:1295041765547442246> Database: **{db}**", color=color.default)
         embed.set_author(name=ctx.author.name, icon_url=user_pfp)
         await ctx.send(embed=embed)
 
