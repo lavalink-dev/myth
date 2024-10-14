@@ -3,15 +3,24 @@ import psutil
 import platform
 import time
 import asyncpg
+import
 
 from discord.ext       import commands 
 from discord.utils     import format_dt, get
 from discord.ui        import Button, View
 from datetime          import datetime, timedelta
+from dotenv            import load_dotenv
 
-from tools.config       import emoji, color
-from tools.context      import Context
-from tools.paginator    import Simple
+from tools.config      import emoji, color
+from tools.context     import Context
+from tools.paginator   import Simple
+
+load_dotenv()
+
+DB_USER = os.getenv('DATABASE_USER')
+DB_PASSWORD = os.getenv('DATABASE_PASSWORD')
+DB_NAME = os.getenv('DATABASE')
+DB_HOST = os.getenv('DATABASE_HOST')
 
 class Information(commands.Cog):
     def __init__(self, client):
