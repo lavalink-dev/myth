@@ -23,7 +23,6 @@ class HelpDropdown(discord.ui.Select):
             "Config": f"⚙",
             "Skullboard": f"☠",
             "Vanityroles": f"🔗",
-            "Reactionroles": f"😶",
             "VoiceMaster": f"🔊",
             "AutoMod": f"🤖",
         }
