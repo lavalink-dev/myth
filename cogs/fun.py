@@ -1,0 +1,54 @@
+import discord
+import asyncpg
+
+from discord.ext       import commands
+from uwuipy            import uwuipy
+
+from tools.context     import Context
+from tools.config      import emoji, color
+
+class Fun(commands.Cog):
+    def __init__(self, client):
+        self.client = client
+        self.uwu = uwuipy()
+
+# OTHERS
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.author.bot:
+            return
+        
+        user_id = message.author.id
+        guild_id = message.guild.id
+
+        result = await self.client.pool.fetchrow("SELECT user_id FROM uwulock WHERE user_id = $1 AND guild_id = $2", user_id, guild_id)
+
+        if result:
+            await message.delete()
+            message = self.uwu.uwuify(message.content)
+
+            name = message.author.display_name
+            av = message.author.avatar.url if message.author.avatar else None
+
+            web_message = f"{message}"
+            await message.channel.send(web_message, username=name, avatar_url=av)
+
+  # COMMANDS
+
+    @commands.command(
+      description="Make people sound funny"
+    )
+    @commands.has_permissions(administrator=True)
+    async def uwulock(self, ctx, user: discord.Member):
+        result = await self.bot.pool.fetchrow("SELECT user_id FROM uwulock WHERE user_id = $1 AND guild_id = $2", user.id, ctx.guild.id)
+        
+        if result:
+            await self.client.pool.execute("DELETE FROM uwulock WHERE user_id = $1 AND guild_id = $2", user.id, ctx.guild.id)
+            await ctx.send(f"{member.mention} has been uwulock removed!")
+        else:
+            await self.client.pool.execute("INSERT INTO uwulock (user_id, guild_id) VALUES ($1, $2)", user.id, ctx.guild.id)
+            await ctx.send(f"{member.mention} has been uwulocked!")
+
+async def setup(client):
+    await client.add_cog(Fun(client))
