@@ -109,20 +109,3 @@ CREATE TABLE IF NOT EXISTS antilink (
     pattern TEXT NOT NULL,
     PRIMARY KEY (guild_id, pattern)
 );
-CREATE TABLE IF NOT EXISTS economy (
-    user_id BIGINT PRIMARY KEY,
-    balance BIGINT DEFAULT 0
-);
-CREATE TABLE IF NOT EXISTS streaks (
-    user_id BIGINT,
-    type TEXT,
-    last_claimed TIMESTAMP,
-    streak INTEGER DEFAULT 0,
-    PRIMARY KEY (user_id, type)
-);
-CREATE TABLE IF NOT EXISTS economy_cooldowns (
-    user_id BIGINT,
-    command TEXT,
-    last_used TIMESTAMP,
-    PRIMARY KEY (user_id, command)
-);
