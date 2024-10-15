@@ -617,7 +617,7 @@ class Moderation(commands.Cog):
         else:
             await self.client.pool.execute("INSERT INTO forcenick (user_id, guild_id, nickname) VALUES ($1, $2, $3) ON CONFLICT (user_id, guild_id) DO UPDATE SET nickname = EXCLUDED.nickname", user.id, ctx.guild.id, nickname)
             await ctx.agree(f"**Forced** {user.mention}'s nickname to be: `{nickname}`")
-            await member.edit(nick=nickname)
+            await user.edit(nick=nickname)
 
 async def setup(client):
     await client.add_cog(Moderation(client))
