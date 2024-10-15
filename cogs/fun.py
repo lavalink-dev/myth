@@ -96,5 +96,21 @@ class Fun(commands.Cog):
         embed.set_thumbnail(url=user_pfp)
         await ctx.send(embed=embed)
 
+    @commands.command()
+    @commands.has_permissions(manage_messages=True)
+    async def poll(self, ctx, *, question=None):
+        if question is None:
+             await ctx.send_help(ctx.command.qualified_name)
+        else:
+            user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
+            embed = discord.Embed(description=f"> {question}", color=color.default)
+            embed.set_author(name=ctx.author.name, icon_url=user_pfp)
+            message = await ctx.send(embed=embed)
+
+            await message.add_reaction("👍")
+            await message.add_reaction("👎")
+
+            await ctx.message.delete()
+
 async def setup(client):
     await client.add_cog(Fun(client))
