@@ -133,3 +133,7 @@ CREATE TABLE IF NOT EXISTS antilink (
     pattern TEXT NOT NULL,
     PRIMARY KEY (guild_id, pattern)
 );
+CREATE TABLE IF NOT EXISTS uwulock (
+    guild_id BIGINT PRIMARY KEY,
+    user_id BIGINT
+)
