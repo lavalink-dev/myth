@@ -2,10 +2,10 @@ import discord
 import aiohttp
 import re
 
-from discord.ext import commands
+from discord.ext       import commands
 
-from tools.context import Context
-from tools.config import emoji, color
+from tools.context     import Context
+from tools.config      import emoji, color
 
 class AutoMod(commands.Cog):
     def __init__(self, client):
