@@ -23,13 +23,13 @@ class Fun(commands.Cog):
 
         if result:
             await message.delete()
-            message = self.uwu.uwuify(message.content)
+            uwu_message = self.uwu.uwuify(message.content)
 
             name = message.author.display_name
             av = message.author.avatar.url if message.author.avatar else None
 
             webhook = await message.channel.create_webhook(name=name, avatar=av)
-            await webhook.send(message, username=name, avatar_url=av)
+            await webhook.send(uwu_message, username=name, avatar_url=av)
             await webhook.delete()
 
   # COMMANDS
