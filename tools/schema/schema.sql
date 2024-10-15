@@ -120,3 +120,9 @@ CREATE TABLE IF NOT EXISTS streaks (
     streak INTEGER DEFAULT 0,
     PRIMARY KEY (user_id, type)
 );
+CREATE TABLE IF NOT EXISTS economy_cooldowns (
+    user_id BIGINT,
+    command TEXT,
+    last_used TIMESTAMP,
+    PRIMARY KEY (user_id, command)
+);
