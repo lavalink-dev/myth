@@ -35,7 +35,7 @@ class Economy(commands.Cog):
             last_used = self.cooldowns[(ctx.author.id, cmd)]
             if (now - last_used).total_seconds() < cooldown:
                 remaining_time = timedelta(seconds=cooldown) - (now - last_used)
-                await ctx.send(f"You need to wait **{format_dt(now + remaining_time, 'R')}** before using {cmd} again.")
+                await ctx.send(f"You need to wait {format_dt(now + remaining_time, 'R')} before using {cmd} again.")
                 return False
         self.cooldowns[(ctx.author.id, cmd)] = now
         return True
