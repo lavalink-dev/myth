@@ -22,7 +22,7 @@ class Moderation(commands.Cog):
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
         if before.nick != after.nick:
-            nickname = await self.client.pool.fetchrow("SELECT nickname FROM forcenicks WHERE user_id = $1 AND guild_id = $2", after.id, after.guild.id)
+            nickname = await self.client.pool.fetchrow("SELECT nickname FROM forcenick WHERE user_id = $1 AND guild_id = $2", after.id, after.guild.id)
             if nickname:
                 try:
                     await after.edit(nick=nickname)
@@ -612,10 +612,10 @@ class Moderation(commands.Cog):
     @commands.has_permissions(manage_nicknames=True)
     async def forcenick(self, ctx, user: discord.Member, *, nickname=None):
         if user is None or nickname.lower() == "none":
-            await self.client.pool.execute("DELETE FROM forcenicks WHERE user_id = $1 AND guild_id = $2", user.id, ctx.guild.id)
+            await self.client.pool.execute("DELETE FROM forcenick WHERE user_id = $1 AND guild_id = $2", user.id, ctx.guild.id)
             await ctx.agree(f"**Removed** the forced nickname from {user.mention}")
         else:
-            await self.client.pool.execute("INSERT INTO forcenicks (user_id, guild_id, nickname) VALUES ($1, $2, $3) ON CONFLICT (user_id, guild_id) DO UPDATE SET nickname = EXCLUDED.nickname", user.id, ctx.guild.id, nickname)
+            await self.client.pool.execute("INSERT INTO forcenick (user_id, guild_id, nickname) VALUES ($1, $2, $3) ON CONFLICT (user_id, guild_id) DO UPDATE SET nickname = EXCLUDED.nickname", user.id, ctx.guild.id, nickname)
             await ctx.agree(f"**Forced** {member.mention}'s nickname to be: `{nickname}`")
             await member.edit(nick=nickname)
 
