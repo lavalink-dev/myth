@@ -1,6 +1,5 @@
 import discord
 import asyncpg
-import uwuipy
 
 from discord.ext       import commands
 from uwuipy            import Uwuipy
