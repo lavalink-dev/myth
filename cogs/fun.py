@@ -18,11 +18,8 @@ class Fun(commands.Cog):
     async def on_message(self, message):
         if message.author.bot:
             return
-        
-        user_id = message.author.id
-        guild_id = message.guild.id
-
-        result = await self.client.pool.fetchrow("SELECT user_id FROM uwulock WHERE user_id = $1 AND guild_id = $2", user_id, guild_id)
+            
+        result = await self.client.pool.fetchrow("SELECT user_id FROM uwulock WHERE user_id = $1 AND guild_id = $2", message.author.id, message.guild.id)
 
         if result:
             await message.delete()
@@ -41,14 +38,14 @@ class Fun(commands.Cog):
     )
     @commands.has_permissions(administrator=True)
     async def uwulock(self, ctx, user: discord.Member):
-        result = await self.bot.pool.fetchrow("SELECT user_id FROM uwulock WHERE user_id = $1 AND guild_id = $2", user.id, ctx.guild.id)
+        result = await self.client.pool.fetchrow("SELECT user_id FROM uwulock WHERE user_id = $1 AND guild_id = $2", user.id, ctx.guild.id)
         
         if result:
             await self.client.pool.execute("DELETE FROM uwulock WHERE user_id = $1 AND guild_id = $2", user.id, ctx.guild.id)
-            await ctx.send(f"{member.mention} has been uwulock removed!")
+            await ctx.message.add_reaction(f"{emoji.agree}")
         else:
             await self.client.pool.execute("INSERT INTO uwulock (user_id, guild_id) VALUES ($1, $2)", user.id, ctx.guild.id)
-            await ctx.send(f"{member.mention} has been uwulocked!")
+            await ctx.message.add_reaction(f"{emoji.agree}")
 
 async def setup(client):
     await client.add_cog(Fun(client))
