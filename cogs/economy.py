@@ -4,6 +4,7 @@ import asyncpg
 
 from discord.ext       import commands
 from datetime          import datetime, timedelta
+from discord.utils     import format_dt
 
 from tools.config      import emoji, color
 from tools.context     import Context
@@ -34,7 +35,7 @@ class Economy(commands.Cog):
             last_used = self.cooldowns[(ctx.author.id, cmd)]
             if (now - last_used).total_seconds() < cooldown:
                 remaining_time = timedelta(seconds=cooldown) - (now - last_used)
-                await ctx.deny(f"You need to wait **{self.format_duration(remaining_time)}** before using {cmd} again.")
+                await ctx.send(f"You need to wait **{format_dt(now + remaining_time, 'R')}** before using {cmd} again.")
                 return False
         self.cooldowns[(ctx.author.id, cmd)] = now
         return True
@@ -106,11 +107,11 @@ class Economy(commands.Cog):
 
     @commands.command()
     async def daily(self, ctx):
-        await self.streaks(ctx, 'daily', 1500, "daily reward")
+        await self.streaks(ctx, 'daily', 750, "daily reward")
 
     @commands.command()
     async def weekly(self, ctx):
-        await self.streaks(ctx, 'weekly', 3000, "weekly reward")
+        await self.streaks(ctx, 'weekly', 1500, "weekly reward")
 
 # UNFINISHED
 
