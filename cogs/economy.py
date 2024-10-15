@@ -32,7 +32,7 @@ class Economy(commands.Cog):
     async def cooldown(self, ctx, cmd, cooldown_seconds):
         now = datetime.utcnow()
 
-        row = await self.client.pool.fetchrow("SELECT last_used FROM cooldowns WHERE user_id = $1 AND command = $2;", ctx.author.id, cmd)
+        row = await self.client.pool.fetchrow("SELECT last_used FROM economy_cooldowns WHERE user_id = $1 AND command = $2;", ctx.author.id, cmd)
         
         if row:
             last_used = row['last_used']
@@ -44,7 +44,7 @@ class Economy(commands.Cog):
                 return False
 
         await self.client.pool.execute(
-            "INSERT INTO cooldowns (user_id, command, last_used) VALUES ($1, $2, $3) "
+            "INSERT INTO economy_cooldowns (user_id, command, last_used) VALUES ($1, $2, $3) "
             "ON CONFLICT (user_id, command) DO UPDATE SET last_used = $3;",
             ctx.author.id, cmd, now
         )
