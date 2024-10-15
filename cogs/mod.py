@@ -577,5 +577,23 @@ class Moderation(commands.Cog):
         await channel.set_permissions(user, overwrite=overwrite)
         await ctx.agree(f"**Muted** {user.mention}'s ability to react in {channel.mention}")
 
+    @commands.command(
+        description="Pin a message"
+    )
+    @commands.has_permissions(manage_messages=True)
+    async def pin(self, ctx):
+        if ctx.message.reference is None:
+            await ctx.warn("**You** need to reply to a message")
+            return
+
+        pinned = await ctx.channel.fetch_message(ctx.message.reference.message_id)
+
+        if pinned.pinned:
+            await pinned.unpin()
+            await ctx.message.add_reaction(f"{emoji.agree}")
+        else:
+            await pinned.pin()
+            await ctx.message.add_reaction(f"{emoji.agree}")
+
 async def setup(client):
     await client.add_cog(Moderation(client))
