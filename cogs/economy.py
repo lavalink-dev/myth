@@ -29,18 +29,26 @@ class Economy(commands.Cog):
         minutes, seconds = divmod(total_seconds, 60)
         return f"{minutes}m {seconds}s"
 
-    async def cooldown(self, ctx, cmd, cooldown):
+    async def cooldown(self, ctx, cmd, cooldown_seconds):
         now = datetime.utcnow()
-        if (ctx.author.id, cmd) in self.cooldowns:
-            last_used = self.cooldowns[(ctx.author.id, cmd)]
-            time_passed = (now - last_used).total_seconds()
 
-            if time_passed < cooldown:
-                remaining_time = cooldown - time_passed
+        row = await self.client.pool.fetchrow("SELECT last_used FROM cooldowns WHERE user_id = $1 AND command = $2;", ctx.author.id, cmd)
+        
+        if row:
+            last_used = row['last_used']
+            time_passed = (now - last_used).total_seconds()
+            
+            if time_passed < cooldown_seconds:
+                remaining_time = cooldown_seconds - time_passed
                 await ctx.deny(f"You can **use** {cmd} again {format_dt(now + timedelta(seconds=remaining_time), 'R')}")
                 return False
 
-        self.cooldowns[(ctx.author.id, cmd)] = now
+        await self.client.pool.execute(
+            "INSERT INTO cooldowns (user_id, command, last_used) VALUES ($1, $2, $3) "
+            "ON CONFLICT (user_id, command) DO UPDATE SET last_used = $3;",
+            ctx.author.id, cmd, now
+        )
+        
         return True
 
     async def streaks(self, ctx, streak_type, base_amount, message):
