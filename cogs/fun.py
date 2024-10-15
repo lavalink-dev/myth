@@ -23,13 +23,13 @@ class Fun(commands.Cog):
 
         if result:
             await message.delete()
-            message = self.uwu.uwuify(message.content)
+            uwu_message = self.uwu.uwuify(message.content)
 
             name = message.author.display_name
             av = message.author.avatar.url if message.author.avatar else None
 
-            web_message = f"{message}"
-            await message.channel.send(web_message, username=name, avatar_url=av)
+            web_message = f"{uwu_message}"
+            await message.channel.send(uwu_message, username=name, avatar_url=av)
 
   # COMMANDS
 
