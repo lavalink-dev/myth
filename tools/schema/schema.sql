@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS antilink (
     pattern TEXT NOT NULL,
     PRIMARY KEY (guild_id, pattern)
 );
-CREATE TABLE forcenicks (
+CREATE TABLE forcenick (
     guild_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
     nickname TEXT NOT NULL,
