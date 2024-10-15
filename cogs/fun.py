@@ -3,7 +3,7 @@ import asyncpg
 import uwuipy
 
 from discord.ext       import commands
-from uwuipy            import uwuipy
+from uwuipy            import Uwuipy
 
 from tools.context     import Context
 from tools.config      import emoji, color
