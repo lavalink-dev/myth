@@ -13,7 +13,9 @@ class Fun(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command()
+    @commands.command(
+        description="Get an image of a dog"
+    )
     async def dog(self, ctx):
         response = requests.get("https://dog.ceo/api/breeds/image/random")
         data = response.json()
@@ -22,7 +24,9 @@ class Fun(commands.Cog):
         embed.set_image(url=img)
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(
+        description="Get an image of a cat"
+    )
     async def cat(self, ctx):
         response = requests.get("https://api.thecatapi.com/v1/images/search")
         data = response.json()
@@ -31,7 +35,10 @@ class Fun(commands.Cog):
         embed.set_image(url=img)
         await ctx.send(embed=embed)
         
-    @commands.command(aliases = ["gayrate"])
+    @commands.command(
+        description="Check how gay you are",
+        aliases=["gayrate"]
+    )
     async def gay(self, ctx, user: discord.Member = None):
         if user is None:
             user = ctx.author
@@ -44,7 +51,10 @@ class Fun(commands.Cog):
         embed.set_thumbnail(url=user_pfp)
         await ctx.send(embed=embed)
         
-    @commands.command(aliases = ["lesbianrate"])
+    @commands.command(
+        description="Check how lesbian you are",
+        aliases=["lesbianrate"]
+    )
     async def lesbian(self, ctx, user: discord.Member = None):
         if user is None:
             user = ctx.author
@@ -70,7 +80,10 @@ class Fun(commands.Cog):
         embed.set_thumbnail(url=user_pfp)
         await ctx.send(embed=embed)
         
-    @commands.command(aliases = ["simprate"])
+    @commands.command(
+        description="Check how of a big simp you are",
+        aliases=["simprate"]
+    )
     async def simp(self, ctx, user: discord.Member = None):
         if user is None:
             user = ctx.author
@@ -83,7 +96,10 @@ class Fun(commands.Cog):
         embed.set_thumbnail(url=user_pfp)
         await ctx.send(embed=embed)
         
-    @commands.command(aliases = ["hotrate"])
+    @commands.command(
+        description="Check how hot you are",
+        aliases=["hotrate"]
+    )
     async def hot(self, ctx, user: discord.Member = None):
         if user is None:
             user = ctx.author
@@ -96,7 +112,10 @@ class Fun(commands.Cog):
         embed.set_thumbnail(url=user_pfp)
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(
+        description="Make a fun poll",
+        aliases=["quickpoll", "qp"]
+    )
     @commands.has_permissions(manage_messages=True)
     async def poll(self, ctx, *, question=None):
         if question is None:
