@@ -116,7 +116,6 @@ class Fun(commands.Cog):
         description="Make a fun poll",
         aliases=["quickpoll", "qp"]
     )
-    @commands.has_permissions(manage_messages=True)
     async def poll(self, ctx, *, question=None):
         if question is None:
              await ctx.send_help(ctx.command.qualified_name)
