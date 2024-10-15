@@ -26,9 +26,9 @@ class Fun(commands.Cog):
             uwu_message = self.uwu.uwuify(message.content)
 
             name = message.author.display_name
-            av = message.author.avatar.url if message.author.avatar else None
+            avatar_url = str(message.author.avatar.url) if message.author.avatar else None
 
-            webhook = await message.channel.create_webhook(name=name, avatar=av)
+            webhook = await message.channel.create_webhook(name=name, avatar=avatar_url)
             await webhook.send(uwu_message, username=name, avatar_url=av)
             await webhook.delete()
 
