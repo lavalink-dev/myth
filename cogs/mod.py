@@ -18,6 +18,16 @@ class Moderation(commands.Cog):
         self.client = client
 
     # OTHERS
+
+    @commands.Cog.listener()
+    async def on_member_update(self, before, after):
+        if before.nick != after.nick:
+            nickname = await self.client.pool.fetchrow("SELECT nickname FROM forcenicks WHERE user_id = $1 AND guild_id = $2", after.id, after.guild.id)
+            if nickname:
+                try:
+                    await after.edit(nick=nickname)
+                except discord.Forbidden:
+                    pass
       
     async def send_dm(self, ctx, member, action, reason=None):
         embed = discord.Embed(color=color.default)
@@ -594,6 +604,20 @@ class Moderation(commands.Cog):
         else:
             await pinned.pin()
             await ctx.message.add_reaction(f"{emoji.agree}")
+
+    @commands.command(
+        description="Force a nick on a user", 
+        aliases=["fn"]
+    )
+    @commands.has_permissions(manage_nicknames=True)
+    async def forcenick(self, ctx, user: discord.Member, *, nickname=None):
+        if user is None or nickname.lower() == "none":
+            await self.client.pool.execute("DELETE FROM forcenicks WHERE user_id = $1 AND guild_id = $2", member.id, ctx.guild.id)
+            await ctx.agree(f"**Removed** the forced nickname from {user.mention}")
+        else:
+            await self.client.pool.execute("INSERT INTO forcenicks (user_id, guild_id, nickname) VALUES ($1, $2, $3) ON CONFLICT (user_id, guild_id) DO UPDATE SET nickname = EXCLUDED.nickname", member.id, ctx.guild.id, nickname)
+            await ctx.agree(f"**Forced** {member.mention}'s nickname to be: `{nickname}`")
+            await member.edit(nick=nickname)
 
 async def setup(client):
     await client.add_cog(Moderation(client))
