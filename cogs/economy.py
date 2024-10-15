@@ -35,7 +35,7 @@ class Economy(commands.Cog):
             last_used = self.cooldowns[(ctx.author.id, cmd)]
             if (now - last_used).total_seconds() < cooldown:
                 remaining_time = timedelta(seconds=cooldown) - (now - last_used)
-                await ctx.send(f"You need to wait {format_dt(now + remaining_time, 'R')} before using {cmd} again.")
+                await ctx.deny(f"You need to wait {format_dt(now + remaining_time, 'R')} before using {cmd} again")
                 return False
         self.cooldowns[(ctx.author.id, cmd)] = now
         return True
@@ -52,7 +52,7 @@ class Economy(commands.Cog):
 
             if (streak_type == 'daily' and time_diff < timedelta(days=1)) or (streak_type == 'weekly' and time_diff < timedelta(weeks=1)):
                 remaining_time = timedelta(days=1) - time_diff if streak_type == 'daily' else timedelta(weeks=1) - time_diff
-                await ctx.deny(f"You need to wait **{self.format_duration(remaining_time)}** before claiming your {message}")
+                await ctx.deny(f"You need to wait {format_dt(now + remaining_time, 'R')} before claiming your {message}")
                 return
 
             if (streak_type == 'daily' and time_diff > timedelta(days=3)) or (streak_type == 'weekly' and time_diff > timedelta(days=10)):
