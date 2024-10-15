@@ -2,6 +2,7 @@ import discord
 import asyncpg
 import aiohttp
 import requests
+import
 
 from discord.ext       import commands
 
@@ -16,18 +17,18 @@ class Fun(commands.Cog):
     async def dog(self, ctx):
         response = requests.get("https://dog.ceo/api/breeds/image/random")
         data = response.json()
-        image_url = data["message"]
-        embed = discord.Embed(title="", color=Colors.default)
-        embed.set_image(url=image_url)
+        img = data["message"]
+        embed = discord.Embed(color=color.default)
+        embed.set_image(url=img)
         await ctx.send(embed=embed)
 
     @commands.command()
     async def cat(self, ctx):
         response = requests.get("https://api.thecatapi.com/v1/images/search")
         data = response.json()
-        image_url = data[0]["url"]
-        embed = discord.Embed(title=f"", color=Colors.default)
-        embed.set_image(url=image_url)
+        img = data[0]["url"]
+        embed = discord.Embed(color=color.default)
+        embed.set_image(url=img)
         await ctx.send(embed=embed)
         
     @commands.command(aliases = ["gayrate"])
@@ -38,7 +39,7 @@ class Fun(commands.Cog):
         num1 = 1
         num2 = 100
         value = random.randint(min(num1, num2), max(num1, num2))
-        embed = discord.Embed(title=f"🏳️‍🌈 Gay rating", description=f"**Gayrating** {user.mention} \n> You're **{value}%** gay", color=Colors.default)
+        embed = discord.Embed(title=f"🏳️‍🌈 Gay rating", description=f"**Gayrating** {user.mention} \n> You're **{value}%** gay", color=color.default)
         user_pfp = user.avatar.url if user.avatar else user.default_avatar.url
         embed.set_thumbnail(url=user_pfp)
         await ctx.send(embed=embed)
@@ -51,7 +52,7 @@ class Fun(commands.Cog):
         num1 = 1
         num2 = 100
         value = random.randint(min(num1, num2), max(num1, num2))
-        embed = discord.Embed(title=f"🏳️‍🌈 Lesbian rating", description=f"**Lesbianrating** {user.mention} \n> You're **{value}%** lesbian", color=Colors.default)
+        embed = discord.Embed(title=f"🏳️‍🌈 Lesbian rating", description=f"**Lesbianrating** {user.mention} \n> You're **{value}%** lesbian", color=color.default)
         user_pfp = user.avatar.url if user.avatar else user.default_avatar.url
         embed.set_thumbnail(url=user_pfp)
         await ctx.send(embed=embed)
@@ -64,7 +65,7 @@ class Fun(commands.Cog):
         num1 = 1
         num2 = 10
         value = random.randint(min(num1, num2), max(num1, num2))
-        embed = discord.Embed(title=f":heart_eyes: Rizz rating", description=f"**Rizzrating** {user.mention} \n> You have **{value}/10** rizz", color=Colors.default)
+        embed = discord.Embed(title=f":heart_eyes: Rizz rating", description=f"**Rizzrating** {user.mention} \n> You have **{value}/10** rizz", color=color.default)
         user_pfp = user.avatar.url if user.avatar else user.default_avatar.url
         embed.set_thumbnail(url=user_pfp)
         await ctx.send(embed=embed)
@@ -90,7 +91,7 @@ class Fun(commands.Cog):
         num1 = 1
         num2 = 100
         value = random.randint(min(num1, num2), max(num1, num2))
-        embed = discord.Embed(title=f":hot_face: Hot rating", description=f"**Hotrating** {user.mention} \n> You're **{value}%** hot", color=Colors.default)
+        embed = discord.Embed(title=f":hot_face: Hot rating", description=f"**Hotrating** {user.mention} \n> You're **{value}%** hot", color=color.default)
         user_pfp = user.avatar.url if user.avatar else user.default_avatar.url
         embed.set_thumbnail(url=user_pfp)
         await ctx.send(embed=embed)
