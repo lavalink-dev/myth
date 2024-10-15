@@ -10,7 +10,7 @@ from tools.config      import emoji, color
 class Fun(commands.Cog):
     def __init__(self, client):
         self.client = client
-        self.uwu = uwuipy()
+        self.uwu = Uwuipy()
 
 # OTHERS
 
