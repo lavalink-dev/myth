@@ -90,7 +90,7 @@ class Help(commands.Cog):
             
             embed = discord.Embed(description="", color=color.default)
             embed.add_field(name="<:book:1295765393419276428>  Need details?", value=f"> Use ;help (cmd) to get more details on a cmd")
-            embed.add_field(name="<:pin:1295765432544002078>  Acknowledge", value=f"> Acknowledge that the bot is **not** perfect")
+            embed.add_field(name="<:pin:1295765432544002078> Acknowledge", value=f"> Acknowledge that the bot is **not** perfect")
             embed.set_thumbnail(url=avatar_url)
             embed.set_author(name=ctx.author.name, icon_url=user_pfp)
             
