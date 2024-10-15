@@ -33,10 +33,13 @@ class Economy(commands.Cog):
         now = datetime.utcnow()
         if (ctx.author.id, cmd) in self.cooldowns:
             last_used = self.cooldowns[(ctx.author.id, cmd)]
-            if (now - last_used).total_seconds() < cooldown:
-                remaining_time = timedelta(seconds=cooldown) - (now - last_used)
+            time_passed = (now - last_used).total_seconds()
+
+            if time_passed < cooldown:
+                remaining_time = cooldown - time_passed
                 await ctx.deny(f"You can **use** {cmd} again {format_dt(now + timedelta(seconds=remaining_time), 'R')}")
                 return False
+
         self.cooldowns[(ctx.author.id, cmd)] = now
         return True
 
@@ -88,7 +91,7 @@ class Economy(commands.Cog):
 
     @commands.command()
     async def work(self, ctx):
-        if not await self.cooldown(ctx, 'work', 60):
+        if not await self.cooldown(ctx, 'work', 2):
             return
             
         messages = ["at McDonald's", "at the homeless shelter"]
