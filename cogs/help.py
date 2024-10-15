@@ -85,19 +85,15 @@ class Help(commands.Cog):
             await ctx.send_help(command_name)
         else:
             blacklisted = ["Developer", "Jishaku", "Help", "Events"]
-            embed = discord.Embed(
-                title="",
-                description=(
-                    "> A **feature rich** bot that is constantly evolving! \n"
-                    "> Want details on a specific cmd? Use `;help [cmd]` for more info. \n"
-                    "> To **navigate** the help, simply click the black bar below."
-                ),
-                color=color.default
-            )
             user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
             avatar_url = self.client.user.avatar.url if self.client.user.avatar else self.client.user.default_avatar.url
+            
+            embed = discord.Embed(description="", color=color.default)
+            embed.add_field(name="<:book:1295765393419276428> Need details?", value=f"> Use ;help (cmd) to get more details on a cmd")
+            embed.add_field(name="<:pin:1295765432544002078> Acknowledge", value=f"> Acknowledge that the bot is **not** perfect and bad")
             embed.set_thumbnail(url=avatar_url)
             embed.set_author(name=ctx.author.name, icon_url=user_pfp)
+            
             view = HelpView(self.client, ctx.author, blacklisted, embed)
             await ctx.send(embed=embed, view=view)
 
