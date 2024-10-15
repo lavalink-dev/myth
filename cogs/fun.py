@@ -2,7 +2,7 @@ import discord
 import asyncpg
 import aiohttp
 import requests
-import
+import random
 
 from discord.ext       import commands
 
