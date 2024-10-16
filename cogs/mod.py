@@ -12,6 +12,7 @@ from datetime           import datetime, timedelta
 
 from tools.config       import emoji, color
 from tools.context      import Context
+from tools.paginator   import Simple
 
 class Moderation(commands.Cog):
     def __init__(self, client):
@@ -594,6 +595,78 @@ class Moderation(commands.Cog):
         else:
             await pinned.pin()
             await ctx.message.add_reaction(f"{emoji.agree}")
+
+    @commands.command(
+        description="Jail harmful people"
+    )
+    @commands.has_permissions(manage_roles=True)
+    async def jail(self, ctx, user: discord.Member):
+        row = await self.client.pool.fetchrow('SELECT channel_id, role_id FROM jail WHERE guild_id = $1 AND user_id IS NULL', ctx.guild.id)
+        
+        if not row or not row['channel_id']:
+            await ctx.deny("Jail channel **is not** set")
+            return
+            
+        if not row or not row['role_id']:
+            await ctx.deny("Jail role **is not** set")
+            return
+
+        channel, role = row['channel_id'], row['role_id']
+        jail_role = ctx.guild.get_role(role)
+
+        await user.add_roles(role)
+        for channel in ctx.guild.channels:
+            if channel.id != channel:
+                await channel.set_permissions(user, view_channel=False)
+
+        await self.client.pool.execute('INSERT INTO jail (guild_id, user_id, channel_id, role_id) VALUES ($1, $2, $3, $4)', ctx.guild.id, user.id, channel, jail_role)
+        await ctx.message.add_reaction(f"{emoji.agree}")
+
+    @commands.command(
+        description="Unjail good people"
+    )
+    @commands.has_permissions(manage_roles=True)
+    async def unjail(self, ctx, user: discord.Member):
+        row = await self.client.pool.fetchrow('SELECT channel_id, role_id FROM jail WHERE guild_id = $1 AND user_id IS NULL', ctx.guild.id)
+        
+        if not row or not row['channel_id']:
+            await ctx.deny("Jail channel **is not** set")
+            return
+            
+        if not row or not row['role_id']:
+            await ctx.deny("Jail role **is not** set")
+            return
+
+        role = row['role_id']
+        jail_role = ctx.guild.get_role(role)
+
+        await user.remove_roles(jail_role)
+
+        for channel in ctx.guild.channels:
+            await channel.set_permissions(user, overwrite=None)
+
+        await self.client.pool.execute('DELETE FROM jail WHERE guild_id = $1 AND user_id = $2', ctx.guild.id, user.id)
+        await ctx.message.add_reaction(f"{emoji.agree}")
+
+    @commands.command(
+        description="Get a list of jailed people"
+    )
+    @commands.has_permissions(manage_roles=True)
+    async def jailed(self, ctx):
+        jailed = await self.client.pool.fetch('SELECT user_id FROM jail WHERE guild_id = $1 AND user_id IS NOT NULL', ctx.guild.id)
+        if not jailed:
+            await ctx.deny("**None** is currently jailed")
+            return
+
+        pages = []
+        for record in jailed_users:
+            user = ctx.guild.get_member(record['user_id'])
+            if user:
+                embed = discord.Embed(title="Jailed Members", description=f"> {user.mention}")
+                pages.append(embed)
+
+        paginator = Simple()
+        await paginator.start(ctx, pages)
 
 async def setup(client):
     await client.add_cog(Moderation(client))
