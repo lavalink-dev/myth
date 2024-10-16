@@ -238,8 +238,8 @@ class Developer(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        if member.guild.id == 1294657805843697664:
-            channel = member.guild.get_channel(1294657806586220556)
+        if member.guild.id == 1282563196120727663:
+            channel = member.guild.get_channel(1295409312637911041)
             
             if channel:
                 user_pfp = member.avatar.url if member.avatar else member.default_avatar.url
