@@ -39,6 +39,8 @@ class Events(commands.Cog):
         except Exception as e:
             await ctx.deny("Could **not** log the error")
 
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx: Context, error):
         if isinstance(error, commands.CommandOnCooldown):
             command_name = ctx.command.name
             cooldown_time = error.retry_after
