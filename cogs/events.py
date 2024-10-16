@@ -14,8 +14,6 @@ class Events(commands.Cog):
     async def on_command_error(self, ctx: Context, error):
         ignored = (
             commands.CommandNotFound,
-            commands.UserInputError,
-            commands.MissingPermissions
         )
 
         if isinstance(error, ignored):
