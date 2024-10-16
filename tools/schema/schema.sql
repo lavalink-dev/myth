@@ -109,3 +109,10 @@ CREATE TABLE IF NOT EXISTS antilink (
     pattern TEXT NOT NULL,
     PRIMARY KEY (guild_id, pattern)
 );
+CREATE TABLE IF NOT EXISTS jail (
+    guild_id BIGINT NOT NULL,
+    channel_id BIGINT NOT NULL,  
+    role_id BIGINT NOT NULL,     
+    user_id BIGINT,              
+    PRIMARY KEY (guild_id, user_id)
+);
