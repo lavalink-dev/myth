@@ -63,14 +63,17 @@ class Events(commands.Cog):
 
                 await ctx.warn(f"Uh oh, an **error** occurred join the [support server](https://discord.gg/strict) to get help \n> Error ID: {err_id}")
 
-            channel = self.client.get_channel(1294659379303415878)
-            if channel:
-                embed = discord.Embed(description=f"> Error ID: {err_id} \n {err_msg}", color=color.default)
-                embed.set_footer(text=f"Occurred in {ctx.guild.name} ({ctx.guild.id})")
-                embed.set_thumbnail(url=ctx.guild.icon.url if ctx.guild.icon else None)
-                user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
-                embed.set_author(name=f"{ctx.author.name} | Error Occurred", icon_url=user_pfp)
-                await channel.send(embed=embed)
+                channel = self.client.get_channel(1294659379303415878)
+                if channel:
+                    embed = discord.Embed(description=f"> Error ID: {err_id} \n {err_msg}", color=color.default)
+                    embed.set_footer(text=f"Occurred in {ctx.guild.name} ({ctx.guild.id})")
+                    embed.set_thumbnail(url=ctx.guild.icon.url if ctx.guild.icon else None)
+                    user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
+                    embed.set_author(name=f"{ctx.author.name} | Error Occurred", icon_url=user_pfp)
+                    await channel.send(embed=embed)
+
+            except Exception as e:
+                await ctx.deny("Could **not** log the error")
 
     @commands.Cog.listener()
     async def on_message(self, message):
