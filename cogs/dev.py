@@ -252,7 +252,7 @@ class Developer(commands.Cog):
                 embed.set_thumbnail(url=user_pfp)
                 embed.set_footer(text=f"We're now at {member.guild.member_count} members")
 
-                await channel.send(embed=embed)
+                await channel.send(f"{member.mention}", embed=embed)
 
 async def setup(client):
     await client.add_cog(Developer(client))
