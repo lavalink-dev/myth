@@ -250,7 +250,7 @@ class Developer(commands.Cog):
                     color=color.default
                 )
                 embed.set_thumbnail(url=user_pfp)
-                embed.set_footer(text=f"We now at: {member.guild.member_count}")
+                embed.set_footer(text=f"We're now at {member.guild.member_count} members")
 
                 await channel.send(embed=embed)
 
