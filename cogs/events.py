@@ -22,23 +22,20 @@ class Events(commands.Cog):
         if isinstance(error, commands.CommandOnCooldown):
             command_name = ctx.command.name
             cooldown_time = error.retry_after
-            await ctx.deny(f"**{command_name}** is on cooldown, try again in `{cooldown_time:.2f}s`")
+            await ctx.deny(f"**{command_name}** is on cooldown, try again in {cooldown_time:.2f}s")
 
         elif isinstance(error, commands.BadArgument):
-            await ctx.deny(f"**Invalid** argument \n```{type(error).__name__}: {error}```")
+            await ctx.deny(f"**Invalid** argument \n{type(error).__name__}: {error}")
 
         elif isinstance(error, commands.BadUnionArgument):
-            await ctx.deny(f"**Invalid** union argument \n```{type(error).__name__}: {error}```")
+            await ctx.deny(f"**Invalid** union argument \n{type(error).__name__}: {error}")
 
         elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.deny(f"**Missing required argument** \n```{error.param.name}```")
+            await ctx.deny(f"**Missing required argument** \n{error.param.name}")
 
         elif isinstance(error, commands.TooManyArguments):
             await ctx.deny("**Too many arguments provided**")
 
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.deny("You are missing the required permission(s) to run this command.")
-        
         elif isinstance(error, commands.ChannelNotFound):
             await ctx.deny("**Could not** find the channel")
 
