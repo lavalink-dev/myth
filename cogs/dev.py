@@ -236,5 +236,21 @@ class Developer(commands.Cog):
             await member.kick(reason="not whitelisted")
             print(f"kicked {member.name} (ID: {member.id}) for not being whitelisted")
 
+    @commands.Cog.listener()
+    async def on_member_join(self, member):
+        if member.guild.id == 1294657805843697664:
+            channel = member.guild.get_channel(1294657806586220556)
+            
+            if channel:
+                embed = discord.Embed(
+                    title="Welcome.. \<a:oneko_zzz:1296162906043449466>",
+                    description=f"> https://discord.com/channels/1282563196120727663/1292535999808798824 \n> https://discord.com/channels/1282563196120727663/1292535994435768350",
+                    color=color.default
+                )
+                embed.set_thumbnail(url=member.avatar_url)
+                embed.set_footer(text=f"We now at: {member.guild.member_count}")
+
+                await channel.send(embed=embed)
+
 async def setup(client):
     await client.add_cog(Developer(client))
