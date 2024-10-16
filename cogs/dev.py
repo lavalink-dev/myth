@@ -242,12 +242,14 @@ class Developer(commands.Cog):
             channel = member.guild.get_channel(1294657806586220556)
             
             if channel:
+                user_pfp = member.avatar.url if member.avatar else member.default_avatar.url
+                
                 embed = discord.Embed(
-                    title="Welcome.. \<a:oneko_zzz:1296162906043449466>",
+                    title="Welcome.. <a:oneko_zzz:1296162906043449466>",
                     description=f"> https://discord.com/channels/1282563196120727663/1292535999808798824 \n> https://discord.com/channels/1282563196120727663/1292535994435768350",
                     color=color.default
                 )
-                embed.set_thumbnail(url=member.avatar_url)
+                embed.set_thumbnail(url=user_pfp)
                 embed.set_footer(text=f"We now at: {member.guild.member_count}")
 
                 await channel.send(embed=embed)
