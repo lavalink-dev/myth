@@ -838,45 +838,6 @@ class Config(commands.Cog):
                 embed.add_field(name=f"Message ID: `{record['message_id']}`", value=f"> Emoji: {record['emoji']} \n> Role: {role.mention}", inline=False)
         await ctx.send(embed=embed)
 
-    @commands.group(
-        description="Configure multiple commands", 
-        aliases=["cfg"]
-    )
-    @commands.has_permissions(manage_channels=True)
-    async def config(self, ctx: Context):
-        if ctx.invoked_subcommand is None:
-            await ctx.send_help(ctx.command.qualified_name)
-
-    @config.command(
-        name="channel",
-        description="Set the jail channel"
-    )
-    @commands.has_permissions(administrator=True)
-    async def jail_channel(self, ctx, channel: discord.TextChannel):
-        await self.client.pool.execute("""
-            INSERT INTO jail (guild_id, channel_id, role_id)
-            VALUES ($1, $2, COALESCE((SELECT role_id FROM jail WHERE guild_id = $1 AND user_id IS NULL), 0))
-            ON CONFLICT (guild_id, user_id) DO UPDATE
-            SET channel_id = $2
-            WHERE user_id IS NULL
-        """, ctx.guild.id, channel.id)
-        await ctx.agree(f"**Set** the jail channel to: {channel.mention}")
-
-    @config.command(
-        name="role",
-        description="Set the jail role"
-    )
-    @commands.has_permissions(administrator=True)
-    async def jail_role(self, ctx, role: discord.Role):
-        await self.client.pool.execute("""
-            INSERT INTO jail (guild_id, channel_id, role_id)
-            VALUES ($1, COALESCE((SELECT channel_id FROM jail WHERE guild_id = $1 AND user_id IS NULL), 0), $2)
-            ON CONFLICT (guild_id, user_id) DO UPDATE
-            SET role_id = $2
-            WHERE user_id IS NULL
-        """, ctx.guild.id, role.id)
-        await ctx.agree(f"**Set** the jail role to: {role.mention}")
-
     # events
 
     @commands.Cog.listener()
