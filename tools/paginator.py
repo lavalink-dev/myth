@@ -4,6 +4,7 @@ import discord
 import uuid
 
 from discord.ext import commands
+from discord.ext.commands import Paginator
 
 from tools.config import emoji, color
 
@@ -58,6 +59,13 @@ class Simple(discord.ui.View):
         self.total_page_count = len(pages)
         self.ctx = ctx
         self.current_page = self.InitialPage
+
+        if not all(isinstance(page, discord.Embed) for page in pages):
+            paginator = Paginator()
+            for page in pages:
+                paginator.add_line(page)
+            self.pages = [discord.Embed(description=page) for page in paginator.pages]
+            self.total_page_count = len(self.pages)
 
         self.message = await ctx.send(embed=self.pages[self.InitialPage], view=self, ephemeral=self.ephemeral)
 
