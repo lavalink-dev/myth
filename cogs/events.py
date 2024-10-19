@@ -58,13 +58,13 @@ class Events(commands.Cog):
             await ctx.deny(f"I'm **missing** `{perms}` to execute that command")
 
         elif isinstance(error, commands.BadArgument):
-            await ctx.deny(f"**Invalid** argument \n```{type(error).__name__}: {error}```")
+            await ctx.deny(f"**Invalid** argument \n> ```{type(error).__name__}: {error}```")
 
         elif isinstance(error, commands.BadUnionArgument):
-            await ctx.deny(f"**Invalid** union argument \n```{type(error).__name__}: {error}```")
+            await ctx.deny(f"**Invalid** union argument \n> ```{type(error).__name__}: {error}```")
 
         elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.deny(f"**Missing required argument** \n```{error.param.name}```")
+            await ctx.deny(f"**Missing** a required argument \n> ```{error.param.name}```")
 
         elif isinstance(error, commands.TooManyArguments):
             await ctx.deny("**Too many arguments provided**")
