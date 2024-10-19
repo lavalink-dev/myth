@@ -1,5 +1,3 @@
-make this into 3 events one for the error system, one for the isinstances and one for the prefix system
-
 import discord
 import asyncpg
 
