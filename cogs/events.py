@@ -30,7 +30,10 @@ class Events(commands.Cog):
                 err_msg = f"{type(error).__name__}: {error}"
                 err_id = await self.client.get_cog('Developer').log_error(err_msg)
                 
-            await ctx.warn(f"Uh oh, an **error** occurred join the [support server](https://discord.gg/strict) to get help \n> Error ID: ```{err_id}```")
+            await ctx.warn(
+                f"Uh oh, an **error** occurred join the [support server](https://discord.gg/strict) to get help"
+                f"> Error ID: ```{err_id}```"
+                )
 
             channel = self.client.get_channel(1294659379303415878)
             if channel:
