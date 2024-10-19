@@ -1,3 +1,5 @@
+make this into 3 events one for the error system, one for the isinstances and one for the prefix system
+
 import discord
 import asyncpg
 
@@ -13,25 +15,43 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx: Context, error):
         ignored = (
-            commands.CommandNotFound,
+            commands.CommandNotFound
         )
 
         if isinstance(error, ignored):
-            return
+            return  
+
+        try:
+            err_msg = f"{type(error).__name__}: {error}"
+            err_id = await self.client.get_cog('Developer').log_error(err_msg)
+
+            await ctx.warn(f"Uh oh, an **error** occurred join the [support server](https://discord.gg/strict) to get help \n> Error ID: ```{err_id}```")
+
+            channel = self.client.get_channel(1294659379303415878)
+            if channel:
+                embed = discord.Embed(description=f"> Error ID: `{err_id}` \n```{err_msg}```", color=color.default)
+                embed.set_footer(text=f"Occurred in {ctx.guild.name} ({ctx.guild.id})")
+                embed.set_thumbnail(url=ctx.guild.icon.url if ctx.guild.icon else None)
+                user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
+                embed.set_author(name=f"{ctx.author.name} | Error Occurred", icon_url=user_pfp)
+                await channel.send(embed=embed)
+
+        except Exception as e:
+            await ctx.deny("Could **not** log the error")
 
         if isinstance(error, commands.CommandOnCooldown):
             command_name = ctx.command.name
             cooldown_time = error.retry_after
-            await ctx.deny(f"**{command_name}** is on cooldown, try again in {cooldown_time:.2f}s")
+            await ctx.deny(f"**{command_name}** is on cooldown, try again in `{cooldown_time:.2f}s`")
 
         elif isinstance(error, commands.BadArgument):
-            await ctx.deny(f"**Invalid** argument \n{type(error).__name__}: {error}")
+            await ctx.deny(f"**Invalid** argument \n```{type(error).__name__}: {error}```")
 
         elif isinstance(error, commands.BadUnionArgument):
-            await ctx.deny(f"**Invalid** union argument \n{type(error).__name__}: {error}")
+            await ctx.deny(f"**Invalid** union argument \n```{type(error).__name__}: {error}```")
 
         elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.deny(f"**Missing required argument** \n{error.param.name}")
+            await ctx.deny(f"**Missing required argument** \n```{error.param.name}```")
 
         elif isinstance(error, commands.TooManyArguments):
             await ctx.deny("**Too many arguments provided**")
@@ -50,25 +70,6 @@ class Events(commands.Cog):
 
         elif isinstance(error, commands.MemberNotFound):
             await ctx.deny("**Could not** find the user")
-
-        else:
-            try:
-                err_msg = f"{type(error).__name__}: {error}"
-                err_id = await self.client.get_cog('Developer').log_error(err_msg)
-
-                await ctx.warn(f"Uh oh, an **error** occurred join the [support server](https://discord.gg/strict) to get help \n> Error ID: {err_id}")
-
-                channel = self.client.get_channel(1294659379303415878)
-                if channel:
-                    embed = discord.Embed(description=f"> Error ID: {err_id} \n {err_msg}", color=color.default)
-                    embed.set_footer(text=f"Occurred in {ctx.guild.name} ({ctx.guild.id})")
-                    embed.set_thumbnail(url=ctx.guild.icon.url if ctx.guild.icon else None)
-                    user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
-                    embed.set_author(name=f"{ctx.author.name} | Error Occurred", icon_url=user_pfp)
-                    await channel.send(embed=embed)
-
-            except Exception as e:
-                await ctx.deny("Could **not** log the error")
 
     @commands.Cog.listener()
     async def on_message(self, message):
