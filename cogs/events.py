@@ -13,16 +13,23 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx: Context, error):
         ignored = (
-            commands.CommandNotFound
+            commands.CommandNotFound,
         )
 
         if isinstance(error, ignored):
-            return  
+            return
 
-        try:
-            err_msg = f"{type(error).__name__}: {error}"
-            err_id = await self.client.get_cog('Developer').log_error(err_msg)
+        skip = (
+            commands.MissingRequiredArgument,
+            commands.MissingPermissions,
+            commands.BotMissingPermissions,
+        )
 
+        if not isinstance(error, skip):
+            try:
+                err_msg = f"{type(error).__name__}: {error}"
+                err_id = await self.client.get_cog('Developer').log_error(err_msg)
+                
             await ctx.warn(f"Uh oh, an **error** occurred join the [support server](https://discord.gg/strict) to get help \n> Error ID: ```{err_id}```")
 
             channel = self.client.get_channel(1294659379303415878)
@@ -34,13 +41,21 @@ class Events(commands.Cog):
                 embed.set_author(name=f"{ctx.author.name} | Error Occurred", icon_url=user_pfp)
                 await channel.send(embed=embed)
 
-        except Exception as e:
-            await ctx.deny("Could **not** log the error")
+            except Exception as e:
+                await ctx.deny("Could **not** log the error")
 
         if isinstance(error, commands.CommandOnCooldown):
-            command_name = ctx.command.name
-            cooldown_time = error.retry_after
-            await ctx.deny(f"**{command_name}** is on cooldown, try again in `{cooldown_time:.2f}s`")
+            cmd = ctx.command.name
+            time = error.retry_after
+            await ctx.deny(f"**{cmd}** is on cooldown, try again in `{time:.2f}s`")
+
+        elif isinstance(error, commands.MissingPermissions):
+            perms = format(error.missing_permissions).replace('[', '').replace("'", '').replace(']', '').replace('_', ' ')
+            await ctx.deny(f"You're **missing** `{perms}` permission(s)")
+
+        elif isinstance(error, commands.BotMissingPermissions):
+            perms = ', '.join(error.missing_permissions)
+            await ctx.deny(f"I'm **missing** `{perms}` to execute that command")
 
         elif isinstance(error, commands.BadArgument):
             await ctx.deny(f"**Invalid** argument \n```{type(error).__name__}: {error}```")
