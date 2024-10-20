@@ -610,7 +610,7 @@ class Moderation(commands.Cog):
         aliases=["add"]
     )
     @commands.has_permissions(manage_emojis=True)
-    async def steal(self, ctx, emoji: discord.PartialEmoji, *, name: str = None):
+    async def emoji_steal(self, ctx, emoji: discord.PartialEmoji, *, name: str = None):
         name = name or emoji.name
         async with self.client.session.get(str(emoji.url)) as response:
             if response.status != 200:
@@ -629,7 +629,7 @@ class Moderation(commands.Cog):
         aliases=["stealmultiple"]
     )
     @commands.has_permissions(manage_emojis=True)
-    async def stealmore(self, ctx, *emojis: discord.PartialEmoji):
+    async def emoji_stealmore(self, ctx, *emojis: discord.PartialEmoji):
         added_emojis = []
         for emoji in emojis:
             async with self.client.session.get(str(emoji.url)) as response:
@@ -649,7 +649,7 @@ class Moderation(commands.Cog):
         description="Add emojis through a png or gif",
     )
     @commands.has_permissions(manage_emojis=True)
-    async def add(self, ctx, *attachments: discord.Attachment):
+    async def emoji_add(self, ctx, *attachments: discord.Attachment):
         for attachment in attachments:
             if not (attachment.filename.endswith(".png") or attachment.filename.endswith(".gif")):
                 await ctx.warn("**Provide** a valid png or gif")
@@ -664,7 +664,7 @@ class Moderation(commands.Cog):
         description="Delete emojis",
     )
     @commands.has_permissions(manage_emojis=True)
-    async def delete(self, ctx, *emojis: discord.Emoji):
+    async def emoji_delete(self, ctx, *emojis: discord.Emoji):
         for emoji in emojis:
             await emoji.delete()
             await ctx.agree(f"**Deleted** {emoji}")
@@ -681,7 +681,7 @@ class Moderation(commands.Cog):
         description="Steal stickers"
     )
     @commands.has_permissions(manage_emojis_and_stickers=True)
-    async def steal(self, ctx, name: str):
+    async def sticker_steal(self, ctx, name: str):
         if not ctx.message.reference:
             await ctx.warn("**Reply** to a message")
             return
@@ -704,7 +704,7 @@ class Moderation(commands.Cog):
         description="Delete stickers"
     )
     @commands.has_permissions(manage_emojis_and_stickers=True)
-    async def delete(self, ctx):
+    async def sticker_delete(self, ctx):
         if not ctx.message.reference:
             await ctx.warn("**Reply** to a message")
             return
