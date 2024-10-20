@@ -597,25 +597,126 @@ class Moderation(commands.Cog):
             await pinned.pin()
             await ctx.message.add_reaction(f"{emoji.agree}")
 
-    @commands.command(
-        description="Steal emojis from other servers",
-        aliases=["emojiadd"]
+    @commands.group(
+        description="Manage emojis"
     )
     @commands.has_permissions(manage_emojis=True)
-    async def steal(self, ctx, *, emoji: discord.PartialEmoji):
+    async def emoji(self, ctx: Context):
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(ctx.command.qualified_name)
+
+    @emoji.command(
+        description="Steal an emoji",
+        aliases=["add"]
+    )
+    @commands.has_permissions(manage_emojis=True)
+    async def steal(self, ctx, emoji: discord.PartialEmoji, *, name: str = None):
+        name = name or emoji.name
         async with self.client.session.get(str(emoji.url)) as response:
             if response.status != 200:
-                return await ctx.send("Couldn't download the emoji.")
-            emoji_data = BytesIO(await response.read()) 
+                await ctx.deny(f"**Could** not download the emoji")
+                return
+                
+            emoji_data = BytesIO(await response.read())
 
         ext = "gif" if emoji.animated else "png"
-
-        new_emoji = await ctx.guild.create_custom_emoji(
-            name=emoji.name,
-            image=emoji_data.getvalue()  
-        )
+        new_emoji = await ctx.guild.create_custom_emoji(name=name, image=emoji_data.getvalue())
         
-        await ctx.agree(f"**Added** {new_emoji} here")
+        await ctx.agree(f"**Added** {new_emoji} as `{name}`")
+
+    @emoji.command(
+        description="Steal multiple emojis at once",
+        aliases=["stealmultiple"]
+    )
+    @commands.has_permissions(manage_emojis=True)
+    async def stealmore(self, ctx, *emojis: discord.PartialEmoji):
+        added_emojis = []
+        for emoji in emojis:
+            async with self.client.session.get(str(emoji.url)) as response:
+                if response.status != 200:
+                    await ctx.deny(f"**Could** not download emojis")
+                    continue
+                emoji_data = BytesIO(await response.read())
+
+            ext = "gif" if emoji.animated else "png"
+            new_emoji = await ctx.guild.create_custom_emoji(name=emoji.name, image=emoji_data.getvalue())
+            added_emojis.append(str(new_emoji))
+
+        if added_emojis:
+            await ctx.agree(f"**Added** {', '.join(added_emojis)}.")
+
+    @emoji.command(
+        description="Add emojis through a png or gif",
+    )
+    @commands.has_permissions(manage_emojis=True)
+    async def add(self, ctx, *attachments: discord.Attachment):
+        for attachment in attachments:
+            if not (attachment.filename.endswith(".png") or attachment.filename.endswith(".gif")):
+                await ctx.warn("**Provide** a valid png or gif")
+                continue
+
+            emoji_data = BytesIO(await attachment.read())
+            name = attachment.filename.split(".")[0]
+            new_emoji = await ctx.guild.create_custom_emoji(name=name, image=emoji_data.getvalue())
+            await ctx.agree(f"**Added** {new_emoji} as `{name}`")
+
+    @emoji.command(
+        description="Delete emojis",
+    )
+    @commands.has_permissions(manage_emojis=True)
+    async def delete(self, ctx, *emojis: discord.Emoji):
+        for emoji in emojis:
+            await emoji.delete()
+            await ctx.agree(f"**Deleted** {emoji}")
+
+    @commands.group(
+        description="Manage sticker"
+    )
+    @commands.has_permissions(manage_emojis_and_stickers=True)
+    async def sticker(self, ctx: Context):
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(ctx.command.qualified_name)
+
+    @sticker.command(
+        description="Steal stickers"
+    )
+    @commands.has_permissions(manage_emojis_and_stickers=True)
+    async def steal(self, ctx, name: str):
+        if not ctx.message.reference:
+            await ctx.warn("**Reply** to a message")
+            return
+
+        message = await ctx.channel.fetch_message(ctx.message.reference.message_id)
+        if not message.stickers:
+            await ctx.deny("That message **doesn't** have a sticker")
+            return
+
+        sticker = message.stickers[0]
+        sticker_data = BytesIO(await sticker.url.read())
+        new_sticker = await ctx.guild.create_custom_sticker(
+            name=name,
+            image=sticker_data.getvalue(),
+            description=f"added by myth"
+        )
+        await ctx.agree(f"**Added** `{new_sticker.name}`")
+
+    @sticker.command(
+        description="Delete stickers"
+    )
+    @commands.has_permissions(manage_emojis_and_stickers=True)
+    async def delete(self, ctx):
+        if not ctx.message.reference:
+            await ctx.warn("**Reply** to a message")
+            return
+
+        message = await ctx.channel.fetch_message(ctx.message.reference.message_id)
+        if not message.stickers:
+            await ctx.deny("That message **doesn't** have a sticker")
+            return
+
+        sticker = message.stickers[0]
+        await sticker.delete()
+        await ctx.agree(f"**Deleted** `{sticker.name}`")
 
 async def setup(client):
     await client.add_cog(Moderation(client))
