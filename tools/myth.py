@@ -1,6 +1,7 @@
 import discord
 import asyncpg
 import jishaku
+import aiohttp
 import discord_ios
 import os
 import time
@@ -23,6 +24,7 @@ class Myth(commands.AutoShardedBot):
     def __init__(self, token):
         self.message_cache = {}  
         self.cache_expiry_seconds = 60  
+        self.session = None
         
         super().__init__(
             command_prefix=self.get_prefix,
@@ -105,6 +107,7 @@ class Myth(commands.AutoShardedBot):
         await self.load_extension('jishaku')
         await self.load("cogs")
         self.pool = await self._load_database()
+        self.session = aiohttp.ClientSession()
         print(f"[ + ] {self.user} is ready")
  
     async def get_context(self, origin, cls=Context):
