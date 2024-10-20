@@ -608,7 +608,8 @@ class Moderation(commands.Cog):
 
     @emoji.command(
         name="steal",
-        description="Steal an emoji"
+        description="Steal emojis",
+        aliases=["add"]
     )
     @commands.has_permissions(manage_emojis=True)
     async def emoji_steal(self, ctx, emoji: discord.PartialEmoji, *, name: str = None):
@@ -664,22 +665,6 @@ class Moderation(commands.Cog):
 
         if added_emojis:
             await ctx.agree(f"**Added** {', '.join(added_emojis)}")
-
-    @emoji.command(
-        name="add",
-        description="Add emojis through a png or gif",
-    )
-    @commands.has_permissions(manage_emojis=True)
-    async def emoji_add(self, ctx, *attachments: discord.Attachment):
-        for attachment in attachments:
-            if not (attachment.filename.endswith(".png") or attachment.filename.endswith(".gif")):
-                await ctx.warn("**Provide** a valid png or gif")
-                continue
-
-            emoji_data = BytesIO(await attachment.read())
-            name = attachment.filename.split(".")[0]
-            new_emoji = await ctx.guild.create_custom_emoji(name=name, image=emoji_data.getvalue())
-            await ctx.agree(f"**Added** {new_emoji} as `{name}`")
 
     @emoji.command(
         name="delete",
