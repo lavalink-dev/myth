@@ -700,7 +700,7 @@ class Moderation(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command.qualified_name)
 
-    @commands.command(
+    @sticker.command(
         name="steal",
         description="Steal stickers"
     )
