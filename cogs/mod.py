@@ -625,11 +625,7 @@ class Moderation(commands.Cog):
         
         await ctx.agree(f"**Added** {new_emoji} as `{name}`")
 
-    @emoji.command(
-        emoji="stealmore",
-        description="Steal multiple emojis at once",
-        aliases=["stealmultiple"]
-    )
+    @emoji.command(name="stealmore", description="Steal multiple emojis at once", aliases=["stealmultiple"])
     @commands.has_permissions(manage_emojis=True)
     async def emoji_stealmore(self, ctx, *emojis: discord.PartialEmoji):
         added_emojis = []
@@ -639,6 +635,9 @@ class Moderation(commands.Cog):
                     await ctx.deny(f"**Could** not download emojis")
                     continue
                 emoji_data = BytesIO(await response.read())
+
+            if emoji.animated and len(emoji_data.getvalue()) > 256 * 1024:
+                continue
 
             ext = "gif" if emoji.animated else "png"
             new_emoji = await ctx.guild.create_custom_emoji(name=emoji.name, image=emoji_data.getvalue())
