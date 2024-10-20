@@ -607,7 +607,7 @@ class Moderation(commands.Cog):
             await ctx.send_help(ctx.command.qualified_name)
 
     @emoji.command(
-        emoji="steal",
+        name="steal",
         description="Steal an emoji",
         aliases=["add"]
     )
@@ -626,7 +626,11 @@ class Moderation(commands.Cog):
         
         await ctx.agree(f"**Added** {new_emoji} as `{name}`")
 
-    @emoji.command(emoji="stealmore", description="Steal multiple emojis at once", aliases=["stealmultiple"])
+    @emoji.command(
+        name="stealmore", 
+        description="Steal multiple emojis at once", 
+        aliases=["stealmultiple"]
+    )
     @commands.has_permissions(manage_emojis=True)
     async def emoji_stealmore(self, ctx, *, emojis: str):
         added_emojis = []
@@ -660,10 +664,10 @@ class Moderation(commands.Cog):
             added_emojis.append(str(new_emoji))
 
         if added_emojis:
-            await ctx.agree(f"**Added** {', '.join(added_emojis)}.")
+            await ctx.agree(f"**Added** {', '.join(added_emojis)}")
 
     @emoji.command(
-        emoji="add",
+        name="add",
         description="Add emojis through a png or gif",
     )
     @commands.has_permissions(manage_emojis=True)
@@ -696,7 +700,7 @@ class Moderation(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command.qualified_name)
 
-    @sticker.command(
+    @commands.command(
         name="steal",
         description="Steal stickers"
     )
@@ -723,10 +727,12 @@ class Moderation(commands.Cog):
         headers = {
             "Authorization": f"Bot {self.client.http.token}"
         }
+
         form_data = aiohttp.FormData()
         form_data.add_field("name", name)
-        form_data.add_field("description", "added by myth")
-        form_data.add_field("file", sticker_data.getvalue(), filename="sticker.png")
+        form_data.add_field("description", "added by myth")  
+        form_data.add_field("tags", name)  
+        form_data.add_field("file", sticker_data.getvalue(), filename="sticker.png", content_type="image/png")
 
         async with self.client.session.post(url, headers=headers, data=form_data) as response:
             if response.status != 201:
