@@ -625,11 +625,11 @@ class Moderation(commands.Cog):
         
         await ctx.agree(f"**Added** {new_emoji} as `{name}`")
 
-    @emoji.command(name="stealmore", description="Steal multiple emojis at once", aliases=["stealmultiple"])
+    @emoji.command(emoji="stealmore", description="Steal multiple emojis at once", aliases=["stealmultiple"])
     @commands.has_permissions(manage_emojis=True)
-    async def emoji_stealmore(self, ctx, *emojis: discord.PartialEmoji):
+    async def emoji_stealmore(self, ctx, *, emojis: str):
         added_emojis = []
-        for emoji in emojis:
+        for emoji in await commands.EmojiConverter().convert(ctx, emojis):
             async with self.client.session.get(str(emoji.url)) as response:
                 if response.status != 200:
                     await ctx.deny(f"**Could** not download emojis")
