@@ -606,6 +606,7 @@ class Moderation(commands.Cog):
             await ctx.send_help(ctx.command.qualified_name)
 
     @emoji.command(
+        emoji="steal",
         description="Steal an emoji",
         aliases=["add"]
     )
@@ -625,6 +626,7 @@ class Moderation(commands.Cog):
         await ctx.agree(f"**Added** {new_emoji} as `{name}`")
 
     @emoji.command(
+        emoji="stealmore",
         description="Steal multiple emojis at once",
         aliases=["stealmultiple"]
     )
@@ -646,6 +648,7 @@ class Moderation(commands.Cog):
             await ctx.agree(f"**Added** {', '.join(added_emojis)}.")
 
     @emoji.command(
+        emoji="add",
         description="Add emojis through a png or gif",
     )
     @commands.has_permissions(manage_emojis=True)
@@ -661,6 +664,7 @@ class Moderation(commands.Cog):
             await ctx.agree(f"**Added** {new_emoji} as `{name}`")
 
     @emoji.command(
+        name="delete",
         description="Delete emojis",
     )
     @commands.has_permissions(manage_emojis=True)
@@ -678,6 +682,7 @@ class Moderation(commands.Cog):
             await ctx.send_help(ctx.command.qualified_name)
 
     @sticker.command(
+        name="steal",
         description="Steal stickers"
     )
     @commands.has_permissions(manage_emojis_and_stickers=True)
@@ -701,6 +706,7 @@ class Moderation(commands.Cog):
         await ctx.agree(f"**Added** `{new_sticker.name}`")
 
     @sticker.command(
+        name="delete",
         description="Delete stickers"
     )
     @commands.has_permissions(manage_emojis_and_stickers=True)
