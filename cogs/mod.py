@@ -5,6 +5,7 @@ import aiohttp
 import asyncpg
 import asyncio
 
+from io                 import BytesIO
 from discord.ext        import commands
 from discord.utils      import format_dt, utcnow
 from typing             import Optional
@@ -595,6 +596,26 @@ class Moderation(commands.Cog):
         else:
             await pinned.pin()
             await ctx.message.add_reaction(f"{emoji.agree}")
+
+    @commands.command(
+        description="Steal emojis from other servers",
+        aliases=["emojiadd"]
+    )
+    @commands.has_permissions(manage_emojis=True)
+    async def steal(self, ctx, *, emoji: discord.PartialEmoji):
+        async with self.client.session.get(str(emoji.url)) as response:
+            if response.status != 200:
+                return await ctx.send("Couldn't download the emoji.")
+            emoji_data = BytesIO(await response.read())
+
+        if emoji.animated:
+            ext = "gif"
+        else:
+            ext = "png"
+
+            
+            new_emoji = await ctx.guild.create_custom_emoji(name=emoji.name, image=emoji_data.getvalue())
+            await ctx.agree(f"**Added** {new_emoji} here")
 
 async def setup(client):
     await client.add_cog(Moderation(client))
