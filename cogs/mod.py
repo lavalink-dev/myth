@@ -697,7 +697,13 @@ class Moderation(commands.Cog):
             return
 
         sticker = message.stickers[0]
-        sticker_data = BytesIO(await sticker.url.read())
+
+        async with self.client.session.get(str(sticker.url)) as response:
+            if response.status != 200:
+                await ctx.deny(f"**Could** not download the sticker")
+                return
+            sticker_data = BytesIO(await response.read())
+
         new_sticker = await ctx.guild.create_custom_sticker(
             name=name,
             image=sticker_data.getvalue(),
