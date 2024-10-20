@@ -606,16 +606,16 @@ class Moderation(commands.Cog):
         async with self.client.session.get(str(emoji.url)) as response:
             if response.status != 200:
                 return await ctx.send("Couldn't download the emoji.")
-            emoji_data = BytesIO(await response.read())
+            emoji_data = BytesIO(await response.read()) 
 
-        if emoji.animated:
-            ext = "gif"
-        else:
-            ext = "png"
+        ext = "gif" if emoji.animated else "png"
 
-            
-            new_emoji = await ctx.guild.create_custom_emoji(name=emoji.name, image=emoji_data.getvalue())
-            await ctx.agree(f"**Added** {new_emoji} here")
+        new_emoji = await ctx.guild.create_custom_emoji(
+            name=emoji.name,
+            image=emoji_data.getvalue()  
+        )
+        
+        await ctx.agree(f"**Added** {new_emoji} here")
 
 async def setup(client):
     await client.add_cog(Moderation(client))
