@@ -704,12 +704,22 @@ class Moderation(commands.Cog):
                 return
             sticker_data = BytesIO(await response.read())
 
-        new_sticker = await ctx.guild.create_custom_sticker(
-            name=name,
-            image=sticker_data.getvalue(),
-            description=f"added by myth"
-        )
-        await ctx.agree(f"**Added** `{new_sticker.name}`")
+        url = f"https://discord.com/api/v10/guilds/{ctx.guild.id}/stickers"
+        headers = {
+            "Authorization": f"Bot {self.client.http.token}"
+        }
+        form_data = aiohttp.FormData()
+        form_data.add_field("name", name)
+        form_data.add_field("description", "added by myth")
+        form_data.add_field("file", sticker_data.getvalue(), filename="sticker.png")
+
+        async with self.client.session.post(url, headers=headers, data=form_data) as response:
+            if response.status != 201:
+                await ctx.deny(f"**Failed** to create sticker: {response.status}")
+                return
+            new_sticker = await response.json()
+
+        await ctx.agree(f"**Added** `{new_sticker['name']}`")
 
     @sticker.command(
         name="delete",
