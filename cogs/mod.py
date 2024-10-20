@@ -630,17 +630,32 @@ class Moderation(commands.Cog):
     @commands.has_permissions(manage_emojis=True)
     async def emoji_stealmore(self, ctx, *, emojis: str):
         added_emojis = []
-        for emoji in await commands.EmojiConverter().convert(ctx, emojis):
+
+        emoji_pattern = re.compile(r'<a?:\w+:\d+>|[\U00010000-\U0010ffff]', flags=re.UNICODE)
+
+        emoji_matches = emoji_pattern.findall(emojis)
+
+        if not emoji_matches:
+            await ctx.deny("**Could not** find any valid emojis.")
+            return
+
+        for emoji_str in emoji_matches:
+            try:
+                emoji = await commands.PartialEmojiConverter().convert(ctx, emoji_str)
+            except commands.BadArgument:
+                await ctx.deny(f"**Could** not process emoji: {emoji_str}")
+                continue
+
             async with self.client.session.get(str(emoji.url)) as response:
                 if response.status != 200:
-                    await ctx.deny(f"**Could** not download emojis")
+                    await ctx.deny(f"**Could** not download emoji: {emoji_str}")
                     continue
+
                 emoji_data = BytesIO(await response.read())
 
             if emoji.animated and len(emoji_data.getvalue()) > 256 * 1024:
                 continue
 
-            ext = "gif" if emoji.animated else "png"
             new_emoji = await ctx.guild.create_custom_emoji(name=emoji.name, image=emoji_data.getvalue())
             added_emojis.append(str(new_emoji))
 
