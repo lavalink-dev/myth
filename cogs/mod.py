@@ -608,8 +608,7 @@ class Moderation(commands.Cog):
 
     @emoji.command(
         name="steal",
-        description="Steal an emoji",
-        aliases=["add"]
+        description="Steal an emoji"
     )
     @commands.has_permissions(manage_emojis=True)
     async def emoji_steal(self, ctx, emoji: discord.PartialEmoji, *, name: str = None):
