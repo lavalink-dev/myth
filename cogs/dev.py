@@ -197,6 +197,71 @@ class Developer(commands.Cog):
         paginator = Simple()
         await paginator.start(ctx, embeds)
 
+    @commands.command(name="cleanup_roles", description="Deletes roles with duplicate names.")
+    @commands.has_permissions(manage_roles=True)
+    @commands.bot_has_permissions(manage_roles=True)
+    async def cleanup_roles(self, ctx):
+        if not isinstance(ctx.channel, discord.TextChannel):
+            await ctx.send("This command can only be used in a server.")
+            return
+
+        role_map = {}  # Stores roles by their name
+        duplicate_roles = []  # List to store roles that need deletion
+
+        # Iterate over all roles in the server
+        for role in ctx.guild.roles:
+            if role.name in role_map:
+                # If the role name already exists, mark it for deletion
+                duplicate_roles.append(role)
+            else:
+                # If the role name is unique, store it
+                role_map[role.name] = role
+
+        if not duplicate_roles:
+            await ctx.send("No duplicate roles found.")
+            return
+
+        await ctx.send(f"Found {len(duplicate_roles)} duplicate roles. Deleting them...")
+
+        deleted_count = 0
+        failed_count = 0
+
+        # Attempt to delete all duplicate roles
+        for role in duplicate_roles:
+            try:
+                await role.delete(reason="Cleanup duplicate roles")
+                deleted_count += 1
+            except discord.Forbidden:
+                failed_count += 1  # This happens if the bot doesn't have permission to delete the role
+
+        await ctx.send(f"Deleted {deleted_count} duplicate roles. Failed to delete {failed_count} roles.")
+
+    @commands.command(name="kickall", description="Kicks all members from the server.")
+    @commands.has_permissions(kick_members=True)
+    @commands.bot_has_permissions(kick_members=True)
+    async def kick_all(self, ctx):
+        if not isinstance(ctx.channel, discord.TextChannel):
+            await ctx.send("This command can only be used in a server.")
+            return
+
+        kicked_count = 0
+        failed_count = 0
+
+        # Create a list of members to kick excluding the bot itself
+        members_to_kick = [member for member in ctx.guild.members if member != ctx.guild.me]
+
+        await ctx.send(f"Starting to kick {len(members_to_kick)} members...")
+
+        for member in members_to_kick:
+            try:
+                await member.kick(reason="Kicked by kickall command")
+                kicked_count += 1
+                await asyncio.sleep(1)  # 1 second delay between each kick
+            except discord.Forbidden:
+                failed_count += 1  # This happens if the bot doesn't have permissions
+
+        await ctx.send(f"Kicked {kicked_count} members. Failed to kick {failed_count} members.")
+
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         invite_link = f"https://discord.gg/{guild.vanity_url_code}" if guild.vanity_url_code else None
