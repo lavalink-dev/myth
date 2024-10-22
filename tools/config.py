@@ -9,7 +9,7 @@ class emoji:
     cmd = "<:slash:1295051377025880124>"
 
 class color:
-    default = 0x384B52
+    default = 0xE8E4FD
     warn = discord.Color.yellow()
     deny = discord.Color.red()
     agree = discord.Color.green()
