@@ -113,3 +113,10 @@ CREATE TABLE IF NOT EXISTS uids (
     user_id BIGINT PRIMARY KEY,
     uid SERIAL UNIQUE
 );
+CREATE TABLE IF NOT EXISTS userinfo (
+    user_id BIGINT PRIMARY KEY,
+    name TEXT,
+    footer TEXT,
+    bio TEXT,
+    uid BOOLEAN DEFAULT TRUE
+);
