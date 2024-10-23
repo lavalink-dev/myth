@@ -132,7 +132,7 @@ class Fun(commands.Cog):
 
     @commands.group(
         description="Configure ur userinfo", 
-        aliases=["userinfoconfig", "userinfoedit", "uiedit]
+        aliases=["userinfoconfig", "userinfoedit", "uiedit"]
     )
     @commands.has_permissions(manage_channels=True)
     async def uiconfig(self, ctx: Context):
