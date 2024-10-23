@@ -117,5 +117,5 @@ CREATE TABLE IF NOT EXISTS userinfo (
     user_id BIGINT PRIMARY KEY,
     name TEXT,
     footer TEXT,
-    bio TEXT,
+    bio TEXT
 );
