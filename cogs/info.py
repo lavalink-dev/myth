@@ -30,7 +30,7 @@ class Information(commands.Cog):
 
     @commands.command(
         description="Add me im cool :sunglasses:", 
-        aliases=['invite', 'links']
+        aliases=["invite", "links"]
     )
     async def inv(self, ctx):
         view = View()
@@ -89,6 +89,7 @@ class Information(commands.Cog):
             member = ctx.author
 
         user_data = await self.client.pool.fetchrow("SELECT * FROM userinfo WHERE user_id = $1", member.id)
+        uid = user_data['uid']
 
         name = user_data['name'] if user_data and user_data['name'] else member.display_name
         footer = user_data['footer'] if user_data and user_data['footer'] else ""
@@ -103,10 +104,10 @@ class Information(commands.Cog):
         embed.add_field(name="Created At", value=f"> {format_dt(member.created_at, style='R') if hasattr(member, 'created_at') else 'N/A'}", inline=True)
 
         if bio:
-            embed.description = bio 
+            embed.description = f"> {bio}"
 
         if uid:
-            embed.add_field(name="UID", value=str(member.id))
+            embed.add_field(name="UID", value=f"> {uid}")
 
         if footer:
             embed.set_footer(text=footer)
