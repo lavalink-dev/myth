@@ -130,5 +130,48 @@ class Fun(commands.Cog):
 
             await ctx.message.delete()
 
+    @commands.group(
+        description="Configure ur userinfo", 
+        aliases=["userinfoconfig", "userinfoedit", "uiedit]
+    )
+    @commands.has_permissions(manage_channels=True)
+    async def uiconfig(self, ctx: Context):
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(ctx.command.qualified_name)
+
+    @uiconfig.command(
+        name="name",
+        description="Edit your userinfo name"
+    )
+    async def uiconfig_name(self, ctx, *, name: str):
+        await self.client.pool.execute("INSERT INTO userinfo (user_id, name) VALUES ($1, $2) ON CONFLICT (user_id) DO UPDATE SET name = $2", ctx.author.id, name)
+        await ctx.agree(f"**Set** your userinfo name to: `{name}`")
+
+    @uiconfig.command(
+        name="footer",
+        description="Edit your userinfo footer"
+    )
+    async def uiconfig_footer(self, ctx, *, footer: str):
+        await self.client.pool.execute("INSERT INTO userinfo (user_id, footer) VALUES ($1, $2) ON CONFLICT (user_id) DO UPDATE SET footer = $2", ctx.author.id, footer)
+        await ctx.agree(f"**Set** your userinfo footer to: `{footer}`")
+
+    @uiconfig.command(
+        name="bio",
+        description="Edit your userinfo bio"
+    )
+    async def uiconfig_bio(self, ctx, *, bio: str):
+        await self.client.pool.execute("INSERT INTO userinfo (user_id, bio) VALUES ($1, $2) ON CONFLICT (user_id) DO UPDATE SET bio = $2", ctx.author.id, new_bio)
+        await ctx.agree("**Set** your userinfo bio")
+
+    @uiconfig.command(
+        name="uid",
+        description="Toggle on/off ur userinfo uid"
+    )
+    async def uiconfig_uid(self, ctx):
+        user_data = await self.client.pool.fetchrow("SELECT uid FROM userinfo WHERE user_id = $1", ctx.author.id)
+        new_uid_status = not user_data['uid'] if user_data else True
+        await self.client.pool.execute("INSERT INTO userinfo (user_id, uid) VALUES ($1, $2) ON CONFLICT (user_id) DO UPDATE SET uid = $2", ctx.author.id, new_uid_status)
+        await ctx.agree(f"**{'enabled' if new_uid_status else 'disabled'}** your userinfo UID")
+
 async def setup(client):
     await client.add_cog(Fun(client))
