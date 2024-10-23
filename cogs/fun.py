@@ -163,15 +163,5 @@ class Fun(commands.Cog):
         await self.client.pool.execute("INSERT INTO userinfo (user_id, bio) VALUES ($1, $2) ON CONFLICT (user_id) DO UPDATE SET bio = $2", ctx.author.id, bio)
         await ctx.agree("**Set** your userinfo bio")
 
-    @uiconfig.command(
-        name="uid",
-        description="Toggle on/off ur userinfo uid"
-    )
-    async def uiconfig_uid(self, ctx):
-        user_data = await self.client.pool.fetchrow("SELECT uid FROM userinfo WHERE user_id = $1", ctx.author.id)
-        new_uid_status = not user_data['uid'] if user_data else True
-        await self.client.pool.execute("INSERT INTO userinfo (user_id, uid) VALUES ($1, $2) ON CONFLICT (user_id) DO UPDATE SET uid = $2", ctx.author.id, new_uid_status)
-        await ctx.agree(f"**{'enabled' if new_uid_status else 'disabled'}** your userinfo UID")
-
 async def setup(client):
     await client.add_cog(Fun(client))
