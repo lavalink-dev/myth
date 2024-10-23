@@ -34,7 +34,7 @@ class Information(commands.Cog):
     )
     async def inv(self, ctx):
         view = View()
-        support = Button(style=discord.ButtonStyle.link, label="Support", url="https://discord.gg/strict", emoji=f"{emoji.link}")
+        support = Button(style=discord.ButtonStyle.link, label="Support", url="https://discord.gg/uid", emoji=f"{emoji.link}")
         inv = Button(style=discord.ButtonStyle.link, label="Invite me", url="https://discordapp.com/oauth2/authorize?client_id=1284613721888526417&scope=bot+applications.commands&permissions=8", emoji=f"{emoji.link}")
         
         view.add_item(support)
@@ -68,7 +68,7 @@ class Information(commands.Cog):
                             total_commands += 1
 
         view = View()
-        support = Button(style=discord.ButtonStyle.link, label="Support", url="https://discord.gg/strict", emoji=f"{emoji.link}")
+        support = Button(style=discord.ButtonStyle.link, label="Support", url="https://discord.gg/uid", emoji=f"{emoji.link}")
         inv = Button(style=discord.ButtonStyle.link, label="Invite me", url="https://discordapp.com/oauth2/authorize?client_id=1284613721888526417&scope=bot+applications.commands&permissions=8", emoji=f"{emoji.link}")
         view.add_item(support)
         view.add_item(inv)
