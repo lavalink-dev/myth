@@ -238,14 +238,14 @@ class Developer(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        if member.guild.id == 1282563196120727663:
+        if member.guild.id == 1298727459558264954:
             channel = member.guild.get_channel(1295409312637911041)
             
             if channel:
                 user_pfp = member.avatar.url if member.avatar else member.default_avatar.url
                 
                 embed = discord.Embed(
-                    title="Welcome.. <a:oneko_zzz:1296162906043449466>",
+                    title="Welcome :repent_iii: ",
                     description=f"> https://discord.com/channels/1282563196120727663/1292535999808798824 \n> https://discord.com/channels/1282563196120727663/1292535994435768350",
                     color=color.default
                 )
