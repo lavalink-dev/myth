@@ -109,3 +109,7 @@ CREATE TABLE IF NOT EXISTS antilink (
     pattern TEXT NOT NULL,
     PRIMARY KEY (guild_id, pattern)
 );
+CREATE TABLE IF NOT EXISTS uids (
+    user_id BIGINT PRIMARY KEY,
+    uid SERIAL UNIQUE
+);
