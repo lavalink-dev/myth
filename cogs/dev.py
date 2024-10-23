@@ -105,18 +105,6 @@ class Developer(commands.Cog):
 
         await ctx.send("\n\n".join(description))
 
-    @commands.command()
-    async def myuid(self, ctx):
-        user_id = ctx.author.id
-
-        user_data = await self.client.pool.fetchrow("SELECT uid FROM uids WHERE user_id = $1", user_id)
-
-        if user_data:
-            uid = user_data['uid']
-            await ctx.agree(f"{uid}")
-        else:
-            await ctx.deny(f"no uid somehow")
-
     @commands.command(
         description="Make the bot leave a guild"
     )
