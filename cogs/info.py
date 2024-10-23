@@ -102,7 +102,7 @@ class Information(commands.Cog):
 
         user_pfp = member.avatar.url if member.avatar else member.default_avatar.url
         embed = discord.Embed(color=color.default)
-        embed.set_author(name=f"{member.name} ({member.id})", icon_url=user_pfp)
+        embed.set_author(name=f"{name} - {member.name} ({member.id})", icon_url=user_pfp)
 
         embed.add_field(name="Joined", value=f"> {format_dt(member.joined_at, style='R') if member.joined_at else 'N/A'}", inline=True)
         embed.add_field(name="Created At", value=f"> {format_dt(member.created_at, style='R') if hasattr(member, 'created_at') else 'N/A'}", inline=True)
@@ -132,13 +132,13 @@ class Information(commands.Cog):
         if user.id == 394152799799345152:
             badges.append("<:dev:1291123071498981436>")
 
-        if member.premium_since:
+        if member.premium_since:  
             badges.append("<:nitro:1291122409293742102>")
-        if member.guild.premium_subscriber_role in member.roles:
+        if member.guild.premium_subscriber_role and member.guild.premium_subscriber_role in member.roles: 
             badges.append("<a:boost:1291122311944081531>")
 
         if badges:
-            embed.add_field(name="Badges", value=" ".join(badges), inline=False)
+            embed.add_field(name="Badges", value=f"> {' '.join(badges)}", inline=False)
 
         if member:
             roles = [role.mention for role in member.roles[1:]]
