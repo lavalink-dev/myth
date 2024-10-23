@@ -103,7 +103,7 @@ class Information(commands.Cog):
         embed.add_field(name="Created At", value=f"> {format_dt(member.created_at, style='R') if hasattr(member, 'created_at') else 'N/A'}", inline=True)
 
         if bio:
-            embed.description = f"> {uid_number}"
+            embed.description = f"> {bio}"
 
         if uid:
             embed.add_field(name="UID", value=f"> {uid}")
