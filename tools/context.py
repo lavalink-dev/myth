@@ -10,7 +10,7 @@ from tools.paginator      import Simple
 class Context(commands.Context):
 
     async def invisible(self, message) -> discord.Message:
-        embed = discord.Embed(description = f"> {self.author.mention}: {message}", color = color.default)
+        embed = discord.Embed(description = f"> <a:repent_iii:1298392198076694559> {self.author.mention}: {message}", color = color.default)
         return await self.send(embed=embed)
 
     async def agree(self, message) -> discord.Message:
