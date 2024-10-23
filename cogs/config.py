@@ -21,7 +21,7 @@ class Config(commands.Cog):
 
     def variables(self, message, user, guild):
         if not message: 
-            return "contact support: discord.gg/strict"  
+            return "contact support: discord.gg/uid"  
 
         placeholders = {
             "{user.mention}": user.mention,
