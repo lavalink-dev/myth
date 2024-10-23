@@ -118,5 +118,4 @@ CREATE TABLE IF NOT EXISTS userinfo (
     name TEXT,
     footer TEXT,
     bio TEXT,
-    uid BOOLEAN DEFAULT TRUE
 );
