@@ -136,31 +136,31 @@ class VoiceMaster(commands.Cog):
         embed.add_field(
             name="",
             value=(
-                "<:lock:1295042030061228153>  [`lock`](https://discord.gg/strict) the voice channel\n"
-                "<:unlock:1295042072973152347>  [`unlock`](https://discord.gg/strict) the voice channel\n"
-                "<:hide:1295041714431590451>  [`hide`](https://discord.gg/strict) the voice channel\n"
-                "<:unhide:1295042104388485222>  [`reveal`](https://discord.gg/strict) the voice channel\n"
-                "<:plus:1295041883722219624> [`increase`](https://discord.gg/strict) the voice channel limit\n"
-                "<:minus:1295041993076113511> [`decrease`](https://discord.gg/strict) the voice channel limit\n"
-                "<:info:1295041765547442246> [`info`](https://discord.gg/strict) about the voice channel\n"
-                "<:punishment:1295042264212570227> [`kick`](https://discord.gg/strict) a user from the voice channel\n"
-                "<:pencil:1295041799408058408>  [`rename`](https://discord.gg/strict) the voice channel\n"
-                "<:delete:1295042052865921024> [`delete`](https://discord.gg/strict) the voice channel"
+                "<:26:1298731245320011856>  [`lock`](https://discord.gg/uid) the voice channel\n"
+                "<:27:1298731243059286077>  [`unlock`](https://discord.gg/uid) the voice channel\n"
+                "<:23:1298731251641090089>  [`hide`](https://discord.gg/uid) the voice channel\n"
+                "<:22:1298731253473874003>  [`reveal`](https://discord.gg/uid) the voice channel\n"
+                "<:24:1298731249497538632> [`increase`](https://discord.gg/uid) the voice channel limit\n"
+                "<:21:1298731255621226496> [`decrease`](https://discord.gg/uid) the voice channel limit\n"
+                "<:28:1298731241209729024> [`info`](https://discord.gg/uid) about the voice channel\n"
+                "<:29:1298731238655266847> [`kick`](https://discord.gg/uid) a user from the voice channel\n"
+                "<:20:1298731391143379017>  [`rename`](https://discord.gg/uid) the voice channel\n"
+                "<:25:1298731247773941847> [`delete`](https://discord.gg/uid) the voice channel"
             ),
             inline=False
         )
 
         view = View()
-        view.add_item(Button(label="", emoji="<:lock:1295042030061228153>", style=discord.ButtonStyle.secondary, custom_id="lock"))
-        view.add_item(Button(label="", emoji="<:unlock:1295042072973152347>", style=discord.ButtonStyle.secondary, custom_id="unlock"))
-        view.add_item(Button(label="", emoji="<:hide:1295041714431590451>", style=discord.ButtonStyle.secondary, custom_id="hide"))
-        view.add_item(Button(label="", emoji="<:unhide:1295042104388485222>", style=discord.ButtonStyle.secondary, custom_id="reveal"))
-        view.add_item(Button(label="", emoji="<:plus:1295041883722219624>", style=discord.ButtonStyle.secondary, custom_id="increase"))
-        view.add_item(Button(label="", emoji="<:minus:1295041993076113511>", style=discord.ButtonStyle.secondary, custom_id="decrease"))
-        view.add_item(Button(label="", emoji="<:info:1295041765547442246>", style=discord.ButtonStyle.secondary, custom_id="info"))
-        view.add_item(Button(label="", emoji="<:punishment:1295042264212570227>", style=discord.ButtonStyle.secondary, custom_id="kick"))
-        view.add_item(Button(label="", emoji="<:pencil:1295041799408058408>", style=discord.ButtonStyle.secondary, custom_id="rename"))
-        view.add_item(Button(label="", emoji="<:delete:1295042052865921024>", style=discord.ButtonStyle.secondary, custom_id="delete"))
+        view.add_item(Button(label="", emoji="<:26:1298731245320011856>", style=discord.ButtonStyle.secondary, custom_id="lock"))
+        view.add_item(Button(label="", emoji="<:27:1298731243059286077>", style=discord.ButtonStyle.secondary, custom_id="unlock"))
+        view.add_item(Button(label="", emoji="<:23:1298731251641090089>", style=discord.ButtonStyle.secondary, custom_id="hide"))
+        view.add_item(Button(label="", emoji="<:22:1298731253473874003>", style=discord.ButtonStyle.secondary, custom_id="reveal"))
+        view.add_item(Button(label="", emoji="<:24:1298731249497538632>", style=discord.ButtonStyle.secondary, custom_id="increase"))
+        view.add_item(Button(label="", emoji="<:21:1298731255621226496>", style=discord.ButtonStyle.secondary, custom_id="decrease"))
+        view.add_item(Button(label="", emoji="<:28:1298731241209729024>", style=discord.ButtonStyle.secondary, custom_id="info"))
+        view.add_item(Button(label="", emoji="<:29:1298731238655266847>", style=discord.ButtonStyle.secondary, custom_id="kick"))
+        view.add_item(Button(label="", emoji="<:20:1298731391143379017>", style=discord.ButtonStyle.secondary, custom_id="rename"))
+        view.add_item(Button(label="", emoji="<:25:1298731247773941847>", style=discord.ButtonStyle.secondary, custom_id="delete"))
 
         async for message in interface.history(limit=100):
             if message.author == self.client.user:
