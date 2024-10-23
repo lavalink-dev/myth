@@ -160,7 +160,7 @@ class Fun(commands.Cog):
         description="Edit your userinfo bio"
     )
     async def uiconfig_bio(self, ctx, *, bio: str):
-        await self.client.pool.execute("INSERT INTO userinfo (user_id, bio) VALUES ($1, $2) ON CONFLICT (user_id) DO UPDATE SET bio = $2", ctx.author.id, new_bio)
+        await self.client.pool.execute("INSERT INTO userinfo (user_id, bio) VALUES ($1, $2) ON CONFLICT (user_id) DO UPDATE SET bio = $2", ctx.author.id, bio)
         await ctx.agree("**Set** your userinfo bio")
 
     @uiconfig.command(
