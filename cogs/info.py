@@ -85,10 +85,12 @@ class Information(commands.Cog):
         aliases=["ui"]
     )
     async def userinfo(self, ctx, member: discord.Member = None):
+        user_id = ctx.author.id
+
         if member is None:
             member = ctx.author
 
-        user_data = await self.client.pool.fetchrow("SELECT * FROM userinfo WHERE user_id = $1", member.id)
+        user_data = await self.client.pool.fetchrow("SELECT uid FROM uids WHERE user_id = $1", user_id)
         uid = user_data['uid'] if user_data and user_data['uid'] is not None else "n/a"
 
         name = user_data['name'] if user_data and user_data['name'] else member.display_name
