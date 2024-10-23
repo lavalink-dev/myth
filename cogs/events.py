@@ -101,7 +101,7 @@ class Events(commands.Cog):
             result = await self.client.pool.fetchrow('SELECT prefix FROM prefixes WHERE user_id = $1', user_id)
             prefix = result['prefix'] if result else ';'
             
-            embed = discord.Embed(description=f"> <:top:1284792567073996921> {message.author.mention}: **Selfprefix:** `{prefix}`", color=color.default)
+            embed = discord.Embed(description=f"> <a:repent_iii:1298392198076694559> {message.author.mention}: **Selfprefix:** `{prefix}`", color=color.default)
             await message.channel.send(embed=embed)
 
 async def setup(client):
