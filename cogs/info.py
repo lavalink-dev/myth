@@ -85,14 +85,17 @@ class Information(commands.Cog):
         aliases=["ui"]
     )
     async def userinfo(self, ctx, member: discord.Member = None):
-        user_id = ctx.author.id
-
         if member is None:
             member = ctx.author
 
-        user_data = await self.client.pool.fetchrow("SELECT uid FROM uids WHERE user_id = $1", user_id)
-        uid = user_data['uid'] if user_data and user_data['uid'] is not None else "n/a"
+        user_data = await self.client.pool.fetchrow("""
+            SELECT u.uid, i.name, i.footer, i.bio 
+            FROM uids u 
+            LEFT JOIN userinfo i ON u.user_id = i.user_id 
+            WHERE u.user_id = $1
+        """, member.id)
 
+        uid = user_data['uid'] if user_data and user_data['uid'] is not None else "n/a"
         name = user_data['name'] if user_data and user_data['name'] else member.display_name
         footer = user_data['footer'] if user_data and user_data['footer'] else ""
         bio = user_data['bio'] if user_data and user_data['bio'] else ""
@@ -128,16 +131,17 @@ class Information(commands.Cog):
             badges.append("<:activedev:1291122427094368348>")
         if user.id == 394152799799345152:
             badges.append("<:dev:1291123071498981436>")
-        if user.premium_since is not None:
-            badges.append("<:nitro:1291122409293742102>") 
-        if user.guild.premium_subscriber_role in member.roles:
-            badges.append("<a:boost:1291122311944081531>")  
+
+        if member.premium_since:
+            badges.append("<:nitro:1291122409293742102>")
+        if member.guild.premium_subscriber_role in member.roles:
+            badges.append("<a:boost:1291122311944081531>")
 
         if badges:
             embed.add_field(name="Badges", value=" ".join(badges), inline=False)
 
         if member:
-            roles = [role.mention for role in member.roles[1:]]  
+            roles = [role.mention for role in member.roles[1:]]
             if len(roles) > 5:
                 roles_display = ', '.join(roles[:5]) + f" + {len(roles) - 5} more"
             else:
