@@ -106,6 +106,7 @@ class Information(commands.Cog):
 
         embed.add_field(name="Joined", value=f"> {format_dt(member.joined_at, style='R') if member.joined_at else 'N/A'}", inline=True)
         embed.add_field(name="Created At", value=f"> {format_dt(member.created_at, style='R') if hasattr(member, 'created_at') else 'N/A'}", inline=True)
+        embed.add_field(name="", value=f"‎ ‎ ", inline=True)
 
         if bio:
             embed.description = f"> {bio}"
@@ -138,7 +139,7 @@ class Information(commands.Cog):
             badges.append("<a:boost:1291122311944081531>")
 
         if badges:
-            embed.add_field(name="Badges", value=f"> {' '.join(badges)}", inline=False)
+            embed.add_field(name="Badges", value=f"> {' '.join(badges)}", inline=True)
 
         if member:
             roles = [role.mention for role in member.roles[1:]]
