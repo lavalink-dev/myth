@@ -84,58 +84,35 @@ class Information(commands.Cog):
         description="Check a user's info", 
         aliases=["ui"]
     )
-    async def userinfo(self, ctx, user: discord.User = None):
-        if user is None:
-            user = ctx.author
+    async def userinfo(self, ctx, member: discord.Member = None):
+        if member is None:
+            member = ctx.author
 
-        member = None
-        if isinstance(user, discord.Member):
-            member = user
-        else:
-            for guild in self.client.guilds:
-                member = guild.get_member(user.id)
-                if member:
-                    break
+        user_data = await self.client.pool.fetchrow("SELECT * FROM userinfo WHERE user_id = $1", member.id)
 
-        if not member:
-            try:
-                user = await self.client.fetch_user(user.id)
-            except discord.HTTPException:
-                pass
+        name = user_data['name'] if user_data and user_data['name'] else member.display_name
+        footer = user_data['footer'] if user_data and user_data['footer'] else ""
+        bio = user_data['bio'] if user_data and user_data['bio'] else ""
+        uid = user_data['uid'] if user_data else True 
 
-        user_pfp = user.avatar.url if user.avatar else user.default_avatar.url
-
+        user_pfp = member.avatar.url if member.avatar else member.default_avatar.url
         embed = discord.Embed(color=color.default)
-        embed.set_author(name=f"{user.name} ({user.id})", icon_url=user_pfp)
+        embed.set_author(name=f"{member.name} ({member.id})", icon_url=user_pfp)
 
-        if member:
-            embed.add_field(name="Joined", value=f"> {format_dt(member.joined_at, style='R') if member.joined_at else 'N/A'}", inline=True)
-        embed.add_field(name="Created At", value=f"> {format_dt(user.created_at, style='R') if hasattr(user, 'created_at') else 'N/A'}", inline=True)
+        embed.add_field(name="Joined", value=f"> {format_dt(member.joined_at, style='R') if member.joined_at else 'N/A'}", inline=True)
+        embed.add_field(name="Created At", value=f"> {format_dt(member.created_at, style='R') if hasattr(member, 'created_at') else 'N/A'}", inline=True)
 
-        if member:
-            roles = [role.mention for role in member.roles[1:]] 
-            if len(roles) > 5:
-                roles_display = ', '.join(roles[:5]) + f" + {len(roles) - 5} more"
-            else:
-                roles_display = ', '.join(roles) if roles else "n/a"
-            
-            embed.add_field(name="Roles", value=f"> {roles_display}", inline=False)
+        if bio:
+            embed.description = bio 
+
+        if uid:
+            embed.add_field(name="UID", value=str(member.id))
+
+        if footer:
+            embed.set_footer(text=footer)
 
         badges = []
-        if hasattr(user, 'premium_type'):
-            nitro_type = "Nitro Classic" if user.premium_type == 1 else "Nitro" if user.premium_type == 2 else "None"
-            embed.add_field(name="Nitro Type", value=f"> {nitro_type}", inline=True)
-            if user.premium_type in [1, 2]:
-                badges.append("<:nitro:1291122409293742102>")
-
-        if member and member.premium_since:
-            badges.append("<a:boost:1289457295012401184>")
-        elif not member:
-            for guild in self.client.guilds:
-                temp_member = guild.get_member(user.id)
-                if temp_member and temp_member.premium_since:
-                    badges.append("<a:boost:1289457295012401184>")
-                    break
+        user = member
 
         if user.public_flags.hypesquad_balance:
             badges.append("<:balance:1291122370609676370>")
@@ -147,12 +124,24 @@ class Information(commands.Cog):
             badges.append("<:early:1291122492970111088>")
         if user.public_flags.active_developer:
             badges.append("<:activedev:1291122427094368348>")
-
         if user.id == 394152799799345152:
             badges.append("<:dev:1291123071498981436>")
+        if user.premium_since is not None:
+            badges.append("<:nitro:1291122409293742102>") 
+        if user.guild.premium_subscriber_role in member.roles:
+            badges.append("<a:boost:1291122311944081531>")  
 
         if badges:
-            embed.description = f"> {' '.join(badges)}"
+            embed.add_field(name="Badges", value=" ".join(badges), inline=False)
+
+        if member:
+            roles = [role.mention for role in member.roles[1:]]  
+            if len(roles) > 5:
+                roles_display = ', '.join(roles[:5]) + f" + {len(roles) - 5} more"
+            else:
+                roles_display = ', '.join(roles) if roles else "n/a"
+
+            embed.add_field(name="Roles", value=f"> {roles_display}", inline=False)
 
         await ctx.send(embed=embed)
         
