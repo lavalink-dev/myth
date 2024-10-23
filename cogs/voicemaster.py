@@ -140,10 +140,10 @@ class VoiceMaster(commands.Cog):
                 "<:27:1298731243059286077>  [`unlock`](https://discord.gg/uid) the voice channel\n"
                 "<:23:1298731251641090089>  [`hide`](https://discord.gg/uid) the voice channel\n"
                 "<:22:1298731253473874003>  [`reveal`](https://discord.gg/uid) the voice channel\n"
+                "<:29:1298731238655266847> [`kick`](https://discord.gg/uid) a user from the voice channel\n"
                 "<:24:1298731249497538632> [`increase`](https://discord.gg/uid) the voice channel limit\n"
                 "<:21:1298731255621226496> [`decrease`](https://discord.gg/uid) the voice channel limit\n"
                 "<:28:1298731241209729024> [`info`](https://discord.gg/uid) about the voice channel\n"
-                "<:29:1298731238655266847> [`kick`](https://discord.gg/uid) a user from the voice channel\n"
                 "<:20:1298731391143379017>  [`rename`](https://discord.gg/uid) the voice channel\n"
                 "<:25:1298731247773941847> [`delete`](https://discord.gg/uid) the voice channel"
             ),
@@ -155,10 +155,10 @@ class VoiceMaster(commands.Cog):
         view.add_item(Button(label="", emoji="<:27:1298731243059286077>", style=discord.ButtonStyle.secondary, custom_id="unlock"))
         view.add_item(Button(label="", emoji="<:23:1298731251641090089>", style=discord.ButtonStyle.secondary, custom_id="hide"))
         view.add_item(Button(label="", emoji="<:22:1298731253473874003>", style=discord.ButtonStyle.secondary, custom_id="reveal"))
+        view.add_item(Button(label="", emoji="<:29:1298731238655266847>", style=discord.ButtonStyle.secondary, custom_id="kick"))
         view.add_item(Button(label="", emoji="<:24:1298731249497538632>", style=discord.ButtonStyle.secondary, custom_id="increase"))
         view.add_item(Button(label="", emoji="<:21:1298731255621226496>", style=discord.ButtonStyle.secondary, custom_id="decrease"))
         view.add_item(Button(label="", emoji="<:28:1298731241209729024>", style=discord.ButtonStyle.secondary, custom_id="info"))
-        view.add_item(Button(label="", emoji="<:29:1298731238655266847>", style=discord.ButtonStyle.secondary, custom_id="kick"))
         view.add_item(Button(label="", emoji="<:20:1298731391143379017>", style=discord.ButtonStyle.secondary, custom_id="rename"))
         view.add_item(Button(label="", emoji="<:25:1298731247773941847>", style=discord.ButtonStyle.secondary, custom_id="delete"))
 
