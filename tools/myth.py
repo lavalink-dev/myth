@@ -103,6 +103,18 @@ class Myth(commands.AutoShardedBot):
             self.message_cache[author_id].append(now)
             await self.process_commands(message)
 
+    async def uid(self, user_id):
+        existing_uid = await self.pool.fetchrow("SELECT uid FROM uids WHERE user_id = $1", user_id)
+        if existing_uid:
+            return existing_uid['uid']
+
+        new_uid = await self.pool.execute("INSERT INTO uids (user_id) VALUES ($1) RETURNING uid", user_id)
+        return new_uid
+
+    async def on_command(self, ctx):
+        user_id = ctx.author.id
+        uid = await self.uid(user_id)
+
     async def setup_hook(self):
         await self.load_extension('jishaku')
         await self.load("cogs")
@@ -126,12 +138,12 @@ class Myth(commands.AutoShardedBot):
                 schema = file.read()
                 if schema.strip():
                     await pool.execute(schema)
-                    print('Database schema loaded')
+                    print("[ + ] Loaded the database schema")
                 else:
-                    print('Database schema file is empty')
+                    print("[ . ] Database schema file is empty")
                 file.close()
 
             return pool
         except Exception as e:
-            print(f'Error loading database: {e}')
+            print(f"[ ! ] Error loading database: {e}")
             raise e
