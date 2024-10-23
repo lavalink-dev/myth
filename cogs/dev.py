@@ -201,7 +201,7 @@ class Developer(commands.Cog):
     async def myuid(self, ctx):
         user_id = ctx.author.id
 
-        user_data = await self.cient.pool.fetchrow("SELECT uid FROM uids WHERE user_id = $1", user_id)
+        user_data = await self.bot.pool.fetchrow("SELECT uid FROM uids WHERE user_id = $1", user_id)
 
         if user_data:
             uid = user_data['uid']
