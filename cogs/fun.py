@@ -134,7 +134,6 @@ class Fun(commands.Cog):
         description="Configure ur userinfo", 
         aliases=["userinfoconfig", "userinfoedit", "uiedit"]
     )
-    @commands.has_permissions(manage_channels=True)
     async def uiconfig(self, ctx: Context):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command.qualified_name)
