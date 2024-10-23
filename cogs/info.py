@@ -102,7 +102,7 @@ class Information(commands.Cog):
 
         user_pfp = member.avatar.url if member.avatar else member.default_avatar.url
         embed = discord.Embed(color=color.default)
-        embed.set_author(name=f"{name} - {member.name} ({member.id})", icon_url=user_pfp)
+        embed.set_author(name=f"{name} ({member.id})", icon_url=user_pfp)
 
         embed.add_field(name="Joined", value=f"> {format_dt(member.joined_at, style='R') if member.joined_at else 'N/A'}", inline=True)
         embed.add_field(name="Created At", value=f"> {format_dt(member.created_at, style='R') if hasattr(member, 'created_at') else 'N/A'}", inline=True)
