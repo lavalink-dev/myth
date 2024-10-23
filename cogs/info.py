@@ -89,7 +89,7 @@ class Information(commands.Cog):
             member = ctx.author
 
         user_data = await self.client.pool.fetchrow("SELECT * FROM userinfo WHERE user_id = $1", member.id)
-        uid = user_data['uid'] if user_data and user_data['uid'] is not None else "n/a"
+        uid_number = user_data['uid'] if user_data and user_data['uid'] is not None else "n/a"
 
         name = user_data['name'] if user_data and user_data['name'] else member.display_name
         footer = user_data['footer'] if user_data and user_data['footer'] else ""
@@ -104,7 +104,7 @@ class Information(commands.Cog):
         embed.add_field(name="Created At", value=f"> {format_dt(member.created_at, style='R') if hasattr(member, 'created_at') else 'N/A'}", inline=True)
 
         if bio:
-            embed.description = f"> {bio}"
+            embed.description = f"> {uid_number}"
 
         if uid:
             embed.add_field(name="UID", value=f"> {uid}")
