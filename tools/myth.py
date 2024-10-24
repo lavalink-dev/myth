@@ -22,6 +22,12 @@ intents.presences = True
 
 class Myth(commands.AutoShardedBot):
     def __init__(self, token):
+        self.message_cache = {}
+        self.cache_expiry_seconds = 60
+        self.session = None
+        self.pool = None
+        self.start_time = time.time()
+        
         super().__init__(
             command_prefix=self.get_prefix,
             help_command=None,
@@ -33,13 +39,7 @@ class Myth(commands.AutoShardedBot):
             ],
             activity=discord.CustomActivity(name=f"🔗 discord.gg/uid"),  
         )
-        
-        self.pool = None 
-        self.start_time = time.time()
         self.run(token)
-        self.session= None
-        self.cache_expiry_seconds = 60
-        self.message_cache = {}
 
     def uptime(self):
         current_time = time.time()
