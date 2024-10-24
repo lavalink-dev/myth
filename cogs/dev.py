@@ -238,7 +238,7 @@ class Developer(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        if member.guild.id == 1298727459558264954:
+        if member.guild.id == 1282563196120727663:
             channel = member.guild.get_channel(1295409312637911041)
             
             if channel:
