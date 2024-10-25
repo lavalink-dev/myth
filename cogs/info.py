@@ -104,8 +104,8 @@ class Information(commands.Cog):
         embed = discord.Embed(color=color.default)
         embed.set_author(name=f"{name} ({member.id})", icon_url=user_pfp)
 
-        embed.add_field(name="Joined", value=f"> {format_dt(member.joined_at, style='R') if member.joined_at else 'N/A'}", inline=True)
-        embed.add_field(name="Created At", value=f"> {format_dt(member.created_at, style='R') if hasattr(member, 'created_at') else 'N/A'}", inline=True)
+        embed.add_field(name="Joined", value=f"> {format_dt(member.joined_at, style='D') if hasattr(member, 'joined_at') else 'n/a'} \n> {format_dt(member.joined_at, style='R') if member.joined_at else 'n/a'}", inline=True)
+        embed.add_field(name="Created", value=f"> {format_dt(member.created_at, style='D') if hasattr(member, 'created_at') else 'n/a'} \n> {format_dt(member.created_at, style='R') if hasattr(member, 'created_at') else 'n/a'}", inline=True)
         embed.add_field(name="", value=f"‎ ‎ ", inline=True)
 
         if bio:
