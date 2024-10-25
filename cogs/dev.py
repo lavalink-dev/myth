@@ -124,6 +124,7 @@ class Developer(commands.Cog):
         await guild.leave()
 
     @commands.command()
+    @commands.is_owner()
     async def test(self, ctx):
         embed1 = discord.Embed(title="Myth", description="> The bot that will change your discord server forever.", color=color.default)
         embed1.add_field(name="Why Myth?", value="> 24/7 online \n> ‎ Active updates \n> ‎ ‎ Automoderation \n> ‎ ‎ ‎  Just simply cooler 😎", inline=False)
