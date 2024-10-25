@@ -123,6 +123,16 @@ class Developer(commands.Cog):
         await ctx.agree(f"left: {guild.name} ({guild.id})")
         await guild.leave()
 
+    @commands.command()
+    async def test(self, ctx):
+        embed1 = discord.Embed(title="Myth", description="> The bot that will change your discord server forever.", color=discord.Color.blue())
+        embed1.add_field(name="Why Myth?", value="- 24/7 online\n- Active updates\n- Automoderation\n- Just simply cooler 😎", inline=False)
+
+        embed2 = discord.Embed(title="Additional Info", description="Here you can add more details or information about the bot.", color=discord.Color.green())
+        embed2.add_field(name="Example Feature", value="This could contain additional features or a changelog.", inline=False)
+
+        await ctx.send(embeds=[embed1, embed2])
+
     @commands.command(
         description="Leave servers under 10 humans"
     )
