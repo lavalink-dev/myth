@@ -523,5 +523,21 @@ class Information(commands.Cog):
 
         await ctx.send(embed=embed)
 
+    @commands.command(
+        description="Check the total member count",
+        aliases=["mc"]
+    )
+    async def membercount(self, ctx):
+        if guild:
+            all = ctx.guild.member_count
+            humans = sum(1 for member in ctx.guild.members if not member.bot)
+            bots = all - humans
+
+            embed = discord.Embed(color=color.default)
+            embed.add_field(name=f"All", value=f"> {str(all)}", inline=True)
+            embed.add_field(name=f"Humans", value=f"> {str(humans)}", inline=True)
+            embed.add_field(name=f"Bots", value=f"> {str(bots)}", inline=True)
+            await ctx.send(embed=embed)
+            
 async def setup(client):
     await client.add_cog(Information(client))
