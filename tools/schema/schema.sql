@@ -119,3 +119,11 @@ CREATE TABLE IF NOT EXISTS userinfo (
     footer TEXT,
     bio TEXT
 );
+CREATE TABLE IF NOT EXISTS giveaways (
+    giveaway_id BIGSERIAL PRIMARY KEY,
+    guild_id BIGINT NOT NULL,
+    message_id BIGINT NOT NULL,
+    button_id TEXT NOT NULL,
+    end_time TIMESTAMPTZ NOT NULL,
+    prize TEXT NOT NULL
+);
