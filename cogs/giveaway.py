@@ -12,7 +12,7 @@ class Giveaway(commands.Cog):
 
     @commands.command()
     async def start_giveaway(self, ctx, duration: int, prize: str):
-        # Calculate end time and format it for Discord
+        # Calculate end time and format it
         end_time = datetime.utcnow() + timedelta(seconds=duration)
         formatted_time = format_dt(end_time, style="R")
 
@@ -78,25 +78,30 @@ class Giveaway(commands.Cog):
             if not guild:
                 continue
 
-            channel = guild.get_channel(giveaway['channel_id'])
-            if not channel:
-                continue
-            
-            message = await channel.fetch_message(giveaway['message_id'])
-            participants = await self.client.pool.fetch(
-                "SELECT user_id FROM giveaway_entries WHERE giveaway_id = $1", giveaway['giveaway_id']
-            )
+            try:
+                # Fetch the message to locate the channel
+                message = await guild.fetch_message(giveaway['message_id'])
+                channel = message.channel
+                participants = await self.client.pool.fetch(
+                    "SELECT user_id FROM giveaway_entries WHERE giveaway_id = $1", giveaway['giveaway_id']
+                )
 
-            if participants:
-                winner = random.choice(participants)['user_id']
-                await channel.send(f"🎉 Congratulations <@{winner}>! You won **{giveaway['prize']}**!")
-            else:
-                await channel.send(f"No one entered the giveaway for **{giveaway['prize']}**.")
-            
-            # Clean up database
-            await self.client.pool.execute(
-                "DELETE FROM giveaways WHERE giveaway_id = $1", giveaway['giveaway_id']
-            )
+                if participants:
+                    winner = random.choice(participants)['user_id']
+                    await channel.send(f"🎉 Congratulations <@{winner}>! You won **{giveaway['prize']}**!")
+                else:
+                    await channel.send(f"No one entered the giveaway for **{giveaway['prize']}**.")
+                
+                # Clean up database
+                await self.client.pool.execute(
+                    "DELETE FROM giveaways WHERE giveaway_id = $1", giveaway['giveaway_id']
+                )
+
+            except discord.NotFound:
+                print(f"Message {giveaway['message_id']} not found in guild {guild.id}. Cleaning up giveaway.")
+                await self.client.pool.execute(
+                    "DELETE FROM giveaways WHERE giveaway_id = $1", giveaway['giveaway_id']
+                )
 
     @check_giveaway.before_loop
     async def before_check_giveaway(self):
