@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands, tasks
+from discord.ui import Button, View
 from discord.utils import format_dt
-import asyncpg
 import random
 from datetime import datetime, timedelta
 
@@ -25,27 +25,27 @@ class Giveaway(commands.Cog):
 
         # Message and button setup
         message = await ctx.send(embed=embed)
-        button = discord.ui.Button(label="Enter Giveaway", style=discord.ButtonStyle.primary)
-        button_id = f"giveaway-{message.id}"
-
+        button = Button(label="Enter Giveaway", style=discord.ButtonStyle.primary)
+        
         async def button_callback(interaction: discord.Interaction):
-            await self.enter_giveaway(interaction, button_id)
-
+            # Call the enter_giveaway function to handle the entry
+            await self.enter_giveaway(interaction, message.id)
+        
         button.callback = button_callback
-        view = discord.ui.View()
+        view = View()
         view.add_item(button)
         await message.edit(view=view)
 
-        # Database insertion
+        # Store the giveaway in the database
         await self.client.pool.execute(
-            "INSERT INTO giveaways (guild_id, message_id, button_id, end_time, prize) VALUES ($1, $2, $3, $4, $5)",
-            ctx.guild.id, message.id, button_id, end_time, prize
+            "INSERT INTO giveaways (guild_id, message_id, end_time, prize) VALUES ($1, $2, $3, $4)",
+            ctx.guild.id, message.id, end_time, prize
         )
 
-    async def enter_giveaway(self, interaction: discord.Interaction, button_id: str):
-        # Fetch giveaway by button_id
+    async def enter_giveaway(self, interaction: discord.Interaction, message_id: int):
+        # Fetch the giveaway by message_id
         giveaway = await self.client.pool.fetchrow(
-            "SELECT * FROM giveaways WHERE button_id = $1", button_id
+            "SELECT * FROM giveaways WHERE message_id = $1", message_id
         )
         
         if not giveaway:
