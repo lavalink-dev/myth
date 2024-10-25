@@ -533,7 +533,7 @@ class Information(commands.Cog):
             humans = sum(1 for member in ctx.guild.members if not member.bot)
             bots = all - humans
 
-            embed = discord.Embed(description=f"> **All:** {str(all)} \n> **Humans:** {str(humans)} \n> {str(bots)}", color=color.default)
+            embed = discord.Embed(description=f"> **All:** `{str(all)}` \n> **Humans:** `{str(humans)}` \n> **Bots:** `{str(bots)}`", color=color.default)
             icon_url = ctx.guild.icon.url if ctx.guild.icon else None
             embed.set_author(name=f"{ctx.guild.name} | membercount", icon_url=icon_url)
             await ctx.send(embed=embed)
