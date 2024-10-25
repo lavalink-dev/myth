@@ -127,3 +127,8 @@ CREATE TABLE IF NOT EXISTS giveaways (
     end_time TIMESTAMPTZ NOT NULL,
     prize TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS giveaway_entries (
+    giveaway_id BIGINT REFERENCES giveaways(giveaway_id) ON DELETE CASCADE,
+    user_id BIGINT NOT NULL,
+    PRIMARY KEY (giveaway_id, user_id)
+);
