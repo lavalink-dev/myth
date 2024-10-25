@@ -104,15 +104,8 @@ class Information(commands.Cog):
         embed = discord.Embed(color=color.default)
         embed.set_author(name=f"{name} ({member.id})", icon_url=user_pfp)
 
-        embed.add_field(name="Joined", value=f"> {format_dt(member.joined_at, style='D') if hasattr(member, 'joined_at') else 'n/a'} \n> {format_dt(member.joined_at, style='R') if member.joined_at else 'n/a'}", inline=True)
-        embed.add_field(name="Created", value=f"> {format_dt(member.created_at, style='D') if hasattr(member, 'created_at') else 'n/a'} \n> {format_dt(member.created_at, style='R') if hasattr(member, 'created_at') else 'n/a'}", inline=True)
-        embed.add_field(name="", value=f"‎ ‎ ", inline=True)
-
         if bio:
             embed.description = f"> {bio}"
-
-        if uid:
-            embed.add_field(name="UID", value=f"> {uid}")
 
         if footer:
             embed.set_footer(text=footer)
@@ -138,8 +131,10 @@ class Information(commands.Cog):
         if member.guild.premium_subscriber_role and member.guild.premium_subscriber_role in member.roles: 
             badges.append("<a:boost:1291122311944081531>")
 
-        if badges:
-            embed.add_field(name="Badges", value=f"> {' '.join(badges)}", inline=True)
+            
+            embed.add_field(name="Joined", value=f"> {format_dt(member.joined_at, style='D') if hasattr(member, 'joined_at') else 'n/a'} \n> {format_dt(member.joined_at, style='R') if member.joined_at else 'n/a'}", inline=True)
+            embed.add_field(name="Created", value=f"> {format_dt(member.created_at, style='D') if hasattr(member, 'created_at') else 'n/a'} \n> {format_dt(member.created_at, style='R') if hasattr(member, 'created_at') else 'n/a'}", inline=True)
+            embed.add_field(name="Extra", value=f"‎> **UID:** {uid} \n> {' '.join(badges)}", inline=True)
 
         if member:
             roles = [role.mention for role in member.roles[1:]]
