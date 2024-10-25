@@ -534,6 +534,9 @@ class Information(commands.Cog):
             bots = all - humans
 
             embed = discord.Embed(color=color.default)
+            icon_url = ctx.guild.icon.url if ctx.guild.icon else None
+            
+            embed.set_author(name=f"{ctx.guild.name} | membercount", icon_url=icon_url)
             embed.add_field(name=f"All", value=f"> {str(all)}", inline=True)
             embed.add_field(name=f"Humans", value=f"> {str(humans)}", inline=True)
             embed.add_field(name=f"Bots", value=f"> {str(bots)}", inline=True)
