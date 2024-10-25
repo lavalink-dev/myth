@@ -93,7 +93,7 @@ class Information(commands.Cog):
             except discord.NotFound:
                 member = await self.client.fetch_user(member.id) 
 
-        user_data = await self.bot.pool.fetchrow("""
+        user_data = await self.client.pool.fetchrow("""
             SELECT u.uid, i.name, i.footer, i.bio 
             FROM uids u 
             LEFT JOIN userinfo i ON u.user_id = i.user_id 
@@ -106,7 +106,7 @@ class Information(commands.Cog):
         bio = user_data['bio'] if user_data and user_data['bio'] else ""
 
         user_pfp = member.avatar.url if member.avatar else member.default_avatar.url
-        embed = discord.Embed(color=discord.Color.default())
+        embed = discord.Embed(color=color.default)
         embed.set_author(name=f"{name} ({member.id})", icon_url=user_pfp)
 
         if bio:
