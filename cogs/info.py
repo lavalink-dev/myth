@@ -87,15 +87,6 @@ class Information(commands.Cog):
     async def userinfo(self, ctx, member: discord.Member = None):
         if member is None:
             member = ctx.author
-        else:
-            try:
-                member = await commands.MemberConverter().convert(ctx, str(member))
-            except commands.MemberNotFound:
-                try:
-                    member = await self.client.fetch_user(int(member.id))
-                except Exception:
-                    await ctx.send("Could not find that user.")
-                    return
 
         user_data = await self.client.pool.fetchrow("""
             SELECT u.uid, i.name, i.footer, i.bio 
@@ -134,21 +125,24 @@ class Information(commands.Cog):
             badges.append("<:activedev:1291122427094368348>")
         if user.id == 394152799799345152:
             badges.append("<:dev:1291123071498981436>")
-        if isinstance(member, discord.Member):
-            if member.premium_since:
-                badges.append("<:nitro:1291122409293742102>")
-            if ctx.guild.premium_subscriber_role and ctx.guild.premium_subscriber_role in member.roles:
-                badges.append("<a:boost:1291122311944081531>")
 
-        embed.add_field(name="Created", value=f"> {format_dt(member.created_at, style='D')} \n> {format_dt(member.created_at, style='R')}", inline=True)
+        if member.premium_since:  
+            badges.append("<:nitro:1291122409293742102>")
+        if member.guild.premium_subscriber_role and member.guild.premium_subscriber_role in member.roles: 
+            badges.append("<a:boost:1291122311944081531>")
+
+        embed.add_field(name="Joined", value=f"> {format_dt(member.joined_at, style='D') if hasattr(member, 'joined_at') else 'n/a'} \n> {format_dt(member.joined_at, style='R') if member.joined_at else 'n/a'}", inline=True)
+        embed.add_field(name="Created", value=f"> {format_dt(member.created_at, style='D') if hasattr(member, 'created_at') else 'n/a'} \n> {format_dt(member.created_at, style='R') if hasattr(member, 'created_at') else 'n/a'}", inline=True)
         embed.add_field(name="Extra", value=f"> **UID:** {uid} \n> **Badges:** {' '.join(badges) if badges else 'None'}", inline=True)
-
-        if isinstance(member, discord.Member):
-            embed.add_field(name="Joined", value=f"> {format_dt(member.joined_at, style='D') if member.joined_at else 'n/a'} \n> {format_dt(member.joined_at, style='R') if member.joined_at else 'n/a'}", inline=True)
+        
+        if member:
             roles = [role.mention for role in member.roles[1:]]
-            if roles:
-                roles_display = ', '.join(roles[:5]) + (f" + {len(roles) - 5} more" if len(roles) > 5 else "")
-                embed.add_field(name="Roles", value=f"> {roles_display}", inline=False)
+            if len(roles) > 5:
+                roles_display = ', '.join(roles[:5]) + f" + {len(roles) - 5} more"
+            else:
+                roles_display = ', '.join(roles) if roles else "n/a"
+
+            embed.add_field(name="Roles", value=f"> {roles_display}", inline=False)
 
         await ctx.send(embed=embed)
         
