@@ -131,10 +131,9 @@ class Information(commands.Cog):
         if member.guild.premium_subscriber_role and member.guild.premium_subscriber_role in member.roles: 
             badges.append("<a:boost:1291122311944081531>")
 
-            
-            embed.add_field(name="Joined", value=f"> {format_dt(member.joined_at, style='D') if hasattr(member, 'joined_at') else 'n/a'} \n> {format_dt(member.joined_at, style='R') if member.joined_at else 'n/a'}", inline=True)
-            embed.add_field(name="Created", value=f"> {format_dt(member.created_at, style='D') if hasattr(member, 'created_at') else 'n/a'} \n> {format_dt(member.created_at, style='R') if hasattr(member, 'created_at') else 'n/a'}", inline=True)
-            embed.add_field(name="Extra", value=f"‎> **UID:** {uid} \n> {' '.join(badges)}", inline=True)
+        embed.add_field(name="Joined", value=f"> {format_dt(member.joined_at, style='D') if hasattr(member, 'joined_at') else 'n/a'} \n> {format_dt(member.joined_at, style='R') if member.joined_at else 'n/a'}", inline=True)
+        embed.add_field(name="Created", value=f"> {format_dt(member.created_at, style='D') if hasattr(member, 'created_at') else 'n/a'} \n> {format_dt(member.created_at, style='R') if hasattr(member, 'created_at') else 'n/a'}", inline=True)
+        embed.add_field(name="Extra", value=f"‎> **UID:** {uid} \n> {' '.join(badges)}", inline=True)
 
         if member:
             roles = [role.mention for role in member.roles[1:]]
