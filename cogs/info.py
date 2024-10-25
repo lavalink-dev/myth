@@ -89,9 +89,13 @@ class Information(commands.Cog):
             member = ctx.author
         else:
             try:
-                member = await ctx.guild.fetch_member(member.id)
-            except discord.NotFound:
-                member = await self.client.fetch_user(member.id) 
+                member = await commands.MemberConverter().convert(ctx, str(member))
+            except commands.MemberNotFound:
+                try:
+                    member = await self.client.fetch_user(int(member.id))
+                except Exception:
+                    await ctx.send("Could not find that user.")
+                    return
 
         user_data = await self.client.pool.fetchrow("""
             SELECT u.uid, i.name, i.footer, i.bio 
