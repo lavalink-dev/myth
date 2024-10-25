@@ -32,8 +32,9 @@ CREATE TABLE IF NOT EXISTS skullboard_settings (
     reaction_count INTEGER DEFAULT 1
 );
 CREATE TABLE IF NOT EXISTS pingonjoin_settings (
-    guild_id BIGINT PRIMARY KEY,
-    channel_id BIGINT
+    guild_id BIGINT,
+    channel_id BIGINT,
+    PRIMARY KEY (guild_id, channel_id)
 );
 CREATE TABLE IF NOT EXISTS autorespond_settings (
     guild_id BIGINT PRIMARY KEY,
