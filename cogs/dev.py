@@ -128,8 +128,8 @@ class Developer(commands.Cog):
         embed1 = discord.Embed(title="Myth", description="> The bot that will change your discord server forever.", color=color.default)
         embed1.add_field(name="Why Myth?", value="- 24/7 online\n- Active updates\n- Automoderation\n- Just simply cooler 😎", inline=False)
 
-        embed2 = discord.Embed(description="<:29:1298731238655266847> - Downtimes or undergoing maintenances \n <:28:1298731241209729024> Updates, changelogs and devlogs", color=color.default)
-        embed2.add_field(name="Example Feature", value="This could contain additional features or a changelog.", inline=False)
+        embed2 = discord.Embed(title="Roles", description="> <:29:1298731238655266847> - Downtimes or undergoing maintenances \n> <:28:1298731241209729024> - Updates, changelogs and devlogs", color=color.default)
+        embed2.add_field(name="Rules", value="> No selfbot \n> No promo (includes dm promo)", inline=False)
 
         await ctx.send(embeds=[embed1, embed2])
 
