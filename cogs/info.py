@@ -528,7 +528,7 @@ class Information(commands.Cog):
         aliases=["mc"]
     )
     async def membercount(self, ctx):
-        if guild:
+        if ctx.guild:
             all = ctx.guild.member_count
             humans = sum(1 for member in ctx.guild.members if not member.bot)
             bots = all - humans
