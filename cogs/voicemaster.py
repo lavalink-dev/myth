@@ -179,7 +179,7 @@ class VoiceMaster(commands.Cog):
             if user_channel and user_channel.category == category and user_channel != create_channel:
                 owner_id = await self.get_owner(user_channel.id)
                 if owner_id != interaction.user.id and custom_id != "delete":
-                    await interaction.response.send_message(embed=discord.Embed(description=f"> You are **not** the owner of this voice channel", color=discord.Color.red()), ephemeral=True)
+                    await interaction.response.send_message(embed=discord.Embed(description=f"> {emojis.deny} {interaction.user.mention}: You are **not** the owner of this voice channel", color=color.deny), ephemeral=True)
                     return
                     
                 if custom_id == "lock":
