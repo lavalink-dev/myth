@@ -29,12 +29,12 @@ class Skullboard(commands.Cog):
     @commands.has_permissions(manage_channels=True)
     async def skullboard_emoji(self, ctx, emoji: str):
         guild_id = ctx.guild.id
-        existing = await self.client.pool.execute('SELECT * FROM skullboard_settings WHERE guild_id = $1', guild_id)
+        existing = await self.client.pool.execute('SELECT * FROM skullboard WHERE guild_id = $1', guild_id)
 
         if existing:
-            await self.client.pool.execute('UPDATE skullboard_settings SET emoji = $1 WHERE guild_id = $2', emoji, guild_id)
+            await self.client.pool.execute('UPDATE skullboard SET emoji = $1 WHERE guild_id = $2', emoji, guild_id)
         else:
-            await self.client.pool.execute('INSERT INTO skullboard_settings (guild_id, emoji) VALUES ($1, $2)', guild_id, emoji)
+            await self.client.pool.execute('INSERT INTO skullboard (guild_id, emoji) VALUES ($1, $2)', guild_id, emoji)
         
         await ctx.agree(f'**Set** the skullboard emoji to: {emoji}')
 
@@ -45,11 +45,11 @@ class Skullboard(commands.Cog):
     )
     @commands.has_permissions(manage_channels=True)
     async def skullboard_channel(self, ctx, channel: discord.TextChannel):
-        existing = await self.client.pool.fetchrow("SELECT channel_id FROM skullboard_settings WHERE guild_id = $1", ctx.guild.id)
+        existing = await self.client.pool.fetchrow("SELECT channel_id FROM skullboard WHERE guild_id = $1", ctx.guild.id)
         if existing:
             await ctx.deny(f"Skullboard channel is **already** set to: <#{existing['channel_id']}>")
         else:
-            await self.client.pool.execute("INSERT INTO skullboard_settings (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2", ctx.guild.id, channel.id)
+            await self.client.pool.execute("INSERT INTO skullboard (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2", ctx.guild.id, channel.id)
             await ctx.agree(f"**Set** the skullboard channel to: {channel.mention}")
 
     @skullboard.command(
@@ -59,12 +59,12 @@ class Skullboard(commands.Cog):
     @commands.has_permissions(manage_channels=True)
     async def skullboard_count(self, ctx, count: int):
         guild_id = ctx.guild.id
-        existing = await self.client.pool.execute('SELECT * FROM skullboard_settings WHERE guild_id = $1', guild_id)
+        existing = await self.client.pool.execute('SELECT * FROM skullboard WHERE guild_id = $1', guild_id)
 
         if existing:
-            await self.client.pool.execute('UPDATE skullboard_settings SET reaction_count = $1 WHERE guild_id = $2', count, guild_id)
+            await self.client.pool.execute('UPDATE skullboard SET reaction_count = $1 WHERE guild_id = $2', count, guild_id)
         else:
-            await self.client.pool.execute('INSERT INTO skullboard_settings (guild_id, reaction_count) VALUES ($1, $2)', guild_id, count)
+            await self.client.pool.execute('INSERT INTO skullboard (guild_id, reaction_count) VALUES ($1, $2)', guild_id, count)
         
         await ctx.agree(f'**Set** the skullboard count to: {count}')
 
@@ -74,7 +74,7 @@ class Skullboard(commands.Cog):
     )
     @commands.has_permissions(manage_channels=True)
     async def skullboard_clear(self, ctx: Context):
-        await self.client.pool.execute("DELETE FROM skullboard_settings WHERE guild_id = $1", ctx.guild.id)
+        await self.client.pool.execute("DELETE FROM skullboard WHERE guild_id = $1", ctx.guild.id)
         await ctx.agree("**Cleared** all skullboard settings")
 
     @skullboard.command(
@@ -83,9 +83,9 @@ class Skullboard(commands.Cog):
     )
     @commands.has_permissions(manage_channels=True)
     async def skullboard_remove(self, ctx):
-        existing = await self.client.pool.fetchrow("SELECT channel_id FROM skullboard_settings WHERE guild_id = $1", ctx.guild.id)
+        existing = await self.client.pool.fetchrow("SELECT channel_id FROM skullboard WHERE guild_id = $1", ctx.guild.id)
         if existing:
-            await self.client.pool.execute("DELETE FROM skullboard_settings WHERE guild_id = $1", ctx.guild.id)
+            await self.client.pool.execute("DELETE FROM skullboard WHERE guild_id = $1", ctx.guild.id)
             await ctx.agree("**Removed** the skullboard channel")
         else:
             await ctx.deny("A channel isn't **set**")
@@ -96,7 +96,7 @@ class Skullboard(commands.Cog):
             return
 
         guild_id = reaction.message.guild.id
-        settings = await self.client.pool.fetchrow('SELECT emoji, channel_id, reaction_count FROM skullboard_settings WHERE guild_id = $1', guild_id)
+        settings = await self.client.pool.fetchrow('SELECT emoji, channel_id, reaction_count FROM skullboard WHERE guild_id = $1', guild_id)
         
         emoji = settings['emoji'] if settings else '💀'
         channel_id = settings['channel_id'] if settings else None
@@ -147,7 +147,7 @@ class Skullboard(commands.Cog):
             return
 
         guild_id = reaction.message.guild.id
-        settings = await self.client.pool.fetchrow('SELECT emoji, channel_id, reaction_count FROM skullboard_settings WHERE guild_id = $1', guild_id)
+        settings = await self.client.pool.fetchrow('SELECT emoji, channel_id, reaction_count FROM skullboard WHERE guild_id = $1', guild_id)
 
         emoji = settings['emoji'] if settings else '💀'
         channel_id = settings['channel_id'] if settings else None
