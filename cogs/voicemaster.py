@@ -39,7 +39,7 @@ class Voicemaster(commands.Cog):
     async def set_owner(self, channel_id, owner_id):
         await self.client.pool.execute(
             """
-            INSERT INTO vc_owners (channel_id, owner_id) 
+            INSERT INTO voicemaster_owners (channel_id, owner_id) 
             VALUES ($1, $2)
             ON CONFLICT (channel_id) 
             DO UPDATE SET owner_id = $2
@@ -48,7 +48,7 @@ class Voicemaster(commands.Cog):
         )
 
     async def get_owner(self, channel_id):
-        row = await self.client.pool.fetchrow("SELECT owner_id FROM vc_owners WHERE channel_id = $1", channel_id)
+        row = await self.client.pool.fetchrow("SELECT owner_id FROM voicemaster_owners WHERE channel_id = $1", channel_id)
         return row['owner_id'] if row else None
 
     @commands.group(
@@ -132,7 +132,7 @@ class Voicemaster(commands.Cog):
                     await before.channel.set_permissions(new_owner, connect=True, manage_channels=True)
                     await self.set_owner(before.channel.id, new_owner.id)
                 else:
-                    await self.client.pool.execute("DELETE FROM vc_owners WHERE channel_id = $1", before.channel.id)
+                    await self.client.pool.execute("DELETE FROM voicemaster_owners WHERE channel_id = $1", before.channel.id)
 
     async def send_interface_message(self, guild, interface):
         embed = discord.Embed(title="", description=f"> **Control** your voice channel with buttons", color=color.default)
