@@ -99,7 +99,7 @@ class Moderation(commands.Cog):
             await ctx.deny("You **cannot** ban someone with an equal or higher role")
             return
 
-        result = await self.client.pool.fetchrow("SELECT message FROM invoke_settings WHERE guild_id = $1 AND command = $2", ctx.guild.id, "ban")
+        result = await self.client.pool.fetchrow("SELECT message FROM invoke WHERE guild_id = $1 AND command = $2", ctx.guild.id, "ban")
         custom_message = result['message'] if result else None
 
         await member.ban(reason=reason)
@@ -121,7 +121,7 @@ class Moderation(commands.Cog):
             await ctx.deny("You **cannot** softban someone with an equal or higher role")
             return
 
-        result = await self.client.pool.fetchrow("SELECT message FROM invoke_settings WHERE guild_id = $1 AND command = $2", ctx.guild.id, "softban")
+        result = await self.client.pool.fetchrow("SELECT message FROM invoke WHERE guild_id = $1 AND command = $2", ctx.guild.id, "softban")
         custom_message = result['message'] if result else None
 
         await member.ban(reason=reason)
@@ -141,7 +141,7 @@ class Moderation(commands.Cog):
             await ctx.warn("**Mention** a user")
             return
 
-        result = await self.client.pool.fetchrow("SELECT message FROM invoke_settings WHERE guild_id = $1 AND command = $2", ctx.guild.id, "unban")
+        result = await self.client.pool.fetchrow("SELECT message FROM invoke WHERE guild_id = $1 AND command = $2", ctx.guild.id, "unban")
         custom_message = result['message'] if result else None
 
         await ctx.guild.unban(member)
@@ -163,7 +163,7 @@ class Moderation(commands.Cog):
             await ctx.deny("You **cannot** kick someone with an equal or higher role")
             return
 
-        result = await self.client.pool.fetchrow("SELECT message FROM invoke_settings WHERE guild_id = $1 AND command = $2", ctx.guild.id, "kick")
+        result = await self.client.pool.fetchrow("SELECT message FROM invoke WHERE guild_id = $1 AND command = $2", ctx.guild.id, "kick")
         custom_message = result['message'] if result else None
 
         await member.kick(reason=reason)
