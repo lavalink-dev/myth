@@ -39,18 +39,18 @@ class Skullboard(commands.Cog):
         await ctx.agree(f'**Set** the skullboard emoji to: {emoji}')
 
     @skullboard.command(
-        name="channel", 
-        description="Set the skullboard channel", 
+        name="channel",
+        description="Set the skullboard channel",
         aliases=["chnnel"]
     )
     @commands.has_permissions(manage_channels=True)
-    async def skullboard_channel(self, ctx, channel: discord.TextChannel):
-        existing = await self.client.pool.fetchrow("SELECT channel_id FROM skullboard WHERE guild_id = $1", ctx.guild.id)
-        if existing:
-            await ctx.deny(f"Skullboard channel is **already** set to: <#{existing['channel_id']}>")
-        else:
-            await self.client.pool.execute("INSERT INTO skullboard (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2", ctx.guild.id, channel.id)
-            await ctx.agree(f"**Set** the skullboard channel to: {channel.mention}")
+    async def skullboard_channel(self, ctx, channel: discord.TextChannel = None):
+        if channel is None:
+            await ctx.warn("**Mention** a channel")
+            return
+            
+        await self.client.pool.execute("INSERT INTO skullboard (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2", ctx.guild.id, channel.id)
+        await ctx.agree(f"**Set** the skullboard channel to: {channel.mention}")
 
     @skullboard.command(
         name="count", 
