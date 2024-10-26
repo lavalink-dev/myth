@@ -48,8 +48,8 @@ class Config(commands.Cog):
             await ctx.send_help(ctx.command.qualified_name)
 
     @welcome.command(
-        name="channel", 
-        description="Set the welcome channel", 
+        name="channel",
+        description="Set the welcome channel",
         aliases=["chnnel"]
     )
     @commands.has_permissions(manage_channels=True)
@@ -58,13 +58,8 @@ class Config(commands.Cog):
             await ctx.warn("**Mention** a channel")
             return
             
-        existing = await self.client.pool.fetchrow("SELECT channel_id FROM welcome WHERE guild_id = $1", ctx.guild.id)
-        
-        if existing:
-            await ctx.deny(f"Welcome channel is **already** set to: <#{existing['channel_id']}>")
-        else:
-            await self.client.pool.execute("INSERT INTO welcome (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2", ctx.guild.id, channel.id)
-            await ctx.agree(f"**Set** the welcome channel to: {channel.mention}")
+        await self.client.pool.execute("INSERT INTO welcome (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2", ctx.guild.id, channel.id)
+        await ctx.agree(f"**Set** the welcome channel to: {channel.mention}")
 
     @welcome.command(
         name="message",
@@ -136,8 +131,8 @@ class Config(commands.Cog):
             await ctx.send_help(ctx.command.qualified_name)
 
     @goodbye.command(
-        name="channel", 
-        description="Set the goodbye channel", 
+        name="channel",
+        description="Set the goodbye channel",
         aliases=["chnnel"]
     )
     @commands.has_permissions(manage_channels=True)
@@ -145,14 +140,8 @@ class Config(commands.Cog):
         if channel is None:
             await ctx.warn("**Mention** a channel")
             return
-            
-        existing = await self.client.pool.fetchrow("SELECT channel_id FROM goodbye WHERE guild_id = $1", ctx.guild.id)
-        
-        if existing:
-            await ctx.deny(f"Goodbye channel is **already** set to: <#{existing['channel_id']}>")
-        else:
-            await self.client.pool.execute("INSERT INTO goodbye (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2", ctx.guild.id, channel.id)
-            await ctx.agree(f"**Set** the goodbye channel to: {channel.mention}")
+        await self.client.pool.execute("INSERT INTO goodbye (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2", ctx.guild.id, channel.id)
+        await ctx.agree(f"**Set** the goodbye channel to: {channel.mention}")
 
     @goodbye.command(
         name="message", 
@@ -223,8 +212,8 @@ class Config(commands.Cog):
             await ctx.send_help(ctx.command.qualified_name)
 
     @boost.command(
-        name="channel", 
-        description="Set the boost channel", 
+        name="channel",
+        description="Set the boost channel",
         aliases=["chnnel"]
     )
     @commands.has_permissions(manage_channels=True)
@@ -232,14 +221,8 @@ class Config(commands.Cog):
         if channel is None:
             await ctx.warn("**Mention** a channel")
             return
-            
-        existing = await self.client.pool.fetchrow("SELECT channel_id FROM boost WHERE guild_id = $1", ctx.guild.id)
-        
-        if existing:
-            await ctx.deny(f"Boost channel is **already** set to: <#{existing['channel_id']}>")
-        else:
-            await self.client.pool.execute("INSERT INTO boost (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2", ctx.guild.id, channel.id)
-            await ctx.agree(f"**Set** the boost channel to: {channel.mention}")
+        await self.client.pool.execute("INSERT INTO boost (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2", ctx.guild.id, channel.id)
+        await ctx.agree(f"**Set** the boost channel to: {channel.mention}")
 
     @boost.command(
         name="message", description="Set the boost message", 
