@@ -23,6 +23,18 @@ class Events(commands.Cog):
             commands.MissingRequiredArgument,
             commands.MissingPermissions,
             commands.BotMissingPermissions,
+            commands.MemberNotFound,
+            commands.BadArgument,
+            commands.MissingRequiredArgument,
+            commands.BadUnionArgument,
+            commands.BotMissingPermissions,
+            commands.CommandOnCooldown,
+            commands.TooManyArguments,
+            commands.ChannelNotFound,
+            commands.UserNotFound,
+            commands.RoleNotFound,
+            commands.EmojiNotFound,
+            
         )
 
         if not isinstance(error, skip):
@@ -67,7 +79,7 @@ class Events(commands.Cog):
             await ctx.deny(f"**Missing** a required argument \n> ```{error.param.name}```")
 
         elif isinstance(error, commands.TooManyArguments):
-            await ctx.deny("**Too many arguments provided**")
+            await ctx.deny("Too **many** arguments provided")
 
         elif isinstance(error, commands.ChannelNotFound):
             await ctx.deny("**Could not** find the channel")
