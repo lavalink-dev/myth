@@ -8,7 +8,7 @@ from discord.ui        import Button, View
 from tools.context     import Context
 from tools.config      import emoji, color
 
-class VoiceMaster(commands.Cog):
+class Voicemaster(commands.Cog):
     def __init__(self, client):
         self.client = client
 
@@ -72,17 +72,17 @@ class VoiceMaster(commands.Cog):
         category, interface, channel = await self.load(guild)
 
         if category:
-            await ctx.deny("VoiceMaster is already **set up**")
+            await ctx.deny("Voicemaster is already **set up**")
             return
 
-        category = await guild.create_category("-")
-        channel = await guild.create_voice_channel("j2c", category=category)
-        interface = await guild.create_text_channel("interface", category=category)
+        category = await guild.create_category("Voicemaster")
+        channel = await guild.create_voice_channel("Join to create", category=category)
+        interface = await guild.create_text_channel("Interface", category=category)
         await interface.set_permissions(guild.default_role, send_messages=False, view_channel=True)
 
         await self.save(guild, category, interface, channel)
 
-        await ctx.agree("**Set** the VoiceMaster up")
+        await ctx.agree("**Set** the voicemaster up")
         await self.send_interface_message(guild, interface)
 
     @voicemaster.command(
@@ -97,7 +97,7 @@ class VoiceMaster(commands.Cog):
         category, interface, channel = await self.load(guild)
 
         if not category:
-            await ctx.deny("VoiceMaster was **not** set up")
+            await ctx.deny("Voicemaster **wasn't** set up")
             return
 
         for ch in category.channels:
@@ -106,7 +106,7 @@ class VoiceMaster(commands.Cog):
 
         await self.client.pool.execute("DELETE FROM voicemaster WHERE guild_id = $1", guild.id)
 
-        await ctx.agree("**Removed** the VoiceMaster setup")
+        await ctx.agree("**Unsetup** the Voicemaster setup")
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
@@ -114,7 +114,9 @@ class VoiceMaster(commands.Cog):
         category, interface, channel = await self.load(guild)
 
         if after.channel and after.channel == channel:
-            new_channel = await after.channel.guild.create_voice_channel(f"{member.display_name}'s lounge", category=category, user_limit=after.channel.user_limit)
+            new_channel = await after.channel.guild.create_voice_channel(
+                f"{member.display_name}'s lounge", category=category, user_limit=after.channel.user_limit
+            )
             await new_channel.set_permissions(member, connect=True, manage_channels=True)
             await self.set_owner(new_channel.id, member.id)
             await member.move_to(new_channel)
@@ -125,27 +127,30 @@ class VoiceMaster(commands.Cog):
         elif before.channel and before.channel != channel and before.channel.members:
             owner_id = await self.get_owner(before.channel.id)
             if owner_id == member.id:
-                new_owner = random.choice(before.channel.members)
-                await before.channel.set_permissions(new_owner, connect=True, manage_channels=True)
-                await self.set_owner(before.channel.id, new_owner.id)
+                if before.channel.members:
+                    new_owner = random.choice(before.channel.members)
+                    await before.channel.set_permissions(new_owner, connect=True, manage_channels=True)
+                    await self.set_owner(before.channel.id, new_owner.id)
+                else:
+                    await self.client.pool.execute("DELETE FROM vc_owners WHERE channel_id = $1", before.channel.id)
 
     async def send_interface_message(self, guild, interface):
         embed = discord.Embed(title="", description=f"> **Control** your voice channel with buttons", color=color.default)
         embed.set_thumbnail(url=guild.icon.url)
-        embed.set_author(name="Myth VoiceMaster", icon_url=self.client.user.avatar.url)
+        embed.set_author(name="Blare Voicemaster", icon_url=self.client.user.avatar.url)
         embed.add_field(
             name="",
             value=(
-                "<:26:1298731245320011856>  [`lock`](https://discord.gg/uid) the voice channel\n"
-                "<:27:1298731243059286077>  [`unlock`](https://discord.gg/uid) the voice channel\n"
-                "<:23:1298731251641090089>  [`hide`](https://discord.gg/uid) the voice channel\n"
-                "<:22:1298731253473874003>  [`reveal`](https://discord.gg/uid) the voice channel\n"
-                "<:29:1298731238655266847> [`kick`](https://discord.gg/uid) a user from the voice channel\n"
-                "<:24:1298731249497538632> [`increase`](https://discord.gg/uid) the voice channel limit\n"
-                "<:21:1298731255621226496> [`decrease`](https://discord.gg/uid) the voice channel limit\n"
-                "<:28:1298731241209729024> [`info`](https://discord.gg/uid) about the voice channel\n"
-                "<:20:1298731391143379017>  [`rename`](https://discord.gg/uid) the voice channel\n"
-                "<:25:1298731247773941847> [`delete`](https://discord.gg/uid) the voice channel"
+                "<:26:1298731245320011856>  [`lock`](https://discord.gg/blare) the voice channel\n"
+                "<:27:1298731243059286077>  [`unlock`](https://discord.gg/blare) the voice channel\n"
+                "<:23:1298731251641090089>  [`hide`](https://discord.gg/blare) the voice channel\n"
+                "<:22:1298731253473874003>  [`reveal`](https://discord.gg/blare) the voice channel\n"
+                "<:29:1298731238655266847> [`kick`](https://discord.gg/blare) a user from the voice channel\n"
+                "<:24:1298731249497538632> [`increase`](https://discord.gg/blare) the voice channel limit\n"
+                "<:21:1298731255621226496> [`decrease`](https://discord.gg/blare) the voice channel limit\n"
+                "<:28:1298731241209729024> [`info`](https://discord.gg/blare) about the voice channel\n"
+                "<:20:1298731391143379017>  [`rename`](https://discord.gg/blare) the voice channel\n"
+                "<:25:1298731247773941847> [`delete`](https://discord.gg/blare) the voice channel"
             ),
             inline=False
         )
@@ -179,7 +184,7 @@ class VoiceMaster(commands.Cog):
             if user_channel and user_channel.category == category and user_channel != create_channel:
                 owner_id = await self.get_owner(user_channel.id)
                 if owner_id != interaction.user.id and custom_id != "delete":
-                    await interaction.response.send_message(embed=discord.Embed(description=f"> {emojis.deny} {interaction.user.mention}: You are **not** the owner of this voice channel", color=color.deny), ephemeral=True)
+                    await interaction.response.send_message(embed=discord.Embed(description=f"> {emoji.deny} {interaction.user.mention}: You are **not** the owner of this voice channel", color=color.deny), ephemeral=True)
                     return
                     
                 if custom_id == "lock":
@@ -285,4 +290,4 @@ class VoiceMaster(commands.Cog):
         await interaction.response.send_message(embed=discord.Embed(description=f"> {emoji.agree} {interaction.user.mention}: **Set** the member limit to: {new_limit}", color=color.agree), ephemeral=True)
 
 async def setup(client):
-    await client.add_cog(VoiceMaster(client))
+    await client.add_cog(Voicemaster(client))
