@@ -1,106 +1,95 @@
 import discord
 from discord.ext import commands
-import wavelink
+import lavalink
+from discord import utils
+from discord import VoiceState
 
 class Music(commands.Cog):
     def __init__(self, client):
         self.client = client
-        self.client.loop.create_task(self.setup_hook())
-
-    async def setup_hook(self):
-        node = wavelink.Node(
-            uri='http://127.0.0.1:2333',
-            password='securepassfr'
+        self.client.lavalink = lavalink.Client(self.client.user.id)
+        self.client.lavalink.add_node(
+            host='127.0.0.1',
+            port=2333,
+            password='securepassfr',
+            region='us'
         )
-        try:
-            await wavelink.Pool.connect(nodes=[node], client=self.client)
-        except Exception as e:
-            print(f"Failed to connect to Lavalink node: {e}")
+        self.client.add_listener(self.client.lavalink.voice_update_handler, 'on_socket_response')
 
     @commands.Cog.listener()
-    async def on_wavelink_node_ready(self, node: wavelink.Node):
-        print(f'Node {node.identifier} is ready!')
+    async def on_voice_state_update(self, member: discord.Member, before: VoiceState, after: VoiceState):
+        if member.id != self.client.user.id:
+            return
+
+        if before.channel is None and after.channel is not None:
+            self.client.lavalink.player_manager.create(guild_id=after.channel.guild.id)
+        elif after.channel is None and player := self.client.lavalink.player_manager.get(before.channel.guild.id):
+            await player.disconnect()
 
     @commands.command()
-    async def play(self, ctx: commands.Context, *, search: str):
-        if not ctx.voice_client:
-            try:
-                vc: wavelink.Player = await ctx.author.voice.channel.connect(cls=wavelink.Player)
-            except Exception as e:
-                return await ctx.send(f"Could not connect to voice channel: {e}")
-        else:
-            vc: wavelink.Player = ctx.voice_client
+    async def play(self, ctx, *, query: str):
+        member = utils.find(lambda m: m.id == ctx.author.id, ctx.guild.members)
+        if member is not None and member.voice is not None:
+            player = self.client.lavalink.player_manager.create(ctx.guild.id)
+            player.store('channel', ctx.channel.id)
+            await ctx.guild.change_voice_state(channel=member.voice.channel)
+            
+            result = await player.node.get_tracks(f'ytsearch:{query}')
+            if not result or not result.tracks:
+                return await ctx.send('Nothing found!')
 
-        try:
-            track = await wavelink.YouTubeTrack.search(search, return_first=True)
-            if not track:
-                return await ctx.send('No song found.')
-            await vc.play(track)
+            track = result.tracks[0]
+            await player.play(track)
             await ctx.send(f'Now playing: `{track.title}`')
-        except Exception as e:
-            await ctx.send(f"Error playing track: {e}")
 
     @commands.command()
-    async def stop(self, ctx: commands.Context):
-        if not ctx.voice_client:
-            return await ctx.send("Not connected to a voice channel.")
-        node = ctx.voice_client
-        await node.stop()
-        await ctx.send("Stopped playing.")
+    async def stop(self, ctx):
+        player = self.client.lavalink.player_manager.get(ctx.guild.id)
+        if not player:
+            return await ctx.send('Not playing anything.')
+        await player.stop()
+        await ctx.send('Stopped playing.')
 
     @commands.command()
-    async def pause(self, ctx: commands.Context):
-        if not ctx.voice_client:
-            return await ctx.send("Not connected to a voice channel.")
-        node = ctx.voice_client
-        if not node.is_playing():
-            return await ctx.send("Nothing is playing.")
-        await node.pause()
-        await ctx.send("Paused the player.")
+    async def pause(self, ctx):
+        player = self.client.lavalink.player_manager.get(ctx.guild.id)
+        if not player:
+            return await ctx.send('Not playing anything.')
+        await player.set_pause(True)
+        await ctx.send('Paused.')
 
     @commands.command()
-    async def resume(self, ctx: commands.Context):
-        if not ctx.voice_client:
-            return await ctx.send("Not connected to a voice channel.")
-        node = ctx.voice_client
-        if not node.is_paused():
-            return await ctx.send("Player is not paused.")
-        await node.resume()
-        await ctx.send("Resumed the player.")
+    async def resume(self, ctx):
+        player = self.client.lavalink.player_manager.get(ctx.guild.id)
+        if not player:
+            return await ctx.send('Not playing anything.')
+        await player.set_pause(False)
+        await ctx.send('Resumed.')
 
     @commands.command()
-    async def volume(self, ctx: commands.Context, vol: int):
-        if not ctx.voice_client:
-            return await ctx.send("Not connected to a voice channel.")
-        if not 0 <= vol <= 100:
-            return await ctx.send("Volume must be between 0 and 100.")
-        node = ctx.voice_client
-        await node.set_volume(vol)
-        await ctx.send(f"Set volume to {vol}%")
+    async def volume(self, ctx, volume: int):
+        player = self.client.lavalink.player_manager.get(ctx.guild.id)
+        if not player:
+            return await ctx.send('Not playing anything.')
+        
+        await player.set_volume(volume)
+        await ctx.send(f'Set volume to {volume}')
 
     @commands.command()
-    async def skip(self, ctx: commands.Context):
-        if not ctx.voice_client:
-            return await ctx.send("Not connected to a voice channel.")
-        node = ctx.voice_client
-        if not node.is_playing():
-            return await ctx.send("Nothing is playing.")
-        await node.stop()
-        await ctx.send("Skipped the current track.")
+    async def skip(self, ctx):
+        player = self.client.lavalink.player_manager.get(ctx.guild.id)
+        if not player:
+            return await ctx.send('Not playing anything.')
+        await player.skip()
+        await ctx.send('Skipped song.')
 
     @commands.command()
-    async def disconnect(self, ctx: commands.Context):
-        if not ctx.voice_client:
-            return await ctx.send("Not connected to a voice channel.")
-        await ctx.voice_client.disconnect()
-        await ctx.send("Disconnected from voice channel.")
-
-    @play.before_invoke
-    async def ensure_voice(self, ctx: commands.Context):
-        if not ctx.author.voice:
-            raise commands.CommandError("You are not connected to a voice channel.")
-        if ctx.voice_client and ctx.voice_client.channel != ctx.author.voice.channel:
-            raise commands.CommandError("Bot is already in a voice channel.")
+    async def disconnect(self, ctx):
+        player = self.client.lavalink.player_manager.get(ctx.guild.id)
+        if not player:
+            return await ctx.send('Not connected.')
+        await player.disconnect()
+        await ctx.send('Disconnected.')
 
 async def setup(client):
     await client.add_cog(Music(client))
