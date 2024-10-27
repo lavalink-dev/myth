@@ -57,7 +57,21 @@ class Network(commands.Cog):
 
     @commands.command()
     async def roblox(self, ctx, username: str):
-        data = await self.fulcrumapi.roblox_user(username)
+        # Mocking the Roblox data
+        data = {
+            "username": username,
+            "display_name": "RobloxUser",
+            "bio": "Just another Roblox player",
+            "id": 123456,
+            "banned": False,
+            "verified": True,
+            "avatar": "https://example.com/avatar.jpg",
+            "created_at": "2023-01-01",
+            "url": f"https://roblox.com/users/{123456}/profile",
+            "friends": 150,
+            "followers": 2000,
+            "followings": 150
+        }
         embed = discord.Embed(color=0xffffff, title=f"{data['display_name']} {data['username']}")
         embed.set_thumbnail(url=data["avatar"])
         embed.add_field(name="ID", value=data["id"])
