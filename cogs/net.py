@@ -14,7 +14,8 @@ class Network(commands.Cog):
     @commands.command()
     async def tiktok(self, ctx, username: str):
         data = await self.fulcrumapi.tiktok_user(username)
-        embed = discord.Embed(color=color.default, title=data["nickname"])
+        embed = discord.Embed(color=color.default, title=f"{data['nickname']} {data['username']}")
+        embed.set_thumbnail(url=data["profile_picture"])
         embed.add_field(name="followers", value=data["followers"])
         embed.add_field(name="following", value=data["following"])
         embed.add_field(name="videos", value=data["videos"])
