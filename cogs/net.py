@@ -47,7 +47,7 @@ class Network(commands.Cog):
 
     @commands.command()
     async def roblox(self, ctx, username: str):
-        data = await self.fulcrumapi.roblox_user(username)
+        data = await self.fulcrumapi.roblox(username)
         embed = discord.Embed(color=color.default, description=f"> {data['bio'] if data['bio'] else 'n/a'}")
         embed.set_author(name=f"{data['display_name']} | {data['username']}")
         embed.set_thumbnail(url=data["avatar"])
@@ -63,7 +63,7 @@ class Network(commands.Cog):
 
     @commands.command()
     async def cashapp(self, ctx, username: str):
-        data = await self.fulcrumapi.cashapp_user(username)
+        data = await self.fulcrumapi.cashapp(username)
         embed = discord.Embed(color=int(data.get("accent_color", "0xffffff"), 16), description="> CashApp Profile")
         embed.set_author(name=f"{data['display_name']} | {data['username']}")
         embed.set_thumbnail(url=data["avatar"])
