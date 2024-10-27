@@ -1,4 +1,6 @@
 import discord
+import get
+import aiohttp
 
 from discord.ext       import commands
 from fulcrum_api       import FulcrumAPI
@@ -42,6 +44,23 @@ class Network(commands.Cog):
         embed.add_field(name="Liked Posts", value=data["liked_posts"])
         embed.add_field(name="Tweets", value=data["tweets"])
         embed.add_field(name="Profile URL", value=data["url"], inline=False)
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def roblox(self, ctx, username: str):
+        data = await self.fulcrumapi.roblox_user(username)
+        embed = discord.Embed(color=0xffffff, title=data["display_name"])
+        embed.set_thumbnail(url=data["avatar"])
+        embed.add_field(name="Username", value=data["username"], inline=True)
+        embed.add_field(name="ID", value=data["id"], inline=True)
+        embed.add_field(name="Bio", value=data["bio"] or "No bio", inline=False)
+        embed.add_field(name="Banned", value="Yes" if data["banned"] else "No", inline=True)
+        embed.add_field(name="Verified", value="Yes" if data["verified"] else "No", inline=True)
+        embed.add_field(name="Friends", value=data["friends"], inline=True)
+        embed.add_field(name="Followers", value=data["followers"], inline=True)
+        embed.add_field(name="Following", value=data["followings"], inline=True)
+        embed.add_field(name="Created At", value=data["created_at"], inline=False)
+        embed.add_field(name="Profile URL", value=f"[Link]({data['url']})", inline=False)
         await ctx.send(embed=embed)
 
 async def setup(client):
