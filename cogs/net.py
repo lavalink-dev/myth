@@ -64,7 +64,7 @@ class Network(commands.Cog):
     @commands.command()
     async def cashapp(self, ctx, username: str):
         data = await self.fulcrumapi.cashapp(username)
-        embed = discord.Embed(color=int(data.get("accent_color", "0xffffff"), 16), description="> CashApp Profile")
+        embed = discord.Embed(color=color.default)
         embed.set_author(name=f"{data['display_name']} | {data['username']}")
         embed.set_thumbnail(url=data["avatar"])
         embed.add_field(name="Profile Info", value=f"> **Verified:** {'Yes' if data['verified'] else 'No'}", inline=True)
