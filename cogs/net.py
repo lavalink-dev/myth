@@ -2,6 +2,7 @@ import discord
 
 from discord.ext       import commands
 from fulcrum_api       import FulcrumAPI
+from discord.ui        import Button, View
 
 from tools.context     import Context
 from tools.config      import emoji, color
@@ -14,19 +15,17 @@ class Network(commands.Cog):
     @commands.command()
     async def tiktok(self, ctx, username: str):
         data = await self.fulcrumapi.tiktok_user(username)
-        embed = discord.Embed(color=color.default, title=f"{data['nickname']} {data['username']}")
+        embed = discord.Embed(color=color.default, description=f"> {data["bio"]}")
+        embed.set_author(name=f"{data['nickname']} | {data['username']}")
         embed.set_thumbnail(url=data["avatar"])
-        embed.add_field(name="ID", value=data["id"])
-        embed.add_field(name="ID", value=data["id"])
-        embed.add_field(name="Bio", value=data["bio"], inline=False)
-        embed.add_field(name="Verified", value="Yes" if data["verified"] else "No")
-        embed.add_field(name="Private", value="Yes" if data["private"] else "No")
-        embed.add_field(name="Following", value=data["following"])
-        embed.add_field(name="Followers", value=data["followers"])
-        embed.add_field(name="Hearts", value=data["hearts"])
-        embed.add_field(name="Videos", value=data["videos"])
-        embed.add_field(name="Profile URL", value=data["url"], inline=False)
-        await ctx.send(embed=embed)
+        embed.add_field(name="Counts", value=f"> **Followers:** {data["followers"]} \n> **Following:** {data["following"]} \n> **Likes:** {data["hearts"]}")
+        embed.add_field(name="Extras", value=f"> **ID:** {data['id']} \n> **Verified:** {'Yes' if data['verified'] else 'No'} \n> **Private:** {'Yes' if data['private'] else 'No'} ")
+        embed.add_field(name="Videos", value=f"{data["videos"]}")
+        view = View()
+        profile = Button(style=discord.ButtonStyle.link, label="Profile", url=data["url"], emoji=f"{emoji.link}")
+        
+        view.add_item(profile)
+        await ctx.send(embed=embed, view=view)
 
     @commands.command()
     async def twitter(self, ctx, username: str):
