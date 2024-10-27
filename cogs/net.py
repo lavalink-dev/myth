@@ -40,7 +40,13 @@ class Network(commands.Cog):
         embed.set_thumbnail(url=data.get("avatar", ""))
         embed.add_field(name="Counts", value=f"> **Followers:** {data.get('followers', 'n/a')}\n> **Following:** {data.get('following', 'n/a')}\n> **Posts:** {data.get('posts', 'n/a')}")
         embed.add_field(name="Extras", value=f"> **ID:** {data.get('id', 'n/a')}\n> **Verified:** {'Yes' if data.get('verified') else 'No'}\n> **Location:** {data.get('location', 'n/a')}")
-        embed.add_field(name="Stats", value=f"> **Liked Posts:** {data.get('liked_posts', 'n/a')}\n> **Tweets:** {data.get('tweets', 'n/a')}\n> **Created:** {format_dt(datetime.strptime(data['created_at'], '%Y-%m-%d'), 'R') if data.get('created_at') else 'n/a'}")
+        
+        created_at = data.get('created_at', None)
+        try:
+            created_at_formatted = format_dt(datetime.strptime(created_at, '%a %b %d %H:%M:%S %z %Y'), 'R') if created_at else 'n/a'
+        except ValueError:
+            created_at_formatted = 'n/a'
+        embed.add_field(name="Stats", value=f"> **Liked Posts:** {data.get('liked_posts', 'n/a')}\n> **Tweets:** {data.get('tweets', 'n/a')}\n> **Created:** {created_at_formatted}")
         
         view = View()
         profile = Button(style=discord.ButtonStyle.link, label="Profile", url=data.get("url", ""), emoji=emoji.link)
@@ -56,7 +62,10 @@ class Network(commands.Cog):
         embed.set_thumbnail(url=data.get("avatar", ""))
         embed.add_field(name="Profile Info", value=f"> **ID:** {data.get('id', 'n/a')}\n> **Banned:** {'Yes' if data.get('banned') else 'No'}\n> **Verified:** {'Yes' if data.get('verified') else 'No'}")
         embed.add_field(name="Social", value=f"> **Friends:** {data.get('friends', 'n/a')}\n> **Followers:** {data.get('followers', 'n/a')}\n> **Following:** {data.get('followings', 'n/a')}")
-        embed.add_field(name="Created", value=f"> **At:** {format_dt(datetime.strptime(data['created_at'], '%Y-%m-%d'), 'R') if data.get('created_at') else 'n/a'}")
+        
+        created_at = data.get('created_at', None)
+        created_at_formatted = format_dt(datetime.strptime(created_at, '%Y-%m-%dT%H:%M:%S'), 'R') if created_at else 'n/a'
+        embed.add_field(name="Created", value=f"> **At:** {created_at_formatted}")
         
         view = View()
         profile = Button(style=discord.ButtonStyle.link, label="Profile", url=data.get("url", ""), emoji=emoji.link)
