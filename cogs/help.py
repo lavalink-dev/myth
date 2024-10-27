@@ -26,6 +26,7 @@ class HelpDropdown(discord.ui.Select):
             "VoiceMaster": f"🔊",
             "AutoMod": f"🤖",
             "Fun": f"😺",
+            "Network": f"🌐",
         }
 
         for cogs in client.cogs:
