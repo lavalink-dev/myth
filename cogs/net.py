@@ -1,6 +1,10 @@
 import discord
-from discord.ext import commands
-from fulcrum_api import FulcrumAPI
+
+from discord.ext       import commands
+from fulcrum_api       import FulcrumAPI
+
+from tools.context     import Context
+from tools.config      import emoji, color
 
 class Network(commands.Cog):
     def __init__(self, client):
