@@ -15,12 +15,12 @@ class Network(commands.Cog):
     @commands.command()
     async def tiktok(self, ctx, username: str):
         data = await self.fulcrumapi.tiktok_user(username)
-        embed = discord.Embed(color=color.default, description=f"> {data["bio"]}")
+        embed = discord.Embed(color=color.default, description=f"> {data["bio"] if data["bio"] else "n/a"}")
         embed.set_author(name=f"{data['nickname']} | {data['username']}")
         embed.set_thumbnail(url=data["avatar"])
         embed.add_field(name="Counts", value=f"> **Followers:** {data["followers"]} \n> **Following:** {data["following"]} \n> **Likes:** {data["hearts"]}")
         embed.add_field(name="Extras", value=f"> **ID:** {data['id']} \n> **Verified:** {'Yes' if data['verified'] else 'No'} \n> **Private:** {'Yes' if data['private'] else 'No'} ")
-        embed.add_field(name="Videos", value=f"{data["videos"]}")
+        embed.add_field(name="Videos", value=f"> **Amount:** {data["videos"]}")
         view = View()
         profile = Button(style=discord.ButtonStyle.link, label="Profile", url=data["url"], emoji=f"{emoji.link}")
         
