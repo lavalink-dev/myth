@@ -15,7 +15,9 @@ class Network(commands.Cog):
         self.client = client
         self.fulcrumapi = FulcrumAPI()
 
-    @commands.command()
+    @commands.command(
+        description="Get information on a tiktok user"
+    )
     async def tiktok(self, ctx, username: str):
         data = await self.fulcrumapi.tiktok_user(username)
         bio = data.get("bio") or "n/a"
@@ -33,7 +35,9 @@ class Network(commands.Cog):
         
         await ctx.send(embed=embed, view=view)
 
-    @commands.command()
+    @commands.command(
+        description="Get information on a twitter user"
+    )
     async def twitter(self, ctx, username: str):
         data = await self.fulcrumapi.twitter_user(username)
         
@@ -55,7 +59,9 @@ class Network(commands.Cog):
         view.add_item(profile)
         await ctx.send(embed=embed, view=view)
 
-    @commands.command()
+    @commands.command(
+        description="Get information on a roblox user"
+    )
     async def roblox(self, ctx, username: str):
         data = await self.fulcrumapi.roblox(username)
         bio = data.get("bio") or "n/a"
@@ -75,7 +81,9 @@ class Network(commands.Cog):
         view.add_item(profile)
         await ctx.send(embed=embed, view=view)
 
-    @commands.command()
+    @commands.command(
+        description="Get information on a cashapp user"
+    )
     async def cashapp(self, ctx, username: str):
         data = await self.fulcrumapi.cashapp(username)
         
@@ -92,11 +100,13 @@ class Network(commands.Cog):
         view.add_item(qr_code)
         await ctx.send(embed=embed, view=view)
 
-    @commands.command()
+    @commands.command(
+        description="Get information on a city"
+    )
     async def weather(self, ctx, city: str):
         data = await self.fulcrumapi.weather(city)
 
-        city_name = data.get('city', 'unknown')
+        city = data.get('city', 'unknown')
         country = data.get('country', 'unknown')
         timestring = data.get('timestring', 'time unavailable')
         last_updated = data.get('last_updated', None)
@@ -113,7 +123,7 @@ class Network(commands.Cog):
         humidity = data.get('humidity', 'n/a')
         
         embed = discord.Embed(color=color.default, description=f"> {condition_text}")
-        embed.set_author(name=f"{city_name}, {country} | {timestring}")
+        embed.set_author(name=f"{city}, {country} | {timestring}")
         embed.set_thumbnail(url=condition_icon)
         embed.add_field(name="Temperature", value=f"> **Celsius:** {celsius}°C\n> **Fahrenheit:** {fahrenheit}°F")
         embed.add_field(name="Feels Like", value=f"> **Celsius:** {feelslike_c}°C\n> **Fahrenheit:** {feelslike_f}°F")
@@ -121,7 +131,7 @@ class Network(commands.Cog):
         embed.add_field(name="Extras", value=f"> **Humidity:** {humidity}% \n> **Last Updated:** {last_updated_formatted}")
 
         view = View()
-        more_info = Button(style=discord.ButtonStyle.link, label="More Info", url=f"https://www.weather.com/weather/today/l/{city_name}", emoji="🔗")
+        more_info = Button(style=discord.ButtonStyle.link, label="More Info", url=f"https://www.weather.com/weather/today/l/{city_name}", emoji=emoji.link)
         view.add_item(more_info)
 
         await ctx.send(embed=embed, view=view)
