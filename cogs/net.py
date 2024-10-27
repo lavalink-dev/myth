@@ -1,4 +1,5 @@
 import discord
+import aiohttp
 
 from discord.ext       import commands
 from fulcrum_api       import FulcrumAPI
