@@ -62,5 +62,16 @@ class Network(commands.Cog):
         embed.add_field(name="Profile URL", value=f"[Link]({data['url']})", inline=False)
         await ctx.send(embed=embed)
 
+    @commands.command()
+    async def cashapp(self, ctx, username: str):
+        data = await self.fulcrumapi.cashapp(username)
+        embed = discord.Embed(color=int(data.get("accent_color", "0xffffff"), 16), title=data["display_name"])
+        embed.set_thumbnail(url=data["avatar"])
+        embed.add_field(name="Username", value=data["username"], inline=True)
+        embed.add_field(name="Verified", value="Yes" if data["verified"] else "No", inline=True)
+        embed.add_field(name="Profile URL", value=f"[Link]({data['url']})", inline=False)
+        embed.set_image(url=data["qr_url"]) 
+        await ctx.send(embed=embed)
+
 async def setup(client):
     await client.add_cog(Network(client))
