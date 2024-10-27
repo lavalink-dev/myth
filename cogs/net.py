@@ -79,7 +79,7 @@ class Network(commands.Cog):
 
     @commands.command()
     async def weather(self, ctx, city: str):
-        data = await self.fulcrumapi.get_weather(city)
+        data = await self.fulcrumapi.weather(city)
         
         embed = Embed(color=color.default, description=f"> {data['condition_text']}")
         embed.set_author(name=f"{data['city']}, {data['country']} | {data['timestring']}")
