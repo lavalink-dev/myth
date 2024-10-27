@@ -24,7 +24,7 @@ class Network(commands.Cog):
         embed.add_field(name="Videos", value=f"> **Amount:** {data["videos"]}")
         
         view = View()
-        profile = Button(style=discord.ButtonStyle.link, label="Profile", url=data["url"], emoji=f"{emoji.link}")
+        profile = Button(style=discord.ButtonStyle.link, label="Profile", url=data["url"], emoji={emoji.link})
         
         view.add_item(profile)
         await ctx.send(embed=embed, view=view)
@@ -71,7 +71,7 @@ class Network(commands.Cog):
         
         view = View()
         profile = Button(style=discord.ButtonStyle.link, label="Profile", url=data["url"], emoji=emoji.link)
-        qr_code = Button(style=discord.ButtonStyle.link, label="QR Code", url=data["qr_url"], emoji=emoji.qr_code)
+        qr_code = Button(style=discord.ButtonStyle.link, label="QR Code", url=data["qr_url"], emoji=emoji.link)
         
         view.add_item(profile)
         view.add_item(qr_code)
