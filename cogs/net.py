@@ -57,32 +57,19 @@ class Network(commands.Cog):
 
     @commands.command()
     async def roblox(self, ctx, username: str):
-        # Mocking the Roblox data
-        data = {
-            "username": username,
-            "display_name": "RobloxUser",
-            "bio": "Just another Roblox player",
-            "id": 123456,
-            "banned": False,
-            "verified": True,
-            "avatar": "https://example.com/avatar.jpg",
-            "created_at": "2023-01-01",
-            "url": f"https://roblox.com/users/{123456}/profile",
-            "friends": 150,
-            "followers": 2000,
-            "followings": 150
-        }
-        embed = discord.Embed(color=0xffffff, title=f"{data['display_name']} {data['username']}")
-        embed.set_thumbnail(url=data["avatar"])
+        data = await self.fulcrumapi.roblox_user(username)
+        embed = discord.Embed(color=0xffffff, title=data["display_name"])
+        embed.add_field(name="Username", value=data["username"])
+        embed.add_field(name="Bio", value=data["bio"])
         embed.add_field(name="ID", value=data["id"])
-        embed.add_field(name="Bio", value=data["bio"], inline=False)
-        embed.add_field(name="Banned", value="Yes" if data["banned"] else "No")
-        embed.add_field(name="Verified", value="Yes" if data["verified"] else "No")
-        embed.add_field(name="Created At", value=data["created_at"], inline=False)
+        embed.add_field(name="Banned", value=str(data["banned"]))
+        embed.add_field(name="Verified", value=str(data["verified"]))
+        embed.add_field(name="Avatar", value=data["avatar"])
+        embed.add_field(name="Created At", value=data["created_at"])
         embed.add_field(name="Friends", value=data["friends"])
         embed.add_field(name="Followers", value=data["followers"])
-        embed.add_field(name="Following", value=data["followings"])
-        embed.add_field(name="Profile URL", value=data["url"], inline=False)
+        embed.add_field(name="Followings", value=data["followings"])
+        embed.set_thumbnail(url=data["avatar"])
         await ctx.send(embed=embed)
 
 async def setup(client):
