@@ -23,8 +23,10 @@ class Music(commands.Cog):
 
         if before.channel is None and after.channel is not None:
             self.client.lavalink.player_manager.create(guild_id=after.channel.guild.id)
-        elif after.channel is None and player := self.client.lavalink.player_manager.get(before.channel.guild.id):
-            await player.disconnect()
+        elif after.channel is None:
+            player = self.client.lavalink.player_manager.get(before.channel.guild.id)
+            if player:
+                await player.disconnect()
 
     @commands.command()
     async def play(self, ctx, *, query: str):
