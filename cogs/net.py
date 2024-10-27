@@ -57,8 +57,8 @@ class Network(commands.Cog):
 
     @commands.command()
     async def roblox(self, ctx, username: str):
-        data = await self.fulcrumapi.roblox_user(username)
-        embed = discord.Embed(color=0xffffff, title=data["display_name"])
+        data = await self.fulcrumapi.get('/roblox', params={'username': username})
+        embed = discord.Embed(color=color.default, title=data["display_name"])
         embed.add_field(name="Username", value=data["username"])
         embed.add_field(name="Bio", value=data["bio"])
         embed.add_field(name="ID", value=data["id"])
