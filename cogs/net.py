@@ -95,7 +95,7 @@ class Network(commands.Cog):
         condition_icon = data.get('condition_icon', '')
         humidity = data.get('humidity', 'N/A')
         
-        embed = Embed(color=color.default, description=f"> {condition_text}")
+        embed = discord.Embed(color=color.default, description=f"> {condition_text}")
         embed.set_author(name=f"{city_name}, {country} | {timestring}")
         embed.set_thumbnail(url=condition_icon)
         embed.add_field(name="Temperature", value=f"> **Celsius:** {celsius}°C\n> **Fahrenheit:** {fahrenheit}°F")
