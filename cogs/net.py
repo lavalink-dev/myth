@@ -77,5 +77,23 @@ class Network(commands.Cog):
         view.add_item(qr_code)
         await ctx.send(embed=embed, view=view)
 
+    @commands.command()
+    async def weather(self, ctx, city: str):
+        data = await self.weather(city)
+        
+        embed = Embed(color=color.default, description=f"> {data['condition_text']}")
+        embed.set_author(name=f"{data['city']}, {data['country']} | {data['timestring']}")
+        embed.set_thumbnail(url=data['condition_icon'])
+        embed.add_field(name="Temperature", value=f"> **Celsius:** {data['celsius']}°C\n> **Fahrenheit:** {data['fahrenheit']}°F")
+        embed.add_field(name="Feels Like", value=f"> **Celsius:** {data['feelslike_c']}°C\n> **Fahrenheit:** {data['feelslike_f']}°F")
+        embed.add_field(name="Wind", value=f"> **MPH:** {data['wind_mph']} mph\n> **KPH:** {data['wind_kph']} kph")
+        embed.add_field(name="Extras", value=f"> **Humidity:** {data['humidity']}% \n> **Last Updated:** {data['last_updated']}")
+
+        view = View()
+        more_info = Button(style=discord.ButtonStyle.link, label="More Info", url=f"https://www.weather.com/weather/today/l/{data['city']}", emoji=emoji.link)
+        view.add_item(more_info)
+
+        await ctx.send(embed=embed, view=view)
+
 async def setup(client):
     await client.add_cog(Network(client))
