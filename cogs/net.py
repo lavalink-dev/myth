@@ -18,8 +18,9 @@ class Network(commands.Cog):
     @commands.command()
     async def tiktok(self, ctx, username: str):
         data = await self.fulcrumapi.tiktok_user(username)
+        bio = data.get("bio") or "n/a"
         
-        embed = discord.Embed(color=color.default, description=f"> {data.get('bio', 'n/a')}")
+        embed = discord.Embed(color=color.default, description=f"> {bio}")
         embed.set_author(name=f"{data.get('nickname', 'unknown')} | {data.get('username', 'n/a')}")
         embed.set_thumbnail(url=data.get("avatar", ""))
         embed.add_field(name="Counts", value=f"> **Followers:** {data.get('followers', 'n/a')}\n> **Following:** {data.get('following', 'n/a')}\n> **Likes:** {data.get('hearts', 'n/a')}")
@@ -29,6 +30,7 @@ class Network(commands.Cog):
         view = View()
         profile = Button(style=discord.ButtonStyle.link, label="Profile", url=data.get("url", ""), emoji=emoji.link)
         view.add_item(profile)
+        
         await ctx.send(embed=embed, view=view)
 
     @commands.command()
