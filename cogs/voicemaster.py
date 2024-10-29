@@ -137,7 +137,7 @@ class Voicemaster(commands.Cog):
     async def send_interface_message(self, guild, interface):
         embed = discord.Embed(title="", description=f"> **Control** your voice channel with buttons", color=color.default)
         embed.set_thumbnail(url=guild.icon.url)
-        embed.set_author(name="Blare Voicemaster", icon_url=self.client.user.avatar.url)
+        embed.set_author(name="Myth VoiceMaster", icon_url=self.client.user.avatar.url)
         embed.add_field(
             name="",
             value=(
