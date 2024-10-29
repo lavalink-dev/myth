@@ -41,6 +41,7 @@ class Network(commands.Cog):
     async def twitter(self, ctx, username: str):
         data = await self.fulcrumapi.twitter_user(username)
         bio = data.get("bio") or "n/a"
+        location = data.get('location' or 'n/a')
 
         created_at = data.get('created_at', None)
         try:
@@ -52,7 +53,7 @@ class Network(commands.Cog):
         embed.set_author(name=f"{data.get('display_name', 'unknown')} | {data.get('username', 'n/a')}")
         embed.set_thumbnail(url=data.get("avatar", ""))
         embed.add_field(name="Stats", value=f"> **Followers:** {data.get('followers', 'n/a')}\n> **Following:** {data.get('following', 'n/a')}\n> **Posts:** {data.get('posts', 'n/a')}")
-        embed.add_field(name="Extras", value=f"> **Verified:** {'Yes' if data.get('verified') else 'No'}\n> **Created:** {created_at_formatted} \n> **Location:** {data.get('location', 'n/a')}")
+        embed.add_field(name="Extras", value=f"> **Verified:** {'Yes' if data.get('verified') else 'No'}\n> **Created:** {created_at_formatted} \n> **Location:** {location}")
         embed.set_footer(text=f"ID: {data.get('id', 'n/a')}")
         embed.add_field(name="More", value=f"> **Liked Posts:** {data.get('liked_posts', 'n/a')}\n> **Tweets:** {data.get('tweets', 'n/a')}")
         
