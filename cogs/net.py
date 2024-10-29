@@ -26,8 +26,8 @@ class Network(commands.Cog):
         embed.set_author(name=f"{data.get('nickname', 'unknown')} | {data.get('username', 'n/a')}")
         embed.set_thumbnail(url=data.get("avatar", ""))
         embed.add_field(name="Counts", value=f"> **Followers:** {data.get('followers', 'n/a')}\n> **Following:** {data.get('following', 'n/a')}\n> **Likes:** {data.get('hearts', 'n/a')}")
-        embed.add_field(name="Extras", value=f"> **ID:** {data.get('id', 'n/a')}\n> **Verified:** {'Yes' if data.get('verified') else 'No'}\n> **Private:** {'Yes' if data.get('private') else 'No'}")
-        embed.add_field(name="Videos", value=f"> **Amount:** {data.get('videos', 'n/a')}")
+        embed.add_field(name="Extras", value=f"> **Videos:** {data.get('videos', 'n/a')} \n> **Verified:** {'Yes' if data.get('verified') else 'No'}\n> **Private:** {'Yes' if data.get('private') else 'No'}")
+        embed.set_footer(text=f"{data.get('id', 'n/a')}")
         
         view = View()
         profile = Button(style=discord.ButtonStyle.link, label="Profile", url=data.get("url", ""), emoji=emoji.link)
