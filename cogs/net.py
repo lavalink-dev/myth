@@ -68,16 +68,16 @@ class Network(commands.Cog):
     async def roblox(self, ctx, username: str):
         data = await self.fulcrumapi.roblox(username)
         bio = data.get("bio") or "n/a"
+
+        created_at = data.get('created_at', None)
+        created_at_formatted = format_dt(datetime.strptime(created_at, '%Y-%m-%dT%H:%M:%S')) if created_at else 'n/a'
         
         embed = discord.Embed(color=color.default, description=f"> {bio}")
         embed.set_author(name=f"{data.get('display_name', 'unknown')} | {data.get('username', 'n/a')}")
         embed.set_thumbnail(url=data.get("avatar", ""))
-        embed.add_field(name="Profile Info", value=f"> **ID:** {data.get('id', 'n/a')}\n> **Banned:** {'Yes' if data.get('banned') else 'No'}\n> **Verified:** {'Yes' if data.get('verified') else 'No'}")
-        embed.add_field(name="Social", value=f"> **Friends:** {data.get('friends', 'n/a')}\n> **Followers:** {data.get('followers', 'n/a')}\n> **Following:** {data.get('followings', 'n/a')}")
-        
-        created_at = data.get('created_at', None)
-        created_at_formatted = format_dt(datetime.strptime(created_at, '%Y-%m-%dT%H:%M:%S')) if created_at else 'n/a'
-        embed.add_field(name="Account Created", value=f"> **Created At:** {created_at_formatted}")
+        embed.add_field(name="Stats", value=f"> **Friends:** {data.get('friends', 'n/a')}\n> **Followers:** {data.get('followers', 'n/a')}\n> **Following:** {data.get('followings', 'n/a')}")
+        embed.add_field(name="Profile Info", value=f"> **Banned:** {'Yes' if data.get('banned') else 'No'}\n> **Verified:** {'Yes' if data.get('verified') else 'No'} \n> **Created:** {created_at_formatted}")
+        embed.set_footer(text=f"ID: {data.get('id', 'n/a')}")
         
         view = View()
         profile = Button(style=discord.ButtonStyle.link, label="Profile", url=data.get("url", ""), emoji=emoji.link)
