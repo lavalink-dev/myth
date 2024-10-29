@@ -40,6 +40,7 @@ class Network(commands.Cog):
     )
     async def twitter(self, ctx, username: str):
         data = await self.fulcrumapi.twitter_user(username)
+        bio = data.get("bio") or "n/a"
 
         created_at = data.get('created_at', None)
         try:
@@ -47,7 +48,7 @@ class Network(commands.Cog):
         except ValueError:
             created_at_formatted = 'n/a'
         
-        embed = discord.Embed(color=color.default, description=f"> {data.get('bio', 'n/a')}")
+        embed = discord.Embed(color=color.default, description=f"> {bio}")
         embed.set_author(name=f"{data.get('display_name', 'unknown')} | {data.get('username', 'n/a')}")
         embed.set_thumbnail(url=data.get("avatar", ""))
         embed.add_field(name="Stats", value=f"> **Followers:** {data.get('followers', 'n/a')}\n> **Following:** {data.get('following', 'n/a')}\n> **Posts:** {data.get('posts', 'n/a')}")
