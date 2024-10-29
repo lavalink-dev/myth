@@ -40,6 +40,12 @@ class Network(commands.Cog):
     )
     async def twitter(self, ctx, username: str):
         data = await self.fulcrumapi.twitter_user(username)
+
+        created_at = data.get('created_at', None)
+        try:
+            created_at_formatted = format_dt(datetime.strptime(created_at, '%a %b %d %H:%M:%S %z %Y'), 'R') if created_at else 'n/a'
+        except ValueError:
+            created_at_formatted = 'n/a'
         
         embed = discord.Embed(color=color.default, description=f"> {data.get('bio', 'n/a')}")
         embed.set_author(name=f"{data.get('display_name', 'unknown')} | {data.get('username', 'n/a')}")
@@ -47,12 +53,6 @@ class Network(commands.Cog):
         embed.add_field(name="Stats", value=f"> **Followers:** {data.get('followers', 'n/a')}\n> **Following:** {data.get('following', 'n/a')}\n> **Posts:** {data.get('posts', 'n/a')}")
         embed.add_field(name="Extras", value=f"> **Verified:** {'Yes' if data.get('verified') else 'No'}\n> **Created:** {created_at_formatted} \n> **Location:** {data.get('location', 'n/a')}")
         embed.set_footer(text=f"ID: {data.get('id', 'n/a')}")
-        
-        created_at = data.get('created_at', None)
-        try:
-            created_at_formatted = format_dt(datetime.strptime(created_at, '%a %b %d %H:%M:%S %z %Y'), 'R') if created_at else 'n/a'
-        except ValueError:
-            created_at_formatted = 'n/a'
         embed.add_field(name="More", value=f"> **Liked Posts:** {data.get('liked_posts', 'n/a')}\n> **Tweets:** {data.get('tweets', 'n/a')}")
         
         view = View()
