@@ -1,14 +1,6 @@
-import discord
-import jishaku 
-import os 
-import dotenv
-
-from discord.ext       import commands
-
+from dotenv           import load_dotenv
 from tools.myth       import Myth
+from os               import environ
 
-dotenv.load_dotenv()
-
-token = "MTI4NDYxMzcyMTg4ODUyNjQxNw.GoZRST.m9ukM8Mg_KJcEYfMUxqYaP0sRYCYj40PT-QNVI"
-
-Myth(token=token)
+load_dotenv()
+Myth(token=environ['TOKEN'])
