@@ -3,4 +3,4 @@ from tools.myth       import Myth
 from os               import environ
 
 load_dotenv()
-Myth(token=environ['TOKEN'])
+Myth(token=environ["TOKEN"])
