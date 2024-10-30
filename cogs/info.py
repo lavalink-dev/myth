@@ -73,7 +73,7 @@ class Information(commands.Cog):
         view.add_item(support)
         view.add_item(inv)
 
-        embed = discord.Embed(title="", description=f"> **Myth** is the only **feature rich** bot that youre gonna need \n> Helping `{members:,}` users and `{guilds:,}` guilds", color=color.default)
+        embed = discord.Embed(title="", description=f"> **Myth** is the only **feature rich** bot that youre gonna need \n> Helping `{members:,}` users and `{guilds:,}` guilds \n> **Developed** by [lavalink](https://github.com/lavalink-dev) & [misimpression](https://github.com/misimpression)", color=color.default)
         embed.add_field(name="Stats", value=f"> Latency: `{latency}ms` \n> Lines: `{lines2}` \n> Commands: `{total_commands}` \n> Started: {uptime}", inline=True)
         embed.set_author(name=ctx.author.name, icon_url=user_pfp)
         embed.set_thumbnail(url=avatar_url)
