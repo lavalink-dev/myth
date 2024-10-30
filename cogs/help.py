@@ -24,9 +24,10 @@ class HelpDropdown(discord.ui.Select):
             "Skullboard": f"☠",
             "Vanityroles": f"🔗",
             "VoiceMaster": f"🔊",
-            "AutoMod": f"🤖",
+            "AutoMod": f"<:automod:1301127944084652052>",
             "Fun": f"😺",
             "Network": f"🌐",
+            "AntiNuke": f"🗃",
         }
 
         for cogs in client.cogs:
