@@ -200,12 +200,12 @@ class AntiNuke(commands.Cog):
     )
     @commands.has_permissions(administrator=True)
     async def antinuke(self, ctx: Context):
-        if not await self.is_admin(ctx.guild.id, ctx.author.id):
+        if not await self.is_admin(ctx.guild.id, ctx.author.id): # type: ignore
             await ctx.deny("**You're** not an antinuke admin")
             return
             
         if ctx.invoked_subcommand is None:
-            await ctx.send_help(ctx.command.qualified_name)
+            await ctx.send_help(ctx.command.qualified_name) # type: ignore
 
     @antinuke.command(
         name="channeldelete",
