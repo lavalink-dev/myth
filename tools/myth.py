@@ -35,7 +35,8 @@ class Myth(commands.AutoShardedBot):
             owner_ids=[
                 394152799799345152, # main
                 255841984470712330, # solix
-                1168186952772747364 # alt
+                1168186952772747364, # alt
+                1282499485536092181 # leon
             ],
             activity=discord.CustomActivity(name=f"🔗 discord.gg/uid"),  
         )
