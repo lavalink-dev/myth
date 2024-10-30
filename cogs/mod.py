@@ -287,10 +287,11 @@ class Moderation(commands.Cog):
     async def lock(self, ctx: Context, channel: discord.TextChannel = None):
         if channel is None:
             channel = ctx.channel
+            
         overwrite = channel.overwrites_for(ctx.guild.default_role)
         overwrite.send_messages = False
         await channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
-        await ctx.message.add_reaction(f'{emoji.agree}')
+        await ctx.message.add_reaction(f"{emoji.agree}")
 
     @commands.command(
         description="Unlock a channel"
@@ -299,10 +300,11 @@ class Moderation(commands.Cog):
     async def unlock(self, ctx: Context, channel: discord.TextChannel = None):
         if channel is None:
             channel = ctx.channel
+            
         overwrite = channel.overwrites_for(ctx.guild.default_role)
         overwrite.send_messages = True
         await channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
-        await ctx.message.add_reaction(f'{emoji.agree}')
+        await ctx.message.add_reaction(f"{emoji.agree}")
         
     @commands.command(
         description="Clear messages", 
@@ -744,6 +746,32 @@ class Moderation(commands.Cog):
         sticker = message.stickers[0]
         await sticker.delete()
         await ctx.agree(f"**Deleted** `{sticker.name}`")
+
+    @commands.command(
+        description="Hide a channel"
+    )
+    @commands.has_permissions(manage_channels=True)
+    async def hide(self, ctx: commands.Context, channel: discord.TextChannel = None):
+        if channel is None:
+            channel = ctx.channel
+            
+        overwrite = channel.overwrites_for(ctx.guild.default_role)
+        overwrite.view_channel = False
+        await channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
+        await ctx.message.add_reaction(f"{emoji.agree}")
+
+    @commands.command(
+        description="Unhide a channel"
+    )
+    @commands.has_permissions(manage_channels=True)
+    async def unhide(self, ctx: commands.Context, channel: discord.TextChannel = None):
+        if channel is None:
+            channel = ctx.channel
+            
+        overwrite = channel.overwrites_for(ctx.guild.default_role)
+        overwrite.view_channel = True
+        await channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
+        await ctx.message.add_reaction(f"{emoji.agree}")
 
 async def setup(client):
     await client.add_cog(Moderation(client))
