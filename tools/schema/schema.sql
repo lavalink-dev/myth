@@ -142,3 +142,32 @@ CREATE TABLE IF NOT EXISTS userinfo (
     footer TEXT,
     bio TEXT
 );
+
+CREATE TABLE IF NOT EXISTS antinuke (
+    guild_id BIGINT PRIMARY KEY,
+    channeldelete INTEGER,
+    channelcreate INTEGER,
+    roledelete INTEGER,
+    rolecreate INTEGER,
+    roleupdate INTEGER,
+    webhookcreate INTEGER,
+    ban INTEGER,
+    kick INTEGER,
+    punishment VARCHAR(4),
+    log BIGINT
+);
+
+CREATE TABLE IF NOT EXISTS antinuke_admins (
+    guild_id BIGINT,
+    user_id BIGINT,
+    PRIMARY KEY (guild_id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS antinuke_logs (
+    logid SERIAL PRIMARY KEY,
+    guild_id BIGINT,
+    user_id BIGINT,
+    action_type VARCHAR(50), 
+    timestamp TIMESTAMP,
+    details TEXT
+);
