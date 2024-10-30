@@ -14,9 +14,9 @@ class AntiNuke(commands.Cog):
         self.client = client
         self.recent_actions = {}
 
-    async def log_action(self, guild_id: int, user_id: int, action_type: str, details: str):
+    async def logs(self, guild_id: int, user_id: int, action_type: str, details: str):
         try:
-            settings = await self.get_settings(guild_id)
+            settings = await self.settings(guild_id)
             if not settings:
                 return
 
@@ -53,7 +53,7 @@ class AntiNuke(commands.Cog):
         except Exception as e:
             print(f"Error logging action: {e}")
 
-    async def get_settings(self, guild_id: int):
+    async def settings(self, guild_id: int):
         settings = await self.client.pool.fetchrow("""
             SELECT 
                 channeldelete,
@@ -106,8 +106,8 @@ class AntiNuke(commands.Cog):
             'log_channel': settings['log']
         }
 
-    async def check_threshold(self, guild_id: int, user_id: int, action_type: str) -> bool:
-        settings = await self.get_settings(guild_id)
+    async def threshold(self, guild_id: int, user_id: int, action_type: str) -> bool:
+        settings = await self.settings(guild_id)
         if not settings or not settings['events']:
             return False
 
@@ -141,7 +141,7 @@ class AntiNuke(commands.Cog):
 
     async def take_action(self, guild: discord.Guild, user: Union[discord.Member, discord.User], action_type: str):
         try:
-            settings = await self.get_settings(guild.id)
+            settings = await self.settings(guild.id)
             if not settings or not settings['punishment']:
                 return
             
@@ -156,63 +156,33 @@ class AntiNuke(commands.Cog):
             
             if member:
                 if not guild.me.guild_permissions.ban_members and punishment == 'ban':
-                    await self.log_action(
-                        guild.id, 
-                        user.id,
-                        action_type,
-                        "**Failed** to kick user due to me having no ban permissions"
-                    )
+                    await self.logs(guild.id, user.id, action_type, "**Failed** to kick user due to me having no ban permissions")
                     return
                     
                 if not guild.me.guild_permissions.kick_members and punishment == 'kick':
-                    await self.log_action(
-                        guild.id,
-                        user.id,
-                        action_type,
-                        "**Failed** to kick user due to me having no kick permissions"
-                    )
+                    await self.logs(guild.id, user.id, action_type, "**Failed** to kick user due to me having no kick permissions")
                     return
                 
                 if guild.me.top_role <= member.top_role:
-                    await self.log_action(
-                        guild.id,
-                        user.id,
-                        action_type,
-                        f"**Failed** to {punishment} user due to having a higher role"
-                    )
+                    await self.logs(guild.id, user.id, action_type, f"**Failed** to {punishment} user due to having a higher role")
                     return
                 
                 try:
                     reason = f"due to exceeding {action_type.replace('_', ' ').title()} threshold"
-                    if punishment == 'ban':
+                    if punishment == "ban":
                         await member.ban(reason=reason)
                         action_detail = f"User **banned** for exceeding `{action_type.replace('_', ' ').title()}` threshold"
-                    elif punishment == 'kick':
+                    elif punishment == "kick":
                         await member.kick(reason=reason)
                         action_detail = f"User **kicked** for exceeding `{action_type.replace('_', ' ').title()}` threshold"
                     
-                    await self.log_action(
-                        guild.id,
-                        user.id,
-                        action_type,
-                        action_detail
-                    )
+                    await self.logs(guild.id, user.id, action_type, action_detail)
                     
                 except discord.Forbidden:
-                    await self.log_action(
-                        guild.id,
-                        user.id,
-                        action_type,
-                        f"**Failed** to {punishment} user due to permissions"
-                    )
+                    await self.logs(guild.id, user.id, action_type, f"**Failed** to {punishment} user due to permissions")
                     
         except Exception as e:
-            await self.log_action(
-                guild.id,
-                user.id,
-                action_type,
-                f"```{str(e)}```"
-            )
+            await self.logs(guild.id, user.id, action_type, f"```{str(e)}```")
 
     async def is_admin(self, guild_id: int, user_id: int) -> bool:
         guild = self.client.get_guild(guild_id)
@@ -551,7 +521,7 @@ class AntiNuke(commands.Cog):
         guild_id = ctx.guild.id
         channel_id = channel.id
 
-        settings = await self.get_settings(guild_id)
+        settings = await self.settings(guild_id)
         
         if settings:
             await self.client.pool.execute("UPDATE antinuke SET log = $1 WHERE guild_id = $2", channel_id, guild_id)
@@ -591,7 +561,7 @@ class AntiNuke(commands.Cog):
                 if entry.user.id == self.client.user.id:
                     return
                     
-                if await self.check_threshold(guild.id, entry.user.id, 'ban'):
+                if await self.threshold(guild.id, entry.user.id, 'ban'):
                     await self.take_action(guild, entry.user, 'ban')
 
     @commands.Cog.listener()
@@ -601,7 +571,7 @@ class AntiNuke(commands.Cog):
                 if entry.user.id == self.client.user.id:
                     return
                     
-                if await self.check_threshold(member.guild.id, entry.user.id, 'kick'):
+                if await self.threshold(member.guild.id, entry.user.id, 'kick'):
                     await self.take_action(member.guild, entry.user, 'kick')
 
     @commands.Cog.listener()
@@ -611,7 +581,7 @@ class AntiNuke(commands.Cog):
                 if entry.user.id == self.client.user.id:
                     return
                     
-                if await self.check_threshold(channel.guild.id, entry.user.id, 'channel_create'):
+                if await self.threshold(channel.guild.id, entry.user.id, 'channel_create'):
                     await self.take_action(channel.guild, entry.user, 'channel_create')
 
     @commands.Cog.listener()
@@ -621,7 +591,7 @@ class AntiNuke(commands.Cog):
                 if entry.user.id == self.client.user.id:
                     return
                     
-                if await self.check_threshold(channel.guild.id, entry.user.id, 'channel_delete'):
+                if await self.threshold(channel.guild.id, entry.user.id, 'channel_delete'):
                     await self.take_action(channel.guild, entry.user, 'channel_delete')
 
     @commands.Cog.listener()
@@ -631,7 +601,7 @@ class AntiNuke(commands.Cog):
                 if entry.user.id == self.client.user.id:
                     return
                     
-                if await self.check_threshold(role.guild.id, entry.user.id, 'role_create'):
+                if await self.threshold(role.guild.id, entry.user.id, 'role_create'):
                     await self.take_action(role.guild, entry.user, 'role_create')
 
     @commands.Cog.listener()
@@ -641,7 +611,7 @@ class AntiNuke(commands.Cog):
                 if entry.user.id == self.client.user.id:
                     return
                     
-                if await self.check_threshold(role.guild.id, entry.user.id, 'role_delete'):
+                if await self.threshold(role.guild.id, entry.user.id, 'role_delete'):
                     await self.take_action(role.guild, entry.user, 'role_delete')
 
     @commands.Cog.listener()
@@ -652,7 +622,7 @@ class AntiNuke(commands.Cog):
                     return
 
                 if before.permissions != after.permissions:
-                    if await self.check_threshold(before.guild.id, entry.user.id, 'role_update'):
+                    if await self.threshold(before.guild.id, entry.user.id, 'role_update'):
                         await self.take_action(before.guild, entry.user, 'role_update')
 
     @commands.Cog.listener()
@@ -662,7 +632,7 @@ class AntiNuke(commands.Cog):
                 if entry.user.id == self.client.user.id:
                     return
                     
-                if await self.check_threshold(channel.guild.id, entry.user.id, 'webhook_create'):
+                if await self.threshold(channel.guild.id, entry.user.id, 'webhook_create'):
                     await self.take_action(channel.guild, entry.user, 'webhook_create')
 
 async def setup(client):
