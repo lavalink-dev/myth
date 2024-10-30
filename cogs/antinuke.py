@@ -6,7 +6,7 @@ from datetime          import datetime, timedelta
 from discord.ext       import commands
 from typing            import Optional, Union
 
-from tools.manager     import emoji, color
+from tools.config      import emoji, color
 from tools.context     import Context
 
 class AntiNuke(commands.Cog):
