@@ -8,7 +8,7 @@ from discord.ui        import Button, View
 from tools.context     import Context
 from tools.config      import emoji, color
 
-class Voicemaster(commands.Cog):
+class VoiceMaster(commands.Cog):
     def __init__(self, client):
         self.client = client
 
@@ -290,4 +290,4 @@ class Voicemaster(commands.Cog):
         await interaction.response.send_message(embed=discord.Embed(description=f"> {emoji.agree} {interaction.user.mention}: **Set** the member limit to: {new_limit}", color=color.agree), ephemeral=True)
 
 async def setup(client):
-    await client.add_cog(Voicemaster(client))
+    await client.add_cog(VoiceMaster(client))
