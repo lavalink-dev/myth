@@ -183,7 +183,7 @@ class AntiNuke(commands.Cog):
                     return
                 
                 try:
-                    reason = f"antinuke: {action_type} went over the threshold"
+                    reason = f"due to exceeding {action_type.replace('_', ' ').title()} threshold"
                     if punishment == 'ban':
                         await member.ban(reason=reason)
                         action_detail = f"User **banned** for exceeding `{action_type.replace('_', ' ').title()}` threshold"
