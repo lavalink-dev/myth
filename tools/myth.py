@@ -23,7 +23,7 @@ intents.presences = True
 class Myth(commands.AutoShardedBot):
     def __init__(self, token):
         self.message_cache = {}
-        self.cache_expiry_seconds = 60
+        self.cache_expiry_seconds = 15
         self.session = None
         self.pool = None
         self.start_time = time.time()
