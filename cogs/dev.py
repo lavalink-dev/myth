@@ -256,8 +256,8 @@ class Developer(commands.Cog):
                 user_pfp = member.avatar.url if member.avatar else member.default_avatar.url
                 
                 embed = discord.Embed(
-                    title="Welcome :repent_iii: ",
-                    description=f"> https://discord.com/channels/1282563196120727663/1292535999808798824 \n> https://discord.com/channels/1282563196120727663/1292535994435768350",
+                    title="Welcome <a:008:1298392198076694559>",
+                    description=f"> https://discord.com/channels/1282563196120727663/1298391057570074705 \n> https://discord.com/channels/1282563196120727663/1292535994435768350",
                     color=color.default
                 )
                 embed.set_thumbnail(url=user_pfp)

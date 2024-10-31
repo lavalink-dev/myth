@@ -18,6 +18,73 @@ from system.base.context import Context
 class Information(commands.Cog):
     def __init__(self, client):
         self.client = client
+<<<<<<< HEAD:ignore.py
+=======
+
+    @commands.command(
+        description="Check the bot's latency",
+        aliases=["p", "latency"]
+    )
+    async def ping(self, ctx):
+        user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
+        latency = round(self.client.latency * 1000)
+        
+        embed = discord.Embed(description=f"> :mag: Latency: **{latency}ms**", color=color.default)
+        embed.set_author(name=ctx.author.name, icon_url=user_pfp)
+        await ctx.send(embed=embed)
+
+    @commands.command(
+        description="Add me im cool :sunglasses:", 
+        aliases=["invite", "links"]
+    )
+    async def inv(self, ctx):
+        view = View()
+        support = Button(style=discord.ButtonStyle.link, label="Support", url="https://discord.gg/uid", emoji=f"{emoji.link}")
+        inv = Button(style=discord.ButtonStyle.link, label="Invite me", url="https://discordapp.com/oauth2/authorize?client_id=1284613721888526417&scope=bot+applications.commands&permissions=8", emoji=f"{emoji.link}")
+        
+        view.add_item(support)
+        view.add_item(inv)
+        await ctx.send(view=view)
+
+    @commands.command(
+        description="Check the bot's info", 
+        aliases=["bi", "bot"]
+    )
+    async def botinfo(self, ctx):
+        user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
+        avatar_url = self.client.user.avatar.url if self.client.user.avatar else self.client.user.default_avatar.url
+
+        members = sum(guild.member_count for guild in self.client.guilds)
+        guilds = len(self.client.guilds)
+        latency = round(self.client.latency * 1000)
+
+        uptime_start = self.client.uptime()  
+        uptime = format_dt(uptime_start, style='R')
+        lines2 = self.client.lines() 
+        
+        total_commands = 0
+        for command in self.client.commands:
+            if not command.hidden and command.cog_name != "Jishaku":
+                total_commands += 1 
+
+                if isinstance(command, commands.Group):
+                    for subcommand in command.commands:
+                        if not subcommand.hidden and command.cog_name != "Jishaku":
+                            total_commands += 1
+
+        view = View()
+        support = Button(style=discord.ButtonStyle.link, label="Support", url="https://discord.gg/uid", emoji=f"{emoji.link}")
+        inv = Button(style=discord.ButtonStyle.link, label="Invite me", url="https://discordapp.com/oauth2/authorize?client_id=1284613721888526417&scope=bot+applications.commands&permissions=8", emoji=f"{emoji.link}")
+        view.add_item(support)
+        view.add_item(inv)
+
+        embed = discord.Embed(title="", description=f"> **Myth** is the only **feature rich** bot that youre gonna need \n> Helping `{members:,}` users and `{guilds:,}` guilds \n> **Developed** by [lavalink](https://github.com/lavalink-dev) & [misimpression](https://github.com/misimpression)", color=color.default)
+        embed.add_field(name="Stats", value=f"> Latency: `{latency}ms` \n> Lines: `{lines2}` \n> Commands: `{total_commands}` \n> Started: {uptime}", inline=True)
+        embed.set_author(name=ctx.author.name, icon_url=user_pfp)
+        embed.set_thumbnail(url=avatar_url)
+
+        await ctx.send(embed=embed, view=view)
+>>>>>>> 71080dd7efdc4274423477ec843378a8cdf70643:cogs/info.py
         
     @commands.command(
         description="Check a user's info", 
