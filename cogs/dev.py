@@ -205,8 +205,8 @@ class Developer(commands.Cog):
             embed.set_footer(text=f"Page {i // 10 + 1}/{(len(rows) - 1) // 10 + 1}")
             embeds.append(embed)
 
-        paginator = Paginator(InitialPage=0)
-        await ctx.paginate(ctx, pages)
+        paginator = Paginator(ctx, pages, current=0)
+        message = await ctx.send(embed=pages[0], 
         
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
