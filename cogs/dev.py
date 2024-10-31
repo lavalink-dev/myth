@@ -206,7 +206,7 @@ class Developer(commands.Cog):
             embeds.append(embed)
 
         paginator = Paginator(ctx, pages, current=0)
-        message = await ctx.send(embed=pages[0], 
+        message = await ctx.send(embed=pages[0], view=paginator)
         
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
