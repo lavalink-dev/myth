@@ -68,7 +68,7 @@ class Information(CogMeta):
                 name="Statistics",
                 value=(
                     f"Latency: `{latency}ms`\n"
-                    f"Commands: `{len(self.bot.public_cogs)}`\n" # type: ignore
+                    f"Commands: `{len(self.bot.public_commands)}`\n" # type: ignore
                     f"Guilds: `{guild_count}`\n"
                     f"Users: `{len(self.bot.members):,}`"
                 )
@@ -76,7 +76,7 @@ class Information(CogMeta):
                 name="Other Information",
                 value=(
                     f"GPU Usage: `{cpu_percent()}%`"
-                    f"CPU Usage: `{virtual_memory()}%`"
+                    f"CPU Usage: `{virtual_memory().percent}%`"
                     f"Support: [click here](https://discord.gg/uid)"
                     f"Discord.py: {__version__}"
                 )

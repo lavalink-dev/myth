@@ -51,6 +51,14 @@ class Myth(AutoShardedBot):
         ]
     
     @property
+    def public_commands(self) -> list:
+        return [
+            command.name
+            for command in self.walk_commands()
+            if command.cog_name in self.public_cogs
+        ]
+    
+    @property
     def members(self):
         return list(self.get_all_members())
 
