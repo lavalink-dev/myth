@@ -83,7 +83,7 @@ class Miscellaneous(commands.Cog):
                 embed.set_footer(text=f'Page {index} of {len(sniped_messages)}')
                 pages.append(embed)
 
-            paginator = Simple(InitialPage=0)
+            paginator = Paginator(InitialPage=0)
             await ctx.paginate(ctx, pages)
 
         else:
@@ -111,7 +111,7 @@ class Miscellaneous(commands.Cog):
                 embed.set_footer(text=f'Page {index} of {len(sniped_edits)}')
                 pages.append(embed)
 
-            paginator = Simple(InitialPage=0)
+            paginator = Paginator(InitialPage=0)
             await ctx.paginate(ctx, pages)
 
         else:
