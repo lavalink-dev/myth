@@ -60,7 +60,7 @@ class Myth(AutoShardedBot):
         if not database:
             raise ValueError("Failed to get database information")
 
-        pool = await create_pool(
+        self.pool = await create_pool( # type: ignore
             user=environ.get("DATABASE_USER", "postgres"),
             password=environ.get("DATABASE_PASSWORD", "local"),
             database=environ.get("DATABASE", "myth"),
@@ -70,7 +70,7 @@ class Myth(AutoShardedBot):
         )
 
         with open('system/schema/schema.sql', 'r') as file:
-            await pool.execute(file.read()) # type: ignore
+            await self.pool.execute(file.read()) # type: ignore
 
     async def get_prefix(self, message: Message):
         await self.wait_until_ready()
