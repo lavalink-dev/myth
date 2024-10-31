@@ -1,4 +1,5 @@
 from config import emoji, color
+from config import Emojis, Color
 from system.types import CogMeta
 from system.base import Context
 
