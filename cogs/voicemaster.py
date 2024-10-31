@@ -5,8 +5,8 @@ import random
 from discord.ext       import commands
 from discord.ui        import Button, View
 
-from tools.context     import Context
-from tools.config      import emoji, color
+from system.base.context     import Context
+from config      import emoji, color
 
 class VoiceMaster(commands.Cog):
     def __init__(self, client):

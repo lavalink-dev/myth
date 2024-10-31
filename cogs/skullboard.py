@@ -4,8 +4,8 @@ import asyncpg
 from discord.ext       import commands
 from datetime          import datetime
 
-from tools.context     import Context    
-from tools.config      import emoji, color
+from system.base.context     import Context    
+from config      import emoji, color
 
 class Skullboard(commands.Cog):
     def __init__(self, client):

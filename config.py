@@ -13,3 +13,13 @@ class color:
     warn = discord.Color.yellow()
     deny = discord.Color.red()
     agree = discord.Color.green()
+
+class Emojis:
+    class Paginator:
+        left = '<:left:1294716353952874547>'
+        right = '<:right:1294716290199720037>'
+        navigate = '<:paginate:1294716310701215784>'
+        cancel = '<:exit:1294716331538645044>'
+
+class Color:
+    default = 0xE8E4FD

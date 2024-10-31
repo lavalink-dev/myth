@@ -1,90 +1,29 @@
+from typing import Optional
+
 import discord 
 import psutil 
 import platform
 import time
 
+from discord import User, Member, Embed, ButtonStyle
 from discord.ext       import commands 
 from discord.utils     import format_dt, get
 from discord.ui        import Button, View
 from datetime          import datetime, timedelta
+from discord.ext.commands.parameters import Author
 
-from tools.config      import emoji, color
-from tools.context     import Context
-from tools.paginator   import Simple
+from config import emoji, color
+from system.base.context import Context
 
 class Information(commands.Cog):
     def __init__(self, client):
         self.client = client
-
-    @commands.command(
-        description="Check the bot's latency",
-        aliases=["p", "latency"]
-    )
-    async def ping(self, ctx):
-        user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
-        latency = round(self.client.latency * 1000)
-        
-        embed = discord.Embed(description=f"> :mag: Latency: **{latency}ms**", color=color.default)
-        embed.set_author(name=ctx.author.name, icon_url=user_pfp)
-        await ctx.send(embed=embed)
-
-    @commands.command(
-        description="Add me im cool :sunglasses:", 
-        aliases=["invite", "links"]
-    )
-    async def inv(self, ctx):
-        view = View()
-        support = Button(style=discord.ButtonStyle.link, label="Support", url="https://discord.gg/uid", emoji=f"{emoji.link}")
-        inv = Button(style=discord.ButtonStyle.link, label="Invite me", url="https://discordapp.com/oauth2/authorize?client_id=1284613721888526417&scope=bot+applications.commands&permissions=8", emoji=f"{emoji.link}")
-        
-        view.add_item(support)
-        view.add_item(inv)
-        await ctx.send(view=view)
-
-    @commands.command(
-        description="Check the bot's info", 
-        aliases=["bi", "bot"]
-    )
-    async def botinfo(self, ctx):
-        user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
-        avatar_url = self.client.user.avatar.url if self.client.user.avatar else self.client.user.default_avatar.url
-
-        members = sum(guild.member_count for guild in self.client.guilds)
-        guilds = len(self.client.guilds)
-        latency = round(self.client.latency * 1000)
-
-        uptime_start = self.client.uptime()  
-        uptime = format_dt(uptime_start, style='R')
-        lines2 = self.client.lines() 
-        
-        total_commands = 0
-        for command in self.client.commands:
-            if not command.hidden and command.cog_name != "Jishaku":
-                total_commands += 1 
-
-                if isinstance(command, commands.Group):
-                    for subcommand in command.commands:
-                        if not subcommand.hidden and command.cog_name != "Jishaku":
-                            total_commands += 1
-
-        view = View()
-        support = Button(style=discord.ButtonStyle.link, label="Support", url="https://discord.gg/uid", emoji=f"{emoji.link}")
-        inv = Button(style=discord.ButtonStyle.link, label="Invite me", url="https://discordapp.com/oauth2/authorize?client_id=1284613721888526417&scope=bot+applications.commands&permissions=8", emoji=f"{emoji.link}")
-        view.add_item(support)
-        view.add_item(inv)
-
-        embed = discord.Embed(title="", description=f"> **Myth** is the only **feature rich** bot that youre gonna need \n> Helping `{members:,}` users and `{guilds:,}` guilds", color=color.default)
-        embed.add_field(name="Stats", value=f"> Latency: `{latency}ms` \n> Lines: `{lines2}` \n> Commands: `{total_commands}` \n> Started: {uptime}", inline=True)
-        embed.set_author(name=ctx.author.name, icon_url=user_pfp)
-        embed.set_thumbnail(url=avatar_url)
-
-        await ctx.send(embed=embed, view=view)
         
     @commands.command(
         description="Check a user's info", 
         aliases=["ui"]
     )
-    async def userinfo(self, ctx, member: discord.Member = None):
+    async def userinfo(self, ctx: Context, member: discord.Member = None):
         if member is None:
             member = ctx.author
 
@@ -131,7 +70,7 @@ class Information(commands.Cog):
         if member.guild.premium_subscriber_role and member.guild.premium_subscriber_role in member.roles: 
             badges.append("<a:boost:1291122311944081531>")
 
-        embed.add_field(name="Joined", value=f"> {format_dt(member.joined_at, style='D') if hasattr(member, 'joined_at') else 'n/a'} \n> {format_dt(member.joined_at, style='R') if member.joined_at else 'n/a'}", inline=True)
+        embed.add_field(name="Joined", value=f"> {format_dt(member.joined_at, style='D') if hasattr(member, 'joined_at') else 'n/a'} \n> {format_dt(member.joined_at, style='R') if member.joined_at else 'n/a'}", inline=True) # type: ignore
         embed.add_field(name="Created", value=f"> {format_dt(member.created_at, style='D') if hasattr(member, 'created_at') else 'n/a'} \n> {format_dt(member.created_at, style='R') if hasattr(member, 'created_at') else 'n/a'}", inline=True)
         embed.add_field(name="Extra", value=f"> **UID:** {uid} \n> **Badges:** {' '.join(badges) if badges else 'None'}", inline=True)
         
@@ -149,45 +88,45 @@ class Information(commands.Cog):
     @commands.command(
         aliases=["serverinfo", "si"]
     )
-    async def server(self, ctx):
+    async def server(self, ctx: Context):
         guild = ctx.guild
 
         # boost
-        boost = f"{guild.premium_subscription_count} (lvl {guild.premium_tier})" if guild.premium_subscription_count > 0 else "0"
-        boosters = f"{guild.premium_subscription_count}" if guild.premium_subscription_count > 0 else "0"
-        vanity = f".gg/{guild.vanity_url_code}" if guild.vanity_url_code else "None"
+        boost = f"{guild.premium_subscription_count} (lvl {guild.premium_tier})" if guild.premium_subscription_count > 0 else "0" # type: ignore
+        boosters = f"{guild.premium_subscription_count}" if guild.premium_subscription_count > 0 else "0" # type: ignore
+        vanity = f".gg/{guild.vanity_url_code}" if guild.vanity_url_code else "None" # type: ignore
 
         # gen
-        owner = guild.owner.mention
-        created_at = format_dt(guild.created_at, "F")
+        owner = guild.owner.mention # type: ignore 
+        created_at = format_dt(guild.created_at, "F") # type: ignore
         guild_id = guild.id
 
         # misc
-        emojis = len(guild.emojis)
-        roles = len(guild.roles)
-        stickers = len([sticker for sticker in guild.stickers if sticker.available])
-        max_emojis = guild.emoji_limit
-        max_stickers = guild.sticker_limit
+        emojis = len(guild.emojis) # type: ignore
+        roles = len(guild.roles) # type: ignore
+        stickers = len([sticker for sticker in guild.stickers if sticker.available]) # type: ignore
+        max_emojis = guild.emoji_limit # type: ignore
+        max_stickers = guild.sticker_limit # type: ignore
 
         # users
-        humans = sum(not member.bot for member in guild.members)
-        bots = sum(member.bot for member in guild.members)
-        total_members = len(guild.members)
+        humans = sum(not member.bot for member in guild.members) # type: ignore
+        bots = sum(member.bot for member in guild.members) # type: ignore
+        total_members = len(guild.members) # type: ignore
 
         # channel shit
-        text_channels = len(guild.text_channels)
-        voice_channels = len(guild.voice_channels)
-        categories = len(guild.categories)
+        text_channels = len(guild.text_channels) # type: ignore
+        voice_channels = len(guild.voice_channels) # type: ignore
+        categories = len(guild.categories) # type: ignore
 
         # design
-        banner = guild.banner.url if guild.banner else None
-        pfp = guild.icon.url if guild.icon else None
-        splash = guild.splash.url if guild.splash else None
+        banner = guild.banner.url if guild.banner else None # type: ignore
+        pfp = guild.icon.url if guild.icon else None # type: ignore 
+        splash = guild.splash.url if guild.splash else None # type: ignore
 
         # embed
         embed = discord.Embed(title=f"", color=color.default)
-        icon_url = guild.icon.url if guild.icon else None
-        embed.set_author(name=f"{guild.name} | serverinfo", icon_url=icon_url)
+        icon_url = guild.icon.url if guild.icon else None # type: ignore
+        embed.set_author(name=f"{guild.name} | serverinfo", icon_url=icon_url) # type: ignore
         
         embed.add_field(name=f"Boosts", value=f"> **Boosts:** `{boost}`\n> **Boosters:** `{boosters}`\n> **Vanity:** `{vanity}`", inline=True)
         embed.add_field(name="Misc", value=f"> **Emojis:** `{emojis}/{max_emojis}`\n> **Stickers:** `{stickers}/{max_stickers}`\n> **Roles:** `{roles}/250`", inline=True)
@@ -202,7 +141,7 @@ class Information(commands.Cog):
         description="Check a users avatar", 
         aliases=["av", "ava", "pfp"]
     )
-    async def avatar(self, ctx, user: discord.User = None):
+    async def avatar(self, ctx: Context, user: User = None):
         if user is None:
             user = ctx.author
         elif isinstance(user, int):
@@ -223,15 +162,10 @@ class Information(commands.Cog):
         description="Check a users banner", 
         aliases=["bnner", "bnr", "bn"]
     )
-    async def banner(self, ctx, user: discord.Member = None):
-        if user is None:
-            user = ctx.author
-        elif isinstance(user, int):
-            user = await self.client.fetch_user(user)
-
+    async def banner(self, ctx: Context, user: User = Author):
         try:
-            user = await self.client.fetch_user(user.id)
-            banner_url = user.banner.url if user.banner else None
+            user = await self.client.fetch_user(user.id) # type: ignore
+            banner_url = user.banner.url if user.banner else None # type: ignore
         except discord.NotFound:
             banner_url = None
 
@@ -287,8 +221,8 @@ class Information(commands.Cog):
         aliases=["banlist"]
     )
     @commands.has_permissions(ban_members=True)
-    async def bans(self, ctx: commands.Context):
-        banned_users = [ban async for ban in ctx.guild.bans()]
+    async def bans(self, ctx: Context):
+        banned_users = [ban async for ban in ctx.guild.bans()] # type: ignore
         banned_list = [f"> {ban_entry.user.mention} - {ban_entry.reason or 'No reason'}" for ban_entry in banned_users] or ["> None"]
 
         user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
@@ -298,8 +232,7 @@ class Information(commands.Cog):
         ]
 
         if len(pages) > 1:
-            paginator = Simple()
-            await paginator.start(ctx, pages)
+            await ctx.paginate(pages)
         else:
             await ctx.send(embed=pages[0])
 
@@ -308,7 +241,7 @@ class Information(commands.Cog):
         aliases=["boosts"]
     )
     async def boosters(self, ctx: Context):
-        boosters = ctx.guild.premium_subscribers
+        boosters = ctx.guild.premium_subscribers # type: ignore
         booster_list = [f"> {booster.mention}" for booster in boosters] or ["> None"]
 
         user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
@@ -318,8 +251,7 @@ class Information(commands.Cog):
         ]
 
         if len(pages) > 1:
-            paginator = Simple()
-            await paginator.start(ctx, pages)
+            await ctx.paginate(pages)
         else:
             await ctx.send(embed=pages[0])
 
@@ -327,7 +259,7 @@ class Information(commands.Cog):
         description="Check all bots in the server"
     )
     async def bots(self, ctx: Context):
-        bots = [member for member in ctx.guild.members if member.bot]
+        bots = [member for member in ctx.guild.members if member.bot] # type: ignore
         bot_list = [f"> {bot.mention}" for bot in bots] or ["> None"]
 
         user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
@@ -337,8 +269,7 @@ class Information(commands.Cog):
         ]
 
         if len(pages) > 1:
-            paginator = Simple()
-            await paginator.start(ctx, pages)
+            await ctx.paginate(pages)
         else:
             await ctx.send(embed=pages[0])
             
@@ -346,7 +277,7 @@ class Information(commands.Cog):
         description="Check all users in a role"
     )
     async def inrole(self, ctx: Context, role: discord.Role):
-        members_with_role = [f"> {member.mention}" for member in ctx.guild.members if role in member.roles]
+        members_with_role = [f"> {member.mention}" for member in ctx.guild.members if role in member.roles] # type: ignore
         user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
 
         if members_with_role:
@@ -357,8 +288,7 @@ class Information(commands.Cog):
                 pages.append(embed)
 
             if len(pages) > 1:
-                paginator = Simple()
-                await paginator.start(ctx, pages)
+                await ctx.paginate(pages)
             else:
                 await ctx.send(embed=pages[0])
         else:
@@ -368,7 +298,7 @@ class Information(commands.Cog):
         description="Check all emojis in the server"
     )
     async def emojis(self, ctx: Context):
-        emojis = ctx.guild.emojis
+        emojis = ctx.guild.emojis # type: ignore
         emoji_list = [f"> {emoji} ({emoji.id})" for emoji in emojis] or ["> None"]
 
         user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
@@ -379,8 +309,7 @@ class Information(commands.Cog):
         ]
 
         if len(pages) > 1:
-            paginator = Simple()
-            await paginator.start(ctx, pages)
+            await ctx.paginate(pages)
         else:
             await ctx.send(embed=pages[0])
 
@@ -388,7 +317,7 @@ class Information(commands.Cog):
         description="Check all roles in the server"
     )
     async def roles(self, ctx: Context):
-        roles = [role for role in ctx.guild.roles if role.name != "@everyone"]
+        roles = [role for role in ctx.guild.roles if role.name != "@everyone"] # type: ignore
         role_list = [f"> {role.mention}" for role in roles] or ["> None"]
 
         user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
@@ -399,8 +328,7 @@ class Information(commands.Cog):
         ]
 
         if len(pages) > 1:
-            paginator = Simple()
-            await paginator.start(ctx, pages)
+            await ctx.paginate(pages)
         else:
             await ctx.send(embed=pages[0])
 
@@ -409,7 +337,7 @@ class Information(commands.Cog):
         aliases=["joinpos"]
     )
     async def joinposition(self, ctx: Context):
-        join_position = (sorted(ctx.guild.members, key=lambda m: m.joined_at).index(ctx.author) + 1)
+        join_position = (sorted(ctx.guild.members, key=lambda m: m.joined_at).index(ctx.author) + 1) # type: ignore
         await ctx.invisible(f"You joined **{join_position}** that's a really cool position :sunglasses:")
 
     @commands.command(
@@ -454,7 +382,7 @@ class Information(commands.Cog):
         description="Get info on a channel", 
         aliases=["ci"]
     )
-    async def channelinfo(self, ctx, channel: discord.TextChannel = None):
+    async def channelinfo(self, ctx, channel: Optional[discord.TextChannel] = None):
         channel = channel or ctx.channel
 
         category = channel.category.name if channel.category else "None"
@@ -494,7 +422,7 @@ class Information(commands.Cog):
     @commands.command(
         description="Check how many invites you have in the server"
     )
-    async def invites(self, ctx, user: discord.Member = None):
+    async def invites(self, ctx, user: Member = Author):
         user = user or ctx.author 
         invites = await ctx.guild.invites()
         allinvites = sum(invite.uses for invite in invites if invite.inviter == user)

@@ -6,8 +6,8 @@ import random
 
 from discord.ext       import commands
 
-from tools.context     import Context
-from tools.config      import emoji, color
+from system.base.context     import Context
+from config      import emoji, color
 
 class Fun(commands.Cog):
     def __init__(self, client):

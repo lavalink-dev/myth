@@ -4,8 +4,8 @@ from discord.ext       import commands
 from discord.ui        import View, Select
 from typing            import Optional
 
-from tools.context     import Context
-from tools.config      import emoji, color
+from system.base.context     import Context
+from config      import emoji, color
 
 class HelpDropdown(discord.ui.Select):
     def __init__(self, client, author, blacklisted, home):
