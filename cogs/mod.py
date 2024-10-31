@@ -12,9 +12,8 @@ from discord.utils      import format_dt, utcnow
 from typing             import Optional
 from datetime           import datetime, timedelta
 
-from config       import emoji, color
+from config                   import emoji, color
 from system.base.context      import Context
-from system.base.paginator    import Simple
 
 class Moderation(commands.Cog):
     def __init__(self, client):
