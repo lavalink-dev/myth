@@ -65,7 +65,7 @@ class Miscellaneous(commands.Cog):
 
     @commands.command(
         description="Check for old and deleted messages",
-        aliases=['s']
+        aliases=["s"]
     )
     async def snipe(self, ctx):
         channel_id = ctx.channel.id
@@ -80,7 +80,7 @@ class Miscellaneous(commands.Cog):
 
                 embed = discord.Embed(description=f"> {deleted_message.content}", color=color.default)
                 embed.set_author(name=deleting_user.display_name, icon_url=user_pfp)
-                embed.set_footer(text=f'Page {index} of {len(sniped_messages)}')
+                embed.set_footer(text=f"Page {index} of {len(sniped_messages)}")
                 pages.append(embed)
 
             paginator = Paginator(ctx, pages, current=0)
@@ -90,7 +90,7 @@ class Miscellaneous(commands.Cog):
 
     @commands.command(
         description="Check for old and edited messages",
-        aliases=['es']
+        aliases=["es"]
     )
     async def editsnipe(self, ctx):
         channel_id = ctx.channel.id
@@ -107,7 +107,7 @@ class Miscellaneous(commands.Cog):
                 embed.add_field(name="Before", value=f"{before.content}")
                 embed.add_field(name="After", value=f"{after.content}")
                 embed.set_author(name=editing_user.display_name, icon_url=user_pfp)
-                embed.set_footer(text=f'Page {index} of {len(sniped_edits)}')
+                embed.set_footer(text=f"Page {index} of {len(sniped_edits)}")
                 pages.append(embed)
 
             paginator = Paginator(ctx, pages, current=0)
