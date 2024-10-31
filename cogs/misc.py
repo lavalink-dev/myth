@@ -7,7 +7,7 @@ from datetime          import datetime, timedelta
 
 from system.base.context     import Context
 from config      import color, emoji
-from system.base.paginator   import Simple
+from system.base.paginator   import Paginator
 
 class Miscellaneous(commands.Cog):
     def __init__(self, client):
