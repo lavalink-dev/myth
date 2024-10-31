@@ -54,9 +54,7 @@ class Information(CogMeta):
     async def botinfo(self, ctx: Context) -> Message:
         """ Display information about the bot """
 
-        guilds = [guild async for guild in self.bot.fetch_guilds(limit=None)]
-        guild_count = len(guilds)
-
+        guild_count = len(self.bot.guilds)
         latency = round(self.bot.latency * 1000)
 
         return await ctx.send(
