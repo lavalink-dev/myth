@@ -60,23 +60,23 @@ class Information(CogMeta):
         return await ctx.send(
             embed=Embed(
                 title="Information",
-                description=f"Developed by [lavalink](https://github.com/lavalink-dev) & [misimpression](https://github.com/misimpression)\nPython version: {python_version()}",
+                description=f"> Developed by [lavalink](https://github.com/lavalink-dev) & [misimpression](https://github.com/misimpression)\n> Python version: {python_version()}",
                 color=Color.default
             ).add_field(
                 name="Statistics",
                 value=(
-                    f"Latency: `{latency}ms`\n"
-                    f"Commands: `{len(self.bot.public_commands)}`\n" # type: ignore
-                    f"Guilds: `{guild_count}`\n"
-                    f"Users: `{len(self.bot.members):,}`"
+                    f"> **Latency:** `{latency}ms`\n"
+                    f"> **Commands:** `{len(self.bot.public_commands)}`\n" # type: ignore
+                    f"> **Guilds:** `{guild_count}`\n"
+                    f"> **Users:** `{len(self.bot.members):,}`"
                 )
             ).add_field(
                 name="Other Information",
                 value=(
-                    f"GPU Usage: `{cpu_percent()}%`\n"
-                    f"CPU Usage: `{virtual_memory().percent}%`\n"
-                    f"Support: [click here](https://discord.gg/uid)\n"
-                    f"Discord.py: {__version__}"
+                    f"> **GPU Usage:** `{cpu_percent()}%`\n"
+                    f"> **CPU Usage:** `{virtual_memory().percent}%`\n"
+                    f"> Support: [click here](https://discord.gg/uid)\n"
+                    f"> **Discord.py:** {__version__}"
                 )
             ).set_footer(
                 text="Myth v1.2"
