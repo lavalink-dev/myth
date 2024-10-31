@@ -22,10 +22,10 @@ class Context(commands.Context):
     async def warn(self, message) -> Message:
         embed = Embed(description = f"> {emoji.warn} {self.author.mention}: {message}", color = color.warn)
         return await self.send(embed=embed)
-    
-    async def paginate(self, embeds: list[Embed]) -> Message:
-        return await self.send(view=Paginator(self, embeds))
 
+    async def paginate(self, embeds: list[Embed]) -> Message:
+        return await self.send(embed=embeds[0], view=Paginator(self, embeds))
+        
     def get_command_permissions(self, command: Command):
         perms = []
         if hasattr(command, "checks"):
@@ -90,6 +90,6 @@ class Context(commands.Context):
                 sub_embed.add_field(name=f"{emoji.cmd} Usage", value=f"```{sub_usage}```", inline=False)
                 embeds.append(sub_embed)
 
-            await self.send(view=Paginator(self, embeds))
+            await self.paginate(embeds)  
         else:
             await self.send(embed=embed)
