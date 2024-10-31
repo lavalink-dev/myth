@@ -1,5 +1,4 @@
 from config import emoji, color
-from config import Emojis, Color
 from system.types import CogMeta
 from system.base import Context
 
@@ -79,7 +78,7 @@ class Information(CogMeta):
         embed = Embed(
             title="Information",
             description=f"> Developed by [lavalink](https://github.com/lavalink-dev) & [misimpression](https://github.com/misimpression)",
-            color=Color.default()
+            color=color.default()
         ).add_field(
             name="Statistics",
             value=(
