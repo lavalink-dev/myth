@@ -84,8 +84,7 @@ class Miscellaneous(commands.Cog):
                 pages.append(embed)
 
             paginator = Paginator(ctx, pages, current=0)
-            await ctx.paginate(ctx, pages)
-
+            await paginator.start()
         else:
             await ctx.message.add_reaction(f'{emoji.deny}')
 
@@ -112,8 +111,7 @@ class Miscellaneous(commands.Cog):
                 pages.append(embed)
 
             paginator = Paginator(ctx, pages, current=0)
-            await ctx.paginate(ctx, pages)
-
+            await paginator.start()
         else:
             await ctx.message.add_reaction(f'{emoji.deny}')
 
