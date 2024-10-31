@@ -92,8 +92,8 @@ class Information(CogMeta):
             value=(
                 f"> **GPU Usage:** `{cpu_percent()}%`\n"
                 f"> **CPU Usage:** `{virtual_memory().percent}%`\n"
-                f"> **Python**: {python_version()}\n"
-                f"> **Discord.py:** {__version__}"
+                f"> **Python**: `{python_version()}`\n"
+                f"> **Discord.py:** `{__version__}`"
             )
         ).set_footer(
             text="Myth v1.2"
