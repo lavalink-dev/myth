@@ -9,7 +9,7 @@ from discord.utils     import oauth_url
 
 from config      import emoji, color
 from system.base.context     import Context
-from system.base.paginator   import Simple
+from system.base.paginator   import Paginator
 
 class Developer(commands.Cog):
     def __init__(self, client):
@@ -205,8 +205,8 @@ class Developer(commands.Cog):
             embed.set_footer(text=f"Page {i // 10 + 1}/{(len(rows) - 1) // 10 + 1}")
             embeds.append(embed)
 
-        paginator = Simple()
-        await paginator.start(ctx, embeds)
+        paginator = Paginator(InitialPage=0)
+        await ctx.paginate(ctx, pages)
         
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
