@@ -68,7 +68,7 @@ class Information(CogMeta):
                 name="Statistics",
                 value=(
                     f"Latency: `{latency}ms`\n"
-                    f"Commands: `{len(self.bot.public_cogs())}`\n" # type: ignore
+                    f"Commands: `{len(self.bot.public_cogs)}`\n" # type: ignore
                     f"Guilds: `{guild_count}`\n"
                     f"Users: `{len(self.bot.members):,}`"
                 )
