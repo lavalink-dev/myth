@@ -78,7 +78,7 @@ class Information(CogMeta):
         embed = Embed(
             title="Information",
             description=f"> Developed by [lavalink](https://github.com/lavalink-dev) & [misimpression](https://github.com/misimpression)",
-            color=color.default()
+            color=color.default
         ).add_field(
             name="Statistics",
             value=(
