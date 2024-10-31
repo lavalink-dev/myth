@@ -75,9 +75,9 @@ class Information(CogMeta):
             ).add_field(
                 name="Other Information",
                 value=(
-                    f"GPU Usage: `{cpu_percent()}%`"
-                    f"CPU Usage: `{virtual_memory().percent}%`"
-                    f"Support: [click here](https://discord.gg/uid)"
+                    f"GPU Usage: `{cpu_percent()}%`\n"
+                    f"CPU Usage: `{virtual_memory().percent}%`\n"
+                    f"Support: [click here](https://discord.gg/uid)\n"
                     f"Discord.py: {__version__}"
                 )
             ).set_footer(
