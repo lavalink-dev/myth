@@ -92,8 +92,8 @@ class Help(commands.Cog):
             avatar_url = self.client.user.avatar.url if self.client.user.avatar else self.client.user.default_avatar.url
             
             embed = discord.Embed(description="", color=color.default)
-            embed.add_field(name="<:list:1298736825304875051> Need details?", value=f"> Use ;help (cmd) to get more details on a cmd")
-            embed.add_field(name="<:info:1298737423949496470> Acknowledge", value=f"> Acknowledge that the bot is **not** perfect")
+            embed.add_field(name="Need details?", value=f"> Use ;help (cmd) to get more details on a cmd")
+            embed.add_field(name="Acknowledge", value=f"> Acknowledge that the bot is **not** perfect")
             embed.set_thumbnail(url=avatar_url)
             embed.set_author(name=ctx.author.name, icon_url=user_pfp)
             
