@@ -192,12 +192,13 @@ class Fun(commands.Cog):
     @vape.command()
     async def flavors(self, ctx):
         embeds = []
-        page_size = 7
+        page_size = 10
         pages = [self.flavors[i:i + page_size] for i in range(0, len(self.flavors), page_size)]
         
         for page in pages:
             flavors = "\n".join([f"> {flavor}" for flavor in page])
-            embed = discord.Embed(title="Available Vape Flavors", description=flavors, color=color.default)
+            embed = discord.Embed(description=flavors, color=color.default)
+            embed.set_author(name=f"{ctx.author.name} | Flavors", icon_url=user.avatar.url or user.default_avatar.url)
             embeds.append(embed)
 
         paginator = Paginator(ctx, embeds, current=0)
@@ -223,15 +224,12 @@ class Fun(commands.Cog):
         leaderboard = ""
         for index, row in enumerate(rows, start=1):
             user = self.client.get_user(row["user_id"])
-            username = user.display_name if user else "Unknown User"
+            username = user.mention if user else "Unknown User"
             hits = row["hits"]
-            leaderboard += f"{index}. **{username}** - {hits} hits\n"
+            leaderboard += f"`{index}.` **{username}** - {hits} hits\n"
 
-        embed = discord.Embed(
-            title=":cloud: Vape Leaderboard :cloud:",
-            description=leaderboard,
-            color=color.default
-        )
+        embed = discord.Embed(description=leaderboard, color=color.default)
+        embed.set_author(name=f"{ctx.author.name} | Vape leaderboard", icon_url=user.avatar.url or user.default_avatar.url)
         await ctx.send(embed=embed)
 
 async def setup(client):
