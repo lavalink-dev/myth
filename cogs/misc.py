@@ -206,7 +206,11 @@ class Miscellaneous(commands.Cog):
             await channel.set_permissions(user, overwrite=overwrite)
             await ctx.agree(f"**Removed** picperms from: {user.mention}")
 
-    @commands.group(description="Manage your timezone settings", invoke_without_command=True, aliases=["tz"])
+    @commands.group(
+        description="Configure timezone", 
+        invoke_without_command=True, 
+        aliases=["tz"]
+    )
     async def timezone(self, ctx, user: discord.User = None):
         user = user or ctx.author
         
@@ -214,7 +218,7 @@ class Miscellaneous(commands.Cog):
         user_tz = row['timezone'] if row else None
 
         if not user_tz:
-            await ctx.warn(f"{user.mention} **has not** set their timezone, use `{ctx.prefix}timezone set [Europe/Lodon]` to set your timezone")
+            await ctx.deny(f"{user.mention} **has not** set their timezone, use `{ctx.prefix}timezone set [Europe/Lodon]` to set your timezone")
             return
 
         current_time = datetime.now(pytz.timezone(user_tz))
@@ -224,10 +228,13 @@ class Miscellaneous(commands.Cog):
         embed.set_author(name=f"{ctx.author.name} | {user_tz}", icon_url=user.avatar.url or user.default_avatar.url)
         await ctx.send(embed=embed)
 
-    @timezone.command(name="set", description="Set your local timezone", aliases=["tzset"])
+    @timezone.command(
+        name="set", 
+        description="Set your timezone, for example: America/Chicago", 
+    )
     async def timezone_set(self, ctx, timezone: str):
         if timezone not in pytz.all_timezones:
-            await ctx.warn("Invalid timezone. Please use a valid timezone name, e.g., `America/New_York`.")
+            await ctx.warn("**Invalid timezone,** use a valid timezone like: `America/Chicago`")
             return
 
         await self.client.pool.execute("""
