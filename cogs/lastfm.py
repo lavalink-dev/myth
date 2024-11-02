@@ -71,7 +71,7 @@ class LastFm(commands.Cog):
             view.add_item(discord.ui.Button(label="Listen", url=track_url, style=discord.ButtonStyle.link))
             await ctx.send(embed=embed, view=view)
         else:
-            await ctx.send("No currently playing track found.")
+            await ctx.deny("**No** currently playing track found")
 
     @lastfm.command(name="topweek", description="Check the top tracks played this week", aliases=["tw"])
     async def lastfm_topweek(self, ctx):
@@ -83,13 +83,15 @@ class LastFm(commands.Cog):
         top_tracks = await self.fetch_top_week(username)
         if top_tracks:
             embed = discord.Embed(
-                title="Top Tracks This Week",
+                title="",
                 color=color.default
             )
+            user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
+            embed.set_author(name=f"{ctx.author.name} | top week", icon_url=user_pfp)
             for track in top_tracks:
                 embed.add_field(
-                    name=f"{track['artist']} - {track['name']}",
-                    value=f"{track['playcount']} plays",
+                    name=f"",
+                    value=f"> **{track['artist']} - {track['name']}** Plays: `{track['playcount']}`",
                     inline=False
                 )
             await ctx.send(embed=embed)
