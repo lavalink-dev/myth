@@ -173,7 +173,9 @@ class Fun(commands.Cog):
     async def vape(self, ctx):
         await ctx.send_help(ctx.command.qualified_name)
 
-    @vape.command()
+    @vape.command(
+        description="Be closer to getting cancer"
+    )
     async def hit(self, ctx):
         result = await self.client.pool.fetchrow("SELECT flavor, hits FROM vape WHERE user_id = $1", ctx.author.id)
         
@@ -189,7 +191,9 @@ class Fun(commands.Cog):
         embed = discord.Embed(description=f"> <:vape:1296191531241312326> {ctx.author.mention}: You **hit** the flavor `{flavor}`", color=color.default)
         await ctx.send(embed=embed)
 
-    @vape.command()
+    @vape.command(
+        description="Check the vape flavors"
+    )
     async def flavors(self, ctx):
         embeds = []
         page_size = 10
@@ -204,7 +208,9 @@ class Fun(commands.Cog):
         paginator = Paginator(ctx, embeds, current=0)
         message = await ctx.send(embed=embeds[0], view=paginator)
 
-    @vape.command()
+    @vape.command(
+        description="Set your vape flavor"
+    )
     async def flavor(self, ctx, *, flavor: str):
         if flavor not in self.flavors:
             await ctx.deny(f"**Invalid flavor,** use a flavor from `{ctx.prefix}vape flavors`")
@@ -213,7 +219,10 @@ class Fun(commands.Cog):
         await self.client.pool.execute("INSERT INTO vape (user_id, flavor, hits) VALUES ($1, $2, 0) ON CONFLICT (user_id) DO UPDATE SET flavor = $2", ctx.author.id, flavor)
         await ctx.agree(f"**Set** your vape flavor to: `{flavor}`")
         
-    @vape.command()
+    @vape.command(
+        description="Check who has the biggest e-cancer",
+        aliases=["lb"]
+    )
     async def leaderboard(self, ctx):
         rows = await self.client.pool.fetch("SELECT user_id, hits FROM vape ORDER BY hits DESC LIMIT 10")
 
@@ -226,7 +235,7 @@ class Fun(commands.Cog):
             user = self.client.get_user(row["user_id"])
             username = user.mention if user else "Unknown User"
             hits = row["hits"]
-            leaderboard += f"`{index}.` **{username}** - {hits} hits\n"
+            leaderboard += f"> `{index}.` **{username}** - {hits} hits\n"
 
         embed = discord.Embed(description=leaderboard, color=color.default)
         embed.set_author(name=f"{ctx.author.name} | Vape leaderboard", icon_url=ctx.author.avatar.url or ctx.author.default_avatar.url)
