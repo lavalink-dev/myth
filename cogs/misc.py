@@ -217,9 +217,10 @@ class Miscellaneous(commands.Cog):
             await ctx.warn(f"{user.mention} **has not** set their timezone, use `{ctx.prefix}timezone set [Europe/Lodon]` to set your timezone")
             return
 
-        current_time = datetime.now(pytz.timezone(user_tz)).strftime("%d %B %Y, %I:%M %p")
+        current_time = datetime.now(pytz.timezone(user_timezone))
+        timezone = discord.utils.format_dt(current_time, style='F')
         
-        embed = discord.Embed(description=f"> **It's currently:** {current_time}", color=color.default)
+        embed = discord.Embed(description=f"> **It's currently:** {timezone}", color=color.default)
         embed.set_author(name=f"{ctx.author.name} | {user_tz}", icon_url=user.avatar.url or user.default_avatar.url)
         await ctx.send(embed=embed)
 
