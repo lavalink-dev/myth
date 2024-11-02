@@ -206,7 +206,7 @@ class Miscellaneous(commands.Cog):
             await channel.set_permissions(user, overwrite=overwrite)
             await ctx.agree(f"**Removed** picperms from: {user.mention}")
 
-    @commands.group(description="Manage your timezone settings", invoke_without_command=True)
+    @commands.group(description="Manage your timezone settings", invoke_without_command=True, aliases=["tz"])
     async def timezone(self, ctx, user: discord.User = None):
         user = user or ctx.author
         
