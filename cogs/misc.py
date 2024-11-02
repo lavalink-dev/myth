@@ -218,14 +218,14 @@ class Miscellaneous(commands.Cog):
         user_tz = row['timezone'] if row else None
 
         if not user_tz:
-            await ctx.deny(f"{user.mention} **has not** set their timezone, use `{ctx.prefix}timezone set [Europe/Lodon]` to set your timezone")
+            await ctx.deny(f"{user.mention} **has not** set their timezone, use `{ctx.prefix}timezone set [Europe/London]` to set your timezone")
             return
 
         current_time = datetime.now(pytz.timezone(user_tz))
         timezone = discord.utils.format_dt(current_time, style="F")
         
         embed = discord.Embed(description=f"> **It's currently:** {timezone}", color=color.default)
-        embed.set_author(name=f"{ctx.author.name} | {user_tz}", icon_url=user.avatar.url or user.default_avatar.url)
+        embed.set_author(name=f"{user.name} | {user_tz}", icon_url=user.avatar.url or user.default_avatar.url)
         await ctx.send(embed=embed)
 
     @timezone.command(
