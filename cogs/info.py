@@ -135,55 +135,46 @@ class Information(commands.Cog):
         await ctx.send(embed=embed)
         
     @commands.command(
-        aliases=["serverinfo", "si"]
+        description="Get info on a server",
+        aliases=["si", "server"]
     )
-    async def server(self, ctx):
+    async def serverinfo(self, ctx: commands.Context):
         guild = ctx.guild
-
-        # boost
-        boost = f"{guild.premium_subscription_count} (lvl {guild.premium_tier})" if guild.premium_subscription_count > 0 else "0"
-        boosters = f"{guild.premium_subscription_count}" if guild.premium_subscription_count > 0 else "0"
-        vanity = f".gg/{guild.vanity_url_code}" if guild.vanity_url_code else "None"
-
-        # gen
-        owner = guild.owner.mention
+        #info
+        verif = str(guild.verification_level).replace('_', ' ').title()
         created_at = format_dt(guild.created_at, "F")
-        guild_id = guild.id
+        description = guild.description if guild.description else "n/a"
 
-        # misc
-        emojis = len(guild.emojis)
-        roles = len(guild.roles)
-        stickers = len([sticker for sticker in guild.stickers if sticker.available])
-        max_emojis = guild.emoji_limit
-        max_stickers = guild.sticker_limit
-
-        # users
+        #members
         humans = sum(not member.bot for member in guild.members)
         bots = sum(member.bot for member in guild.members)
-        total_members = len(guild.members)
+        total = len(guild.members)
 
-        # channel shit
-        text_channels = len(guild.text_channels)
-        voice_channels = len(guild.voice_channels)
-        categories = len(guild.categories)
+        icon_url = guild.icon.url if guild.icon else None
+        stickers = len([sticker for sticker in guild.stickers if sticker.available])
 
-        # design
+        #design
         banner = guild.banner.url if guild.banner else None
         pfp = guild.icon.url if guild.icon else None
         splash = guild.splash.url if guild.splash else None
 
-        # embed
-        embed = discord.Embed(title=f"", color=color.default)
-        icon_url = guild.icon.url if guild.icon else None
-        embed.set_author(name=f"{guild.name} | serverinfo", icon_url=icon_url)
+        #boosts
+        boosters_list = guild.premium_subscribers
+        unique_boosters = len(boosters_list)
         
-        embed.add_field(name=f"Boosts", value=f"> **Boosts:** `{boost}`\n> **Boosters:** `{boosters}`\n> **Vanity:** `{vanity}`", inline=True)
-        embed.add_field(name="Misc", value=f"> **Emojis:** `{emojis}/{max_emojis}`\n> **Stickers:** `{stickers}/{max_stickers}`\n> **Roles:** `{roles}/250`", inline=True)
-        embed.add_field(name="Members", value=f"> **Total:** `{total_members}`\n> **Humans:** `{humans}`\n> **Bots:** `{bots}`", inline=True)
-        embed.add_field(name=f"Channels", value=f"> **Text:** `{text_channels}`\n> **Voice:** `{voice_channels}`\n> **Categories:** `{categories}`", inline=True)
-        embed.add_field(name="General", value=f"> **Owner:** {owner}\n> **ID:** `{guild_id}`\n> **Created:** {created_at}", inline=True)
+        boosters = f"{unique_boosters} booster(s)" if unique_boosters > 0 else "0 booster(s)"
+        boost = f"{guild.premium_subscription_count} (lvl {guild.premium_tier})" if guild.premium_subscription_count > 0 else "0"
+        vanity = f".gg/{guild.vanity_url_code}" if guild.vanity_url_code else "None"
+        
+        embed = discord.Embed(description=description, color=color.default)
+        embed.set_author(name=f"{guild.name} ({guild.id}) | serverinfo", icon_url=icon_url)
+        embed.set_thumbnail(url=guild.icon.url)
+        embed.add_field(name="Information", value=f"> **Owner:** {guild.owner.mention} \n> **Created:** {created_at} \n> **Verification:** `{verif}`", inline=False)
+        embed.add_field(name="Members", value=f"> **Total:** `{total}` \n> **Humans:** `{humans}` \n> **Bots:** `{bots}`", inline=True)
+        embed.add_field(name="Channels", value=f"> **Text:** `{len(guild.text_channels)}` \n> **Voice:** `{len(guild.voice_channels)}` \n> **Categories:** `{len(guild.categories)}`", inline=True)
+        embed.add_field(name="Counts", value=f"> **Emojis:** `{len(guild.emojis)}/{guild.emoji_limit}` \n> **Stickers:** `{stickers}/{guild.sticker_limit}` \n> **Roles:** `{len(guild.roles)}/250`", inline=True)
         embed.add_field(name=f"Design", value=f"> **Avatar:** {'[Here](' + pfp + ')' if pfp else 'n/a'}\n> **Banner:** {'[Here](' + banner + ')' if banner else 'n/a'}\n> **Splash:** {'[Here](' + splash + ')' if splash else 'n/a'}", inline=True)
-
+        embed.add_field(name=f"Boosts", value=f"> **Boosts:** `{boost}`\n> **Boosters:** `{boosters}`\n> **Vanity:** `{vanity}`", inline=True)
         await ctx.send(embed=embed)
 
     @commands.command(
