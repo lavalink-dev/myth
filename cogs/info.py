@@ -5,11 +5,11 @@ import time
 
 from discord.ext       import commands 
 from discord.utils     import format_dt, get
-from discord.ui        import ButtonStyle, View, Button
+from discord.ui        import View, Button
 from datetime          import datetime, timedelta
 from platform          import python_version
 from psutil            import cpu_percent, virtual_memory
-from discord           import __version__
+from discord           import __version__, ButtonStyle
 
 from config             import emoji, color
 from system.types       import CogMeta
