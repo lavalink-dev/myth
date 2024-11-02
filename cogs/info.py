@@ -113,6 +113,8 @@ class Information(commands.Cog):
             badges.append("<:activedev:1291122427094368348>")
         if user.id == 394152799799345152:
             badges.append("<:dev:1291123071498981436>")
+        if user.id == 187747524646404105:
+            badges.append("<:clown_cowboy:1302374943744458833>")
 
         if member.premium_since:  
             badges.append("<:nitro:1291122409293742102>")
@@ -277,8 +279,8 @@ class Information(commands.Cog):
         ]
 
         if len(pages) > 1:
-            paginator = Simple()
-            await paginator.start(ctx, pages)
+            paginator = Paginator(ctx, pages, current=0)
+            message = await ctx.send(embed=pages[0], view=paginator)
         else:
             await ctx.send(embed=pages[0])
 
@@ -297,8 +299,8 @@ class Information(commands.Cog):
         ]
 
         if len(pages) > 1:
-            paginator = Simple()
-            await paginator.start(ctx, pages)
+            paginator = Paginator(ctx, pages, current=0)
+            message = await ctx.send(embed=pages[0], view=paginator)
         else:
             await ctx.send(embed=pages[0])
 
@@ -316,8 +318,8 @@ class Information(commands.Cog):
         ]
 
         if len(pages) > 1:
-            paginator = Simple()
-            await paginator.start(ctx, pages)
+            paginator = Paginator(ctx, pages, current=0)
+            message = await ctx.send(embed=pages[0], view=paginator)
         else:
             await ctx.send(embed=pages[0])
             
@@ -336,8 +338,8 @@ class Information(commands.Cog):
                 pages.append(embed)
 
             if len(pages) > 1:
-                paginator = Simple()
-                await paginator.start(ctx, pages)
+                paginator = Paginator(ctx, pages, current=0)
+                message = await ctx.send(embed=pages[0], view=paginator)
             else:
                 await ctx.send(embed=pages[0])
         else:
@@ -358,8 +360,8 @@ class Information(commands.Cog):
         ]
 
         if len(pages) > 1:
-            paginator = Simple()
-            await paginator.start(ctx, pages)
+            paginator = Paginator(ctx, pages, current=0)
+            message = await ctx.send(embed=pages[0], view=paginator)
         else:
             await ctx.send(embed=pages[0])
 
@@ -378,8 +380,8 @@ class Information(commands.Cog):
         ]
 
         if len(pages) > 1:
-            paginator = Simple()
-            await paginator.start(ctx, pages)
+            paginator = Paginator(ctx, pages, current=0)
+            message = await ctx.send(embed=pages[0], view=paginator)
         else:
             await ctx.send(embed=pages[0])
 
