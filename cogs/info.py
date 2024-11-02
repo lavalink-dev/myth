@@ -5,8 +5,11 @@ import time
 
 from discord.ext       import commands 
 from discord.utils     import format_dt, get
-from discord.ui        import Button, View
+from discord.ui        import ButtonStyle, View, Button
 from datetime          import datetime, timedelta
+from platform          import python_version
+from psutil            import cpu_percent, virtual_memory
+from discord           import __version__
 
 from config             import emoji, color
 from system.types       import CogMeta
@@ -51,7 +54,7 @@ class Information(commands.Cog):
             support = Button(style=ButtonStyle.link, label="Support", url="https://discord.gg/uid", emoji='🔗')) \
             inv = Button(style=ButtonStyle.link, label="Invite me", url=f"https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&scope=bot+applications.commands&permissions=8", emoji='🔗'))
 
-        embed = Embed(title="Information", description=f"> Developed by [lavalink](https://github.com/lavalink-dev) & [misimpression](https://github.com/misimpression)", color=color.default) 
+        embed = discord.Embed(title="Information", description=f"> Developed by [lavalink](https://github.com/lavalink-dev) & [misimpression](https://github.com/misimpression)", color=color.default) 
             embed.add_field(name="Statistics", value=f"> **Latency:** `{latency}ms`\n> **Commands:** `{len(self.bot.public_commands)}`\n> **Guilds:** `{guild_count}`\n> **Users:** `{len(self.bot.members):,}`") 
             embed.add_field(name="Other Information", value=f"> **GPU Usage:** `{cpu_percent()}%`\n> **CPU Usage:** `{virtual_memory().percent}%`\n> **Python**: `{python_version()}`\n> **Discord.py:** `{__version__}`") 
             embed.set_footer(text="Myth v1.2") 
