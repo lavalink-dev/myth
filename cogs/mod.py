@@ -336,11 +336,11 @@ class Moderation(commands.Cog):
 
         if role in member.roles:
             await member.remove_roles(role)
-            embed = discord.Embed(f"> <:remove:1302374923544690769> {ctx.author.menton}: **Removed** {role.mention} from {member.mention}")
+            embed = discord.Embed(f"> <:remove:1302374923544690769> {ctx.author.mention}: **Removed** {role.mention} from {member.mention}")
             await ctx.send(embed=embed)
         else:
             await member.add_roles(role)
-            embed = discord.Embed(f"> <:add:1302374903672078447> {ctx.author.menton}: **Added** {role.mention} to {member.mention}")
+            embed = discord.Embed(f"> <:add:1302374903672078447> {ctx.author.mention}: **Added** {role.mention} to {member.mention}")
             await ctx.send(embed=embed)
 
     @role.command(
