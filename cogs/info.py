@@ -42,43 +42,24 @@ class Information(commands.Cog):
         view.add_item(inv)
         await ctx.send(view=view)
 
-    @commands.command(
-        description="Check the bot's info", 
-        aliases=["bi", "bot"]
-    )
+    @commands.command(aliases=("bi", "bot"))
     async def botinfo(self, ctx):
-        user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
-        avatar_url = self.client.user.avatar.url if self.client.user.avatar else self.client.user.default_avatar.url
+        guild_count = len(self.bot.guilds)
+        latency = round(self.bot.latency * 1000)
 
-        members = sum(guild.member_count for guild in self.client.guilds)
-        guilds = len(self.client.guilds)
-        latency = round(self.client.latency * 1000)
+        view = View(timeout=None) 
+            support = Button(style=ButtonStyle.link, label="Support", url="https://discord.gg/uid", emoji='🔗')) \
+            inv = Button(style=ButtonStyle.link, label="Invite me", url=f"https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&scope=bot+applications.commands&permissions=8", emoji='🔗'))
 
-        uptime_start = self.client.uptime()  
-        uptime = format_dt(uptime_start, style='R')
-        lines2 = self.client.lines() 
-        
-        total_commands = 0
-        for command in self.client.commands:
-            if not command.hidden and command.cog_name != "Jishaku":
-                total_commands += 1 
+        embed = Embed(title="Information", description=f"> Developed by [lavalink](https://github.com/lavalink-dev) & [misimpression](https://github.com/misimpression)", color=color.default) 
+            embed.add_field(name="Statistics", value=f"> **Latency:** `{latency}ms`\n> **Commands:** `{len(self.bot.public_commands)}`\n> **Guilds:** `{guild_count}`\n> **Users:** `{len(self.bot.members):,}`") 
+            embed.add_field(name="Other Information", value=f"> **GPU Usage:** `{cpu_percent()}%`\n> **CPU Usage:** `{virtual_memory().percent}%`\n> **Python**: `{python_version()}`\n> **Discord.py:** `{__version__}`") 
+            embed.set_footer(text="Myth v1.2") 
+            embed.set_thumbnail(url=self.bot.user.display_avatar.url) 
+            embed.set_author(name=ctx.author.name, icon_url=ctx.author.display_avatar.url)
 
-                if isinstance(command, commands.Group):
-                    for subcommand in command.commands:
-                        if not subcommand.hidden and command.cog_name != "Jishaku":
-                            total_commands += 1
-
-        view = View()
-        support = Button(style=discord.ButtonStyle.link, label="Support", url="https://discord.gg/uid", emoji=f"{emoji.link}")
-        inv = Button(style=discord.ButtonStyle.link, label="Invite me", url="https://discordapp.com/oauth2/authorize?client_id=1284613721888526417&scope=bot+applications.commands&permissions=8", emoji=f"{emoji.link}")
         view.add_item(support)
         view.add_item(inv)
-
-        embed = discord.Embed(title="", description=f"> **Myth** is the only **feature rich** bot that youre gonna need \n> Helping `{members:,}` users and `{guilds:,}` guilds", color=color.default)
-        embed.add_field(name="Stats", value=f"> Latency: `{latency}ms` \n> Lines: `{lines2}` \n> Commands: `{total_commands}` \n> Started: {uptime}", inline=True)
-        embed.set_author(name=ctx.author.name, icon_url=user_pfp)
-        embed.set_thumbnail(url=avatar_url)
-
         await ctx.send(embed=embed, view=view)
         
     @commands.command(
