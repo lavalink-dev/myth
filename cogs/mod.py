@@ -18,6 +18,7 @@ from system.base.context      import Context
 class Moderation(commands.Cog):
     def __init__(self, client):
         self.client = client
+        self.session = aiohttp.ClientSession()
 
 # OTHERS
       
