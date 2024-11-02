@@ -97,10 +97,14 @@ class Myth(AutoShardedBot):
         return await super().get_context(origin, cls=cls)
 
     async def setup_hook(self):
+        self.session = ClientSession()
         await self.load_database()
-
         await self.load_extension('jishaku')
         await self.load_cogs_from_dir('cogs')
+
+    async def close(self):
+        await self.session.close()
+        await super().close()
 
     def uptime(self):
         current_time = time.time()
