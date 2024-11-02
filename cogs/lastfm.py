@@ -36,13 +36,6 @@ class LastFm(commands.Cog):
                 } for track in top_tracks
             ]
 
-    async def fetch_artist_play_count(self, username, artist_name):
-        url = f"http://ws.audioscrobbler.com/2.0/?method=user.getartisttracks&user={username}&artist={artist_name}&api_key={self.api_key}&format=json"
-        async with self.session.get(url) as response:
-            data = await response.json()
-            play_count = data.get("artisttracks", {}).get("@attr", {}).get("total", "0")
-            return play_count
-
     @commands.command(name="nowplaying", aliases=["np"], description="Shows the current playing track.")
     async def nowplaying(self, ctx):
         await self.lastfm_nowplaying(ctx)
@@ -56,20 +49,20 @@ class LastFm(commands.Cog):
     async def lastfm_nowplaying(self, ctx):
         username = await self.client.pool.fetchval("SELECT username FROM lastfm WHERE user_id = $1", ctx.author.id)
         if not username:
-            await ctx.send("You haven't set a Last.fm username. Use `!lastfm set <username>` to set one.")
+            await ctx.warn(f"**You** didn't set a username, use `{ctx.prefix}lastfm set [username]` to set one")
             return
 
         artist, track_name, album, track_url, image_url = await self.fetch_now_playing(username)
         if artist and track_name:
             embed = discord.Embed(
-                title="Now Playing",
-                color=discord.Color.default()
+                description=f"> **You** are listening to `{track_name}`",
+                color=color.default
             )
-            embed.add_field(name="Song", value=track_name, inline=False)
-            embed.add_field(name="Artist", value=artist, inline=False)
-            embed.add_field(name="Album", value=album, inline=False)
+            user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
+            embed.set_author(name=f"{ctx.author.name} | now playing", icon_url=user_pfp)
+            embed.add_field(name="Artist", value=f"> {artist}", inline=False)
+            embed.add_field(name="Album", value=f"> {album}", inline=False)
             embed.set_thumbnail(url=image_url)
-            embed.set_footer(text="Source: Last.fm")
             view = discord.ui.View()
             view.add_item(discord.ui.Button(label="Listen", url=track_url, style=discord.ButtonStyle.link))
             await ctx.send(embed=embed, view=view)
@@ -80,14 +73,14 @@ class LastFm(commands.Cog):
     async def lastfm_topweek(self, ctx):
         username = await self.client.pool.fetchval("SELECT username FROM lastfm WHERE user_id = $1", ctx.author.id)
         if not username:
-            await ctx.send("You haven't set a Last.fm username. Use `!lastfm set <username>` to set one.")
+            await ctx.warn(f"**You** didn't set a username, use `{ctx.prefix}lastfm set [username]` to set one")
             return
 
         top_tracks = await self.fetch_top_week(username)
         if top_tracks:
             embed = discord.Embed(
                 title="Top Tracks This Week",
-                color=discord.Color.default()
+                color=color.default
             )
             for track in top_tracks:
                 embed.add_field(
@@ -97,22 +90,7 @@ class LastFm(commands.Cog):
                 )
             await ctx.send(embed=embed)
         else:
-            await ctx.send("No top tracks found for the past week.")
-
-    @lastfm.command(name="artist", description="Get your play count for a specific artist", aliases=["plays"])
-    async def lastfm_artist(self, ctx, *, artist_name: str):
-        username = await self.client.pool.fetchval("SELECT username FROM lastfm WHERE user_id = $1", ctx.author.id)
-        if not username:
-            await ctx.send("You haven't set a Last.fm username. Use `!lastfm set <username>` to set one.")
-            return
-
-        play_count = await self.fetch_artist_play_count(username, artist_name)
-        embed = discord.Embed(
-            title=f"{artist_name} Play Count",
-            description=f"You have played **{artist_name}** {play_count} times.",
-            color=discord.Color.default()
-        )
-        await ctx.send(embed=embed)
+            await ctx.deny("**No** top tracks found for the past week")
 
     @lastfm.command(name="set", description="Set your LastFm username", aliases=["add"])
     async def lastfm_set(self, ctx, username: str):
@@ -124,12 +102,12 @@ class LastFm(commands.Cog):
             """,
             ctx.author.id, username
         )
-        await ctx.send(f"**Set** your LastFm user to: `{username}`")
+        await ctx.agree(f"**Set** your LastFm user to: `{username}`")
 
     @lastfm.command(name="remove", description="Remove your LastFm username", aliases=["delete"])
     async def lastfm_remove(self, ctx):
         await self.client.pool.execute("UPDATE lastfm SET username = NULL WHERE user_id = $1", ctx.author.id)
-        await ctx.send("**Removed** your LastFm username")
+        await ctx.agree("**Removed** your LastFm username")
 
 async def setup(client):
     await client.add_cog(LastFm(client))
