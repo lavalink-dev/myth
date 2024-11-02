@@ -54,7 +54,7 @@ class Information(commands.Cog):
         support = Button(style=ButtonStyle.link, label="Support", url="https://discord.gg/uid", emoji='🔗')
         inv = Button(style=ButtonStyle.link, label="Invite me", url=f"https://discordapp.com/oauth2/authorize?client_id={self.client.user.id}&scope=bot+applications.commands&permissions=8", emoji='🔗')
 
-        embed = Embed(title="Information", description="> Developed by [lavalink](https://github.com/lavalink-dev) & [misimpression](https://github.com/misimpression)", color=0x7289DA)
+        embed = discord.Embed(title="Information", description="> Developed by [lavalink](https://github.com/lavalink-dev) & [misimpression](https://github.com/misimpression)", color=0x7289DA)
         embed.add_field(name="Statistics", value=f"> **Latency:** `{latency}ms`\n> **Commands:** `{len(self.client.public_commands)}`\n> **Guilds:** `{guild_count}`\n> **Users:** `{len(self.client.users):,}`")
         embed.add_field(name="Other Information", value=f"> **GPU Usage:** `{cpu_percent()}%`\n> **CPU Usage:** `{virtual_memory().percent}%`\n> **Python**: `{python_version()}`\n> **Discord.py:** `{__version__}`")
         embed.set_footer(text="Myth v1.2")
