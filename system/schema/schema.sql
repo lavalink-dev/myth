@@ -171,3 +171,8 @@ CREATE TABLE IF NOT EXISTS antinuke_logs (
     timestamp TIMESTAMP,
     details TEXT
 );
+
+CREATE TABLE IF NOT EXISTS lastfm ( 
+    user_id BIGINT PRIMARY KEY,
+    username TEXT 
+);
