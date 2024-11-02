@@ -50,16 +50,16 @@ class Information(commands.Cog):
         guild_count = len(self.bot.guilds)
         latency = round(self.bot.latency * 1000)
 
-        view = View(timeout=None) 
-            support = Button(style=ButtonStyle.link, label="Support", url="https://discord.gg/uid", emoji='🔗')) \
-            inv = Button(style=ButtonStyle.link, label="Invite me", url=f"https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&scope=bot+applications.commands&permissions=8", emoji='🔗'))
+        view = View(timeout=None)
+        support = Button(style=ButtonStyle.link, label="Support", url="https://discord.gg/uid", emoji='🔗')
+        inv = Button(style=ButtonStyle.link, label="Invite me", url=f"https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&scope=bot+applications.commands&permissions=8", emoji='🔗')
 
-        embed = discord.Embed(title="Information", description=f"> Developed by [lavalink](https://github.com/lavalink-dev) & [misimpression](https://github.com/misimpression)", color=color.default) 
-            embed.add_field(name="Statistics", value=f"> **Latency:** `{latency}ms`\n> **Commands:** `{len(self.bot.public_commands)}`\n> **Guilds:** `{guild_count}`\n> **Users:** `{len(self.bot.members):,}`") 
-            embed.add_field(name="Other Information", value=f"> **GPU Usage:** `{cpu_percent()}%`\n> **CPU Usage:** `{virtual_memory().percent}%`\n> **Python**: `{python_version()}`\n> **Discord.py:** `{__version__}`") 
-            embed.set_footer(text="Myth v1.2") 
-            embed.set_thumbnail(url=self.bot.user.display_avatar.url) 
-            embed.set_author(name=ctx.author.name, icon_url=ctx.author.display_avatar.url)
+        embed = Embed(title="Information", description="> Developed by [lavalink](https://github.com/lavalink-dev) & [misimpression](https://github.com/misimpression)", color=0x7289DA)
+        embed.add_field(name="Statistics", value=f"> **Latency:** `{latency}ms`\n> **Commands:** `{len(self.bot.public_commands)}`\n> **Guilds:** `{guild_count}`\n> **Users:** `{len(self.bot.users):,}`")
+        embed.add_field(name="Other Information", value=f"> **GPU Usage:** `{cpu_percent()}%`\n> **CPU Usage:** `{virtual_memory().percent}%`\n> **Python**: `{python_version()}`\n> **Discord.py:** `{__version__}`")
+        embed.set_footer(text="Myth v1.2")
+        embed.set_thumbnail(url=self.bot.user.display_avatar.url)
+        embed.set_author(name=ctx.author.name, icon_url=ctx.author.display_avatar.url)
 
         view.add_item(support)
         view.add_item(inv)
