@@ -6,6 +6,7 @@ class LastFm(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.api_key = "4d2d1157ada4114d6cacd34fc0e58532"
+        self.session = aiohttp.ClientSession()
 
     async def fetch_now_playing(self, username):
         url = f"http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user={username}&api_key={self.api_key}&format=json&limit=1"
