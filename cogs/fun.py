@@ -7,12 +7,19 @@ import random
 from discord.ext       import commands
 
 from system.base.context     import Context
-from config      import emoji, color
+from config                  import emoji, color
+from system.base.paginator   import Paginator
 
 class Fun(commands.Cog):
     def __init__(self, client):
         self.client = client
-
+        self.flavors = [
+            "Vanilla", "Mint", "Berry", "Citrus", 
+            "Lavender", "Dragonfruit", "Cherry", "Orange", 
+            "Blueberry", "Tropical", "Cranberry", "Mango", 
+            "Ginger", "Pineapple", "Raspberry"
+        ]
+        
     @commands.command(
         description="Get an image of a dog"
     )
@@ -161,6 +168,71 @@ class Fun(commands.Cog):
     async def uiconfig_bio(self, ctx, *, bio: str):
         await self.client.pool.execute("INSERT INTO userinfo (user_id, bio) VALUES ($1, $2) ON CONFLICT (user_id) DO UPDATE SET bio = $2", ctx.author.id, bio)
         await ctx.agree("**Set** your userinfo bio")
+
+    @commands.group(description="Get 'e-cancer' by 'e-vaping' :sob:", aliases=["v"], invoke_without_command=True)
+    async def vape(self, ctx):
+        await ctx.send_help(ctx.command.qualified_name)
+
+    @vape.command()
+    async def hit(self, ctx):
+        result = await self.client.pool.fetchrow("SELECT flavor, hits FROM vape WHERE user_id = $1", ctx.author.id)
+        
+        if not result or not result["flavor"]:
+            await ctx.deny(f"You **have not** set a flavor, use `{ctx.prefix}vape flavor [flavor]` to set one")
+            return
+
+        flavor = result["flavor"]
+        hits = result["hits"] + 1 if result["hits"] else 1
+
+        await self.client.pool.execute("UPDATE vape SET hits = $1 WHERE user_id = $2 AND flavor = $3", hits, ctx.author.id, flavor)
+
+        embed = discord.Embed(description=f"> <:vape:1296191531241312326> {ctx.author.mention}: You **hit** the flavor `{flavor}`", color=color.default)
+        await ctx.send(embed=embed)
+
+    @vape.command()
+    async def flavors(self, ctx):
+        embeds = []
+        page_size = 7
+        pages = [self.flavors[i:i + page_size] for i in range(0, len(self.flavors), page_size)]
+        
+        for page in pages:
+            flavors = "\n".join([f"> {flavor}" for flavor in page])
+            embed = discord.Embed(title="Available Vape Flavors", description=flavors, color=color.default)
+            embeds.append(embed)
+
+        paginator = Paginator(ctx, pages, current=0)
+        message = await ctx.send(embed=pages[0], view=paginator)
+
+    @vape.command()
+    async def flavor(self, ctx, *, flavor: str):
+        if flavor not in self.flavors:
+            await ctx.deny(f"**Invalid flavor,** use a flavor from `{ctx.prefix}vape flavors`")
+            return
+
+        await self.client.pool.execute("INSERT INTO vape (user_id, flavor, hits) VALUES ($1, $2, 0) ON CONFLICT (user_id) DO UPDATE SET flavor = $2", ctx.author.id, flavor)
+        await ctx.agree(f"**Set** your vape flavor to: `{flavor}`")
+        
+    @vape.command()
+    async def leaderboard(self, ctx):
+        rows = await self.client.pool.fetch("SELECT user_id, hits FROM vape ORDER BY hits DESC LIMIT 10")
+
+        if not rows:
+            await ctx.send("No one has vaped yet.")
+            return
+
+        leaderboard = ""
+        for index, row in enumerate(rows, start=1):
+            user = self.client.get_user(row["user_id"])
+            username = user.display_name if user else "Unknown User"
+            hits = row["hits"]
+            leaderboard += f"{index}. **{username}** - {hits} hits\n"
+
+        embed = discord.Embed(
+            title=":cloud: Vape Leaderboard :cloud:",
+            description=leaderboard,
+            color=color.default
+        )
+        await ctx.send(embed=embed)
 
 async def setup(client):
     await client.add_cog(Fun(client))
