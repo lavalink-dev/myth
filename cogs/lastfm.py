@@ -47,12 +47,12 @@ class LastFm(commands.Cog):
             await ctx.send(f"Now playing: {now_playing}")
 
     @commands.command()
-    async def set(self, ctx, username: str):
+    async def lfset(self, ctx, username: str):
         await self.set_lastfm_username(ctx.author.id, username)
         await ctx.send(f"Your Last.fm username has been set to {username}.")
 
     @commands.command()
-    async def remove(self, ctx):
+    async def lfremove(self, ctx):
         await self.remove_lastfm_username(ctx.author.id)
         await ctx.send("Your Last.fm username has been removed.")
 
