@@ -1,6 +1,10 @@
 import discord
-from discord.ext import commands
 import aiohttp
+
+from discord.ext        import commands
+
+from system.base        import Context
+from config             import emoji, color
 
 class LastFm(commands.Cog):
     def __init__(self, client):
