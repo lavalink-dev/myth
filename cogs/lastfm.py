@@ -64,8 +64,8 @@ class LastFm(commands.Cog):
             )
             user_pfp = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
             embed.set_author(name=f"{ctx.author.name} | now playing", icon_url=user_pfp)
-            embed.add_field(name="Artist", value=f"> {artist}", inline=False)
-            embed.add_field(name="Album", value=f"> {album}", inline=False)
+            embed.add_field(name="Artist", value=f"> {artist}", inline=True)
+            embed.add_field(name="Album", value=f"> {album}", inline=True)
             embed.set_thumbnail(url=image_url)
             view = discord.ui.View()
             view.add_item(discord.ui.Button(label="Listen", url=track_url, style=discord.ButtonStyle.link))
