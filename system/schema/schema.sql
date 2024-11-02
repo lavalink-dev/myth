@@ -181,3 +181,9 @@ CREATE TABLE IF NOT EXISTS timezone (
     user_id BIGINT PRIMARY KEY,
     timezone TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS vape (
+    user_id BIGINT PRIMARY KEY,
+    flavor TEXT,
+    hits INT DEFAULT 1
+);
