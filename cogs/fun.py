@@ -169,7 +169,7 @@ class Fun(commands.Cog):
         await self.client.pool.execute("INSERT INTO userinfo (user_id, bio) VALUES ($1, $2) ON CONFLICT (user_id) DO UPDATE SET bio = $2", ctx.author.id, bio)
         await ctx.agree("**Set** your userinfo bio")
 
-    @commands.group(description="Get 'e-cancer' by 'e-vaping' :sob:", aliases=["v"], invoke_without_command=True)
+    @commands.group(description="Get e-cancer by vaping digitally", aliases=["v"], invoke_without_command=True)
     async def vape(self, ctx):
         await ctx.send_help(ctx.command.qualified_name)
 
@@ -198,7 +198,7 @@ class Fun(commands.Cog):
         for page in pages:
             flavors = "\n".join([f"> {flavor}" for flavor in page])
             embed = discord.Embed(description=flavors, color=color.default)
-            embed.set_author(name=f"{ctx.author.name} | Flavors", icon_url=user.avatar.url or user.default_avatar.url)
+            embed.set_author(name=f"{ctx.author.name} | Flavors", icon_url=ctx.author.avatar.url or ctx.author.default_avatar.url)
             embeds.append(embed)
 
         paginator = Paginator(ctx, embeds, current=0)
@@ -229,7 +229,7 @@ class Fun(commands.Cog):
             leaderboard += f"`{index}.` **{username}** - {hits} hits\n"
 
         embed = discord.Embed(description=leaderboard, color=color.default)
-        embed.set_author(name=f"{ctx.author.name} | Vape leaderboard", icon_url=user.avatar.url or user.default_avatar.url)
+        embed.set_author(name=f"{ctx.author.name} | Vape leaderboard", icon_url=ctx.author.avatar.url or ctx.author.default_avatar.url)
         await ctx.send(embed=embed)
 
 async def setup(client):
