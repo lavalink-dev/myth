@@ -8,9 +8,10 @@ from discord.utils     import format_dt, get
 from discord.ui        import Button, View
 from datetime          import datetime, timedelta
 
-from tools.config      import emoji, color
-from tools.context     import Context
-from tools.paginator   import Simple
+from config             import emoji, color
+from system.types       import CogMeta
+from system.base        import Context
+from system.base.paginator import Paginator
 
 class Information(commands.Cog):
     def __init__(self, client):
