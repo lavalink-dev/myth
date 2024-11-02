@@ -27,7 +27,8 @@ class HelpDropdown(discord.ui.Select):
             "AutoMod": f"<:automod:1301127944084652052>",
             "Fun": f"😺",
             "Network": f"🌐",
-            "AntiNuke": f"🗃",
+            "AntiNuke": f"<:ModShield:1302295447947444365> ",
+            "LastFM": f"<:LastFM:1302294719484661873>",
         }
 
         for cogs in client.cogs:
