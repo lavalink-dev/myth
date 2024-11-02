@@ -1,5 +1,6 @@
 import discord
 import asyncpg
+import pytz
 
 from discord.ext       import commands
 from discord.utils     import format_dt
@@ -204,6 +205,41 @@ class Miscellaneous(commands.Cog):
             overwrite.embed_links = False
             await channel.set_permissions(user, overwrite=overwrite)
             await ctx.agree(f"**Removed** picperms from: {user.mention}")
+
+    @commands.group(description="Manage your timezone settings", invoke_without_command=True)
+    async def timezone(self, ctx, user: discord.User = None):
+        user = user or ctx.author
+        
+        row = await self.client.pool.fetchrow("SELECT timezone FROM timezone WHERE user_id = $1", user.id)
+        user_tz = row['timezone'] if row else None
+
+        if not user_tz:
+            await ctx.warn(f"{user.mention} **has not** set their timezone, use `{ctx.prefix}timezone set [Europe/Lodon]` to set your timezone")
+            return
+
+        current_time = datetime.now(pytz.timezone(user_tz)).strftime("%d %B %Y, %I:%M %p")
+        
+        embed = discord.Embed(description=f"> **It's currently:** {current_time}", color=color.default)
+        embed.set_author(name=f"{ctx.author.name} | {user_tz}", icon_url=user.avatar.url or user.default_avatar.url)
+        await ctx.send(embed=embed)
+
+    @timezone.command(name="set", description="Set your local timezone", aliases=["tzset"])
+    async def timezone_set(self, ctx, timezone: str):
+        if timezone not in pytz.all_timezones:
+            await ctx.warn("Invalid timezone. Please use a valid timezone name, e.g., `America/New_York`.")
+            return
+
+        await self.client.pool.execute("""
+            INSERT INTO timezone (user_id, timezone)
+            VALUES ($1, $2)
+            ON CONFLICT (user_id) DO UPDATE SET timezone = $2;
+        """, ctx.author.id, timezone)
+        await ctx.agree(f"**Set** your timezone to: `{timezone}`")
+
+    @timezone.command(name="unset", description="Unset your timezone", aliases=["tzunset"])
+    async def timezone_unset(self, ctx):
+        await self.client.pool.execute("DELETE FROM timezone WHERE user_id = $1", ctx.author.id)
+        await ctx.agree("**Removed** your timezone")
 
 # events and others
 
