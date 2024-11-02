@@ -200,8 +200,8 @@ class Fun(commands.Cog):
             embed = discord.Embed(title="Available Vape Flavors", description=flavors, color=color.default)
             embeds.append(embed)
 
-        paginator = Paginator(ctx, pages, current=0)
-        message = await ctx.send(embed=pages[0], view=paginator)
+        paginator = Paginator(ctx, embeds, current=0)
+        message = await ctx.send(embed=embeds[0], view=paginator)
 
     @vape.command()
     async def flavor(self, ctx, *, flavor: str):
