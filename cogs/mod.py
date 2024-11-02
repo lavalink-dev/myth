@@ -336,10 +336,12 @@ class Moderation(commands.Cog):
 
         if role in member.roles:
             await member.remove_roles(role)
-            await ctx.agree(f"**Removed** {role.mention} from {member.mention}")
+            embed = discord.Embed(f"> <:remove:1302374923544690769> {ctx.autor.menton}: **Removed** {role.mention} from {member.mention}")
+            await ctx.send(embed=embed)
         else:
             await member.add_roles(role)
-            await ctx.agree(f"**Added** {role.mention} to {member.mention}")
+            embed = discord.Embed(f"> <:add:1302374903672078447> {ctx.autor.menton}: **Added** {role.mention} to {member.mention}")
+            await ctx.send(embed=embed)
 
     @role.command(
         name="create", 
@@ -392,14 +394,14 @@ class Moderation(commands.Cog):
             return
 
         index = 0
-        embed = discord.Embed(description=f"> :clock3: {ctx.author.mention}: **Adding** {role.mention} to everyone", color=color.agree)
+        embed = discord.Embed(description=f"> <:cooldown:1302376391274139750> {ctx.author.mention}: **Adding** {role.mention} to everyone", color=color.agree)
         message = await ctx.send(embed=embed)
 
         for member in ctx.guild.members:
             if role not in member.roles: 
                 await member.add_roles(role, reason=f"Mass role all from: {ctx.author.name}")
                 index += 1
-                embed.description = f"> :clock3: {ctx.author.mention}: **Added** {role.mention} to {index} people"
+                embed.description = f"> <:cooldown:1302376391274139750> {ctx.author.mention}: **Added** {role.mention} to {index} people"
                 await message.edit(embed=embed)
                 await asyncio.sleep(0.3) 
 
@@ -420,14 +422,14 @@ class Moderation(commands.Cog):
             return
 
         index = 0
-        embed = discord.Embed(description=f"> :clock3: {ctx.author.mention}: **Adding** {role.mention} to bots", color=color.agree)
+        embed = discord.Embed(description=f"> <:cooldown:1302376391274139750> {ctx.author.mention}: **Adding** {role.mention} to bots", color=color.agree)
         message = await ctx.send(embed=embed)
 
         for member in ctx.guild.members:
             if member.bot and role not in member.roles:
                 await member.add_roles(role, reason=f"Mass bot role from: {ctx.author.name}")
                 index += 1
-                embed.description = f"> :clock3: {ctx.author.mention}: **Added** {role.mention} to {index} bots"
+                embed.description = f"> <:cooldown:1302376391274139750> {ctx.author.mention}: **Added** {role.mention} to {index} bots"
                 await message.edit(embed=embed)
                 await asyncio.sleep(0.3)
 
@@ -448,14 +450,14 @@ class Moderation(commands.Cog):
             return
 
         index = 0
-        embed = discord.Embed(description=f"> :clock3: {ctx.author.mention}: **Adding** {role.mention} to humans", color=color.agree)
+        embed = discord.Embed(description=f"> <:cooldown:1302376391274139750> {ctx.author.mention}: **Adding** {role.mention} to humans", color=color.agree)
         message = await ctx.send(embed=embed)
 
         for member in ctx.guild.members:
             if not member.bot and role not in member.roles:  
                 await member.add_roles(role, reason=f"Mass human role from: {ctx.author.name}")
                 index += 1
-                embed.description = f"> :clock3: {ctx.author.mention}: **Added** {role.mention} to {index} humans"
+                embed.description = f"> <:cooldown:1302376391274139750> {ctx.author.mention}: **Added** {role.mention} to {index} humans"
                 await message.edit(embed=embed)
                 await asyncio.sleep(0.3)
 
