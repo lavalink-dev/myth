@@ -43,9 +43,9 @@ class LastFm(commands.Cog):
             play_count = data.get("artisttracks", {}).get("@attr", {}).get("total", "0")
             return play_count
 
-    @commands.command(name="nowplaying", description="Shows the current playing track.")
+    @commands.command(name="nowplaying", aliases=["np"], description="Shows the current playing track.")
     async def nowplaying(self, ctx):
-        await ctx.invoke(self.lastfm_nowplaying, ctx=ctx)
+        await self.lastfm_nowplaying(ctx)
 
     @commands.group(description="Interact with Last.fm", aliases=["lf", "fm"])
     async def lastfm(self, ctx: commands.Context):
