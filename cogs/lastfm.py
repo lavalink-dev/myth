@@ -19,8 +19,9 @@ class LastFm(commands.Cog):
                 track_name = now_playing["name"]
                 album = now_playing.get("album", {}).get("#text", "Unknown Album")
                 track_url = now_playing.get("url", "No URL")
-                return artist, track_name, album, track_url
-            return None, None, None, None
+                image_url = now_playing.get("image", [])[-1].get("#text", "")
+                return artist, track_name, album, track_url, image_url
+            return None, None, None, None, None
 
     async def fetch_top_week(self, username):
         url = f"http://ws.audioscrobbler.com/2.0/?method=user.gettoptracks&user={username}&api_key={self.api_key}&format=json&period=7day&limit=10"
@@ -42,6 +43,10 @@ class LastFm(commands.Cog):
             play_count = data.get("artisttracks", {}).get("@attr", {}).get("total", "0")
             return play_count
 
+    @commands.command(name="nowplaying", description="Shows the current playing track.")
+    async def nowplaying(self, ctx):
+        await ctx.invoke(self.lastfm_nowplaying, ctx=ctx)
+
     @commands.group(description="Interact with Last.fm", aliases=["lf", "fm"])
     async def lastfm(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
@@ -54,13 +59,16 @@ class LastFm(commands.Cog):
             await ctx.send("You haven't set a Last.fm username. Use `!lastfm set <username>` to set one.")
             return
 
-        artist, track_name, album, track_url = await self.fetch_now_playing(username)
+        artist, track_name, album, track_url, image_url = await self.fetch_now_playing(username)
         if artist and track_name:
             embed = discord.Embed(
                 title="Now Playing",
-                description=f"**{artist} - {track_name}**\nAlbum: {album}",
                 color=discord.Color.default()
             )
+            embed.add_field(name="Song", value=track_name, inline=False)
+            embed.add_field(name="Artist", value=artist, inline=False)
+            embed.add_field(name="Album", value=album, inline=False)
+            embed.set_thumbnail(url=image_url)
             embed.set_footer(text="Source: Last.fm")
             view = discord.ui.View()
             view.add_item(discord.ui.Button(label="Listen", url=track_url, style=discord.ButtonStyle.link))
