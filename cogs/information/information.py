@@ -106,7 +106,7 @@ class Information(CogMeta):
 
         await ctx.send(embed=embed, view=view)
 
-    @commands.command(
+    @command(
         description="Check a user's info", 
         aliases=["ui"]
     )
@@ -172,7 +172,7 @@ class Information(CogMeta):
 
         await ctx.send(embed=embed)
         
-    @commands.command(
+    @command(
         aliases=["serverinfo", "si"]
     )
     async def server(self, ctx: Context):
@@ -224,7 +224,7 @@ class Information(CogMeta):
 
         await ctx.send(embed=embed)
 
-    @commands.command(
+    @command(
         description="Check a users avatar", 
         aliases=["av", "ava", "pfp"]
     )
@@ -245,7 +245,7 @@ class Information(CogMeta):
             view.add_item(Button(label="Server Avatar", url=user.display_avatar.url, emoji=f"{emoji.link}"))
         await ctx.send(embed=embed, view=view)
 
-    @commands.command(
+    @command(
         description="Check a users banner", 
         aliases=["bnner", "bnr", "bn"]
     )
@@ -267,7 +267,7 @@ class Information(CogMeta):
         else:
             await ctx.deny(f"{ctx.author.mention} **does not** have a banner")
 
-    @commands.command(
+    @command(
         description="Check the server avatar", 
         aliases=["sa", "servericon"]
     )
@@ -285,7 +285,7 @@ class Information(CogMeta):
             else:
                 await ctx.deny(f"`{ctx.guild.name}` **does not** have an avatar")
 
-    @commands.command(
+    @command(
         description="Check the server banner", 
         aliases=["sb"]
     )
@@ -303,7 +303,7 @@ class Information(CogMeta):
             else:
                 await ctx.deny(f"`{ctx.guild.name}` **does not** have a banner")
 
-    @commands.command(
+    @command(
         description="Check banned users", 
         aliases=["banlist"]
     )
@@ -323,7 +323,7 @@ class Information(CogMeta):
         else:
             await ctx.send(embed=pages[0])
 
-    @commands.command(
+    @command(
         description="Check users who boosted", 
         aliases=["boosts"]
     )
@@ -342,7 +342,7 @@ class Information(CogMeta):
         else:
             await ctx.send(embed=pages[0])
 
-    @commands.command(
+    @command(
         description="Check all bots in the server"
     )
     async def bots(self, ctx: Context):
@@ -360,7 +360,7 @@ class Information(CogMeta):
         else:
             await ctx.send(embed=pages[0])
             
-    @commands.command(
+    @command(
         description="Check all users in a role"
     )
     async def inrole(self, ctx: Context, role: discord.Role):
@@ -381,7 +381,7 @@ class Information(CogMeta):
         else:
             await ctx.deny(f"**None** is in role with the role: {role.mention}")
 
-    @commands.command(
+    @command(
         description="Check all emojis in the server"
     )
     async def emojis(self, ctx: Context):
@@ -400,7 +400,7 @@ class Information(CogMeta):
         else:
             await ctx.send(embed=pages[0])
 
-    @commands.command(
+    @command(
         description="Check all roles in the server"
     )
     async def roles(self, ctx: Context):
@@ -419,7 +419,7 @@ class Information(CogMeta):
         else:
             await ctx.send(embed=pages[0])
 
-    @commands.command(
+    @command(
         description="Check your join position", 
         aliases=["joinpos"]
     )
@@ -427,7 +427,7 @@ class Information(CogMeta):
         join_position = (sorted(ctx.guild.members, key=lambda m: m.joined_at).index(ctx.author) + 1) # type: ignore
         await ctx.invisible(f"You joined **{join_position}** that's a really cool position :sunglasses:")
 
-    @commands.command(
+    @command(
         description="Get info on a role", 
         aliases=["ri"]
     )
@@ -465,7 +465,7 @@ class Information(CogMeta):
 
         await ctx.send(embed=embed)
 
-    @commands.command(
+    @command(
         description="Get info on a channel", 
         aliases=["ci"]
     )
@@ -488,7 +488,7 @@ class Information(CogMeta):
         
         await ctx.send(embed=embed)
 
-    @commands.command(
+    @command(
         description="Check for the yougest user in the server"
     )
     async def youngest(self, ctx):
@@ -497,7 +497,7 @@ class Information(CogMeta):
         account_age2 = format_dt(youngest.created_at, 'R')
         await ctx.invisible(f"The youngest user in the server is {youngest.mention}, who created their account {account_age2} ({account_age})")
 
-    @commands.command(
+    @command(
         description="Check for the oldest user in the server"
     )
     async def oldest(self, ctx):
@@ -506,7 +506,7 @@ class Information(CogMeta):
         account_age2 = format_dt(oldest.created_at, 'R')
         await ctx.invisible(f"The oldest member in the server is {oldest.mention}, who created their account {account_age2} ({account_age})")
 
-    @commands.command(
+    @command(
         description="Check how many invites you have in the server"
     )
     async def invites(self, ctx, user: Member = Author):
@@ -515,7 +515,7 @@ class Information(CogMeta):
         allinvites = sum(invite.uses for invite in invites if invite.inviter == user)
         await ctx.invisible(f"You invited `{allinvites}` people")
 
-    @commands.command(
+    @command(
         description="Check all shards of the bot"
     )
     async def shards(self, ctx):
@@ -538,7 +538,7 @@ class Information(CogMeta):
 
         await ctx.send(embed=embed)
 
-    @commands.command(
+    @command(
         description="Check the total member count",
         aliases=["mc"]
     )
