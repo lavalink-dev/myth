@@ -373,49 +373,75 @@ class Fun(commands.Cog):
             await ctx.send(f"{image}")
 
     @commands.command(
-        description="remove a bg from an image", 
-        aliases=["tp", "transparent"]
+        description="who has the biggest pp",
+        aliases=["pp"]
     )
-    async def removebg(self, ctx, image=None):
-        key = ['Q5BmkrUQWY7tTMi49QPJ7ooF', '57ZKaBsCHtoV6hq2HaGYQUz9', 'yA9sgXedXts6asYUa5TaQkV2', 'Tn7dfYzYxM1U54KqrYiFziRu', 'eKJ6cVmVDzVGY6jhfz5E56Pn', '2ZQnoDeXL4h9P7hHp5esjvWa']
+    async def peepee(self, ctx, user:discord.Member=None):
+        if user == None:
+            user = ctx.message.author
 
-        if image == None:
-            if len(ctx.message.attachments) > 0:
-                for file in ctx.message.attachments:
-                    url = ctx.message.attachments[0].url
-                    async with aiohttp.ClientSession() as ses:
-                        async with ses.get(url) as r:
-                            img = BytesIO(await r.read())
-                            bytes = img.getvalue()
+        peepee = [ '8=D', '8==D', '8===D', '8====D', '8=====D', '8======D', '8=======D', '8========D', '8=========D', '8==========D', '8===========D', '8============D', '8=============D', '8==============D', '8===============D', '8================D', '8=================D', '8=================D']
+        pp = random.choice(peepee)
 
-                            response = requests.post(
-                            "https://api.remove.bg/v1.0/removebg",
-                            data={
-                                'image_url': ctx.message.attachments[0].url,
-                                'size': 'auto'},
-                            headers={'X-Api-Key': random.choice(key)},
-                            )
-                            if response.status_code == requests.codes.ok:
-                                with open('no-bg.png', 'wb') as out:
-                                    out.write(response.content)
-                                    await ctx.send(file=discord.File('no-bg.png'))
-                            else:
-                                print("Error:", response.status_code, response.text)
+        embed = discord.Embed(description=f"**{user.mention}'s PP Size** \n> {pp}", color=color.default)
+        await ctx.send(embed=embed)
 
-        else:
-            response = requests.post(
-                'https://api.remove.bg/v1.0/removebg',
-                data={
-                    'image_url': image,
-                    'size': 'auto'},
-                headers={'X-Api-Key': random.choice(key)},
-            )
-            if response.status_code == requests.codes.ok:
-                with open('no-bg.png', 'wb') as out:
-                    out.write(response.content)
-                    await ctx.send(file=discord.File('no-bg.png'))
-            else:
-                print("Error:", response.status_code, response.text)
+    @commands.command(
+        description="hack a user"
+    )
+    async def hack(self, ctx, user:discord.Member=None):
+        name = ['Lien', 'Anna', 'Rachel', 'Jakob', 'Brian', 'Kathrin', 'Collin', 'Finneas', 'Ashley', 'Robin', 'Lea', 'Lena', 'Alina', 'Leyla', 'Ilaria', 'Max', 'Mads' 'Leon', 'Angelina', 'Amelia', 'Ben', 'John', 'Kevin']
+        lname = ['Barmore', 'Brown', 'Creek', 'Ponds', 'Crown', 'June', 'Miller', 'Van-derwoods', 'Amber', 'Coles', 'Smith']
+
+        gender = ['Male', 'Female', 'Trans', 'Non-Binary']
+        age = ['14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '60', '65', '90']
+
+        height = ["3'4", "4'11", "5'3", "6'1", "'4'1", "5'5", "5'11", "6'1", "6'4", "6'9'"]
+        weight = ['120', '130', '133', '140', '270', '90', '121', '111', '132', '194', '153', '200', '334', '589']
+
+        haircolor = ['Brown', 'Blonde', 'Black', 'Red']
+        skincolor = ['White', 'Black', 'Yellow', 'Light']
+
+        dob = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+        dob2 = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31']
+        dob3 = ['2004', '2003', '1999', '2005', '1994', '1997', '2000', '2008', '1977', '1974', '1993', '2001', '2008', '2010', '2020', '1943', '1945', '1964']
+
+        location = ['NYC', 'Staten Island', 'Daly City', 'Amaguana', 'Petepa', 'San Antonio', 'Oklahoma City', 'Berlin', 'Hamburg']
+        phone = ['827', '772', '509', '934', '904', '923', '290', '111', '290']
+        phone2 = ['888', '183', '593', '424', '189', '189', '593', '904']
+        phone3 = ['934', '115', '056', '190', '843', '194', '864', '901', ' 065']
+        email = ['web.de', 'gmx.com', 'gmail.com', 'yahoo.com', 'yandex.com', 'aol.com', 'gmx.de']
+        passwords = ['ilovediscord', '1234567', 'mypasswordispassword', 'password', 'passwordisnotmypassword', 'p4ssw0rd', "iLickFeet", '000000000!W']
+        passwords2 = ['987654321', '123321', 'tree123', 'cat1010', 'bladeismyfavbot']
+        passwords3 = ['passwords', 'youcanthackme', 'heartbroken', 'd3pr3ss10n', 'lilpeepfanpw1', 'ilikeD1KK!!']
+        occupation = ['Clerk', 'Trapper', 'Docotr', 'military']
+        annaulslry = ['1', '10', '100', '20,000', '10', '100,000', '300,000', '0.01', '300', '4,000', '6,900', '69,420', '-1000', '-1', '-69.420']
+        ethincy = ['Asian', 'European', 'American', 'Native American', 'African American', 'Latino']
+        religion = ['Christ', 'Islam', 'Hinduism', 'Budhism', 'Judaism']
+        sexuality = ['Straight', 'Bi', 'Pan', 'Lesbian', 'Gay']
+        eduction = ['Pre School', 'Kindergarten', 'Middleschool', 'Highschool', 'University']
+
+        if not user:
+            user = ctx.message.author
+        message = await ctx.send(f'``Hacking {user}``')
+        await asyncio.sleep(2)
+        await message.edit(content=f"``Hacking {user}`` \n``Hacking into the mainframe...``")
+        await asyncio.sleep(2)
+        await message.edit(content=f"``Hacking {user}`` \n``Hacking into the mainframe...`` \n``Caching data...``")
+        await asyncio.sleep(1)
+        await message.edit(content=f"``Hacking {user}`` \n``Hacking into the mainframe...`` \n``Caching data...`` \n``Cracking SSN information...``")
+        await asyncio.sleep(1)
+        await message.edit(content=f"``Hacking {user}`` \n``Hacking into the mainframe...`` \n``Caching data...`` \n``Cracking SSN information...`` \n``Bruteforcing love life details...``")
+        await asyncio.sleep(2)
+        await message.edit(content='<a:blde_loading:1077990826619195472>')
+        await asyncio.sleep(4)
+        await message.delete()
+
+        embed = discord.Embed(title=f'**HACKED** {user}', color=color.default,
+        description=f'\n \n> **Name:** {random.choice(name)} {random.choice(lname)} \n> **Gender:** {random.choice(gender)} \n> **Age:** {random.choice(age)} \n> **Height:** {random.choice(height)} \n> **Weight:** {random.choice(weight)} \n> **Hair Color:** {random.choice(haircolor)} \n> **Skin Color:** {random.choice(skincolor)} \n> **DOB:** {random.choice(dob)}/{random.choice(dob2)}/{random.choice(dob3)} \n> **Location:** {random.choice(location)} \n> **Phone:** ({random.choice(phone)})-{random.choice(phone2)}-{random.choice(phone3)} \n> **E-Mail:** {user.name}@{random.choice(email)} \n> **Passwords:** [{random.choice(passwords)}, {random.choice(passwords2)}, {random.choice(passwords3)}] \n> **Occupation:** {random.choice(occupation)} \n> **Annual Salary:** ${random.choice(annaulslry)} \n> **Ethincy:** {random.choice(ethincy)} \n> **Religion:** {random.choice(religion)} \n> **Sexuality:** {random.choice(sexuality)} \n> **Education:** {random.choice(eduction)}')
+        embed.set_footer(text=f'hacked by {ctx.message.author}')
+        embed.set_thumbnail(url=user.display_avatar)
+        await ctx.send(embed=embed)
 
 async def setup(client):
     await client.add_cog(Fun(client))
