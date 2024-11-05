@@ -79,5 +79,19 @@ class autopfp(commands.Cog):
         self.pfp.stop()
         await ctx.send("stopped")
 
+    @commands.command()
+    @commands.is_owner()
+    async def testpfp(self, ctx, *, option: str):
+        embed = discord.Embed(color=0x2b2d31).set_footer(text="powered by signed.bio")
+        async with ClientSession() as session:
+            async with session.get("https://signed.bio/api", headers=self.header, params={"option": option}) as response:
+                if response.status != 200:
+                    await ctx.send("Failed to fetch image.")
+                    return
+                data = await response.json()
+                embed.set_thumbnail(url=data["url"])
+                msg = await ctx.send(embed=embed)
+                await msg.add_reaction(f"{emoji.agree}")
+
 async def setup(client):
     await client.add_cog(autopfp(client))
