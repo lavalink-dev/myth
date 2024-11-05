@@ -240,6 +240,181 @@ class Fun(commands.Cog):
         embed = discord.Embed(description=leaderboard, color=color.default)
         embed.set_author(name=f"{ctx.author.name} | Vape leaderboard", icon_url=ctx.author.avatar.url or ctx.author.default_avatar.url)
         await ctx.send(embed=embed)
+        
+    @commands.command(
+        description="make a sad cat meme"
+    )
+    async def sadcat(self, ctx, *, text):
+        text = text.replace(" ", "+")
+        image = f"https://api.popcat.xyz/sadcat?text={text}"
+        await ctx.send(f"{image}")
+        
+    @commands.command(
+        description="make a oogway meme"
+    )
+    async def oogway(self, ctx, *, text):
+        text = text.replace(" ", "+")
+        image = f"https://api.popcat.xyz/oogway?text={text}"
+        await ctx.send(f"{image}")
+
+    @commands.command(
+        description="make a pikachu meme"
+    )
+    async def pikachu(self, ctx, *, text):
+        text = text.replace(" ", "+")
+        image = f"https://api.popcat.xyz/pikachu?text={text}"
+        await ctx.send(f"{image}")
+
+    @commands.command(
+        description="let joe biden tweet something"
+    )
+    async def biden(self, ctx, *, text):
+        text = text.replace(" ", "+")
+        image = f"https://api.popcat.xyz/biden?text={text}"
+        await ctx.send(f"{image}")
+
+    @commands.command(
+        description="create a wanted poster"
+    )
+    async def wanted(self, ctx, *, user: discord.Member=None):
+        if user == None:
+            avatar = ctx.author.display_avatar
+        else:
+            avatar = user.display_avatar
+
+            image = f"https://api.popcat.xyz/wanted?image={avatar}"
+            image = image.replace("webp", "png")
+
+            await ctx.send(f"{image}")
+
+    @commands.command(
+        description="make someones avatar inverted"
+    )
+    async def invert(self, ctx, *, user: discord.Member=None):
+        if user == None:
+            avatar = ctx.author.display_avatar
+        else:
+            avatar = user.display_avatar
+
+            image = f"https://api.popcat.xyz/invert?image={avatar}"
+            image = image.replace("webp", "png")
+
+            await ctx.send(f"{image}")
+
+    @commands.command(
+        description="create a gun image"
+    )
+    async def gun(self, ctx, *, user: discord.Member=None):
+        if user == None:
+            avatar = ctx.author.display_avatar
+        else:
+            avatar = user.display_avatar
+
+            image = f"https://api.popcat.xyz/gun?image={avatar}"
+            image = image.replace("webp", "png")
+
+            await ctx.send(f"{image}")
+
+    @commands.command(
+        description="make a drip image"
+    )
+    async def drip(self, ctx, *, user: discord.Member=None):
+        if user == None:
+            avatar = ctx.author.display_avatar
+        else:
+            avatar = user.display_avatar
+
+            image = f"https://api.popcat.xyz/drip?image={avatar}"
+            image = image.replace("webp", "png")
+
+            await ctx.send(f"{image}")
+
+    @commands.command(
+        description="make a clown image"
+    )
+    async def clown(self, ctx, *, user: discord.Member=None):
+        if user == None:
+            avatar = ctx.author.display_avatar
+        else:
+            avatar = user.display_avatar
+
+            image = f"https://api.popcat.xyz/clown?image={avatar}"
+            image = image.replace("webp", "png")
+
+            await ctx.send(f"{image}")
+
+    @commands.command(
+        description="blur an image"
+    )
+    async def blur(self, ctx, *, user: discord.Member=None):
+        if user == None:
+            avatar = ctx.author.display_avatar
+        else:
+            avatar = user.display_avatar
+
+            image = f"https://api.popcat.xyz/blur?image={avatar}"
+            image = image.replace("webp", "png")
+
+            await ctx.send(f"{image}")
+
+    @commands.command(
+        description="uncover an image"
+    )
+    async def uncover(self, ctx, *, user: discord.Member=None):
+        if user == None:
+            avatar = ctx.author.display_avatar
+        else:
+            avatar = user.display_avatar
+
+            image = f"https://api.popcat.xyz/uncover?image={avatar}"
+            image = image.replace("webp", "png")
+
+            await ctx.send(f"{image}")
+
+    @commands.command(
+        description="remove a bg from an image", 
+        aliases=["tp", "transparent"]
+    )
+    async def removebg(self, ctx, image=None):
+        key = ['Q5BmkrUQWY7tTMi49QPJ7ooF', '57ZKaBsCHtoV6hq2HaGYQUz9', 'yA9sgXedXts6asYUa5TaQkV2', 'Tn7dfYzYxM1U54KqrYiFziRu', 'eKJ6cVmVDzVGY6jhfz5E56Pn', '2ZQnoDeXL4h9P7hHp5esjvWa']
+
+        if image == None:
+            if len(ctx.message.attachments) > 0:
+                for file in ctx.message.attachments:
+                    url = ctx.message.attachments[0].url
+                    async with aiohttp.ClientSession() as ses:
+                        async with ses.get(url) as r:
+                            img = BytesIO(await r.read())
+                            bytes = img.getvalue()
+
+                            response = requests.post(
+                            "https://api.remove.bg/v1.0/removebg",
+                            data={
+                                'image_url': ctx.message.attachments[0].url,
+                                'size': 'auto'},
+                            headers={'X-Api-Key': random.choice(key)},
+                            )
+                            if response.status_code == requests.codes.ok:
+                                with open('no-bg.png', 'wb') as out:
+                                    out.write(response.content)
+                                    await ctx.send(file=discord.File('no-bg.png'))
+                            else:
+                                print("Error:", response.status_code, response.text)
+
+        else:
+            response = requests.post(
+                'https://api.remove.bg/v1.0/removebg',
+                data={
+                    'image_url': image,
+                    'size': 'auto'},
+                headers={'X-Api-Key': random.choice(key)},
+            )
+            if response.status_code == requests.codes.ok:
+                with open('no-bg.png', 'wb') as out:
+                    out.write(response.content)
+                    await ctx.send(file=discord.File('no-bg.png'))
+            else:
+                print("Error:", response.status_code, response.text)
 
 async def setup(client):
     await client.add_cog(Fun(client))
