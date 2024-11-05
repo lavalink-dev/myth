@@ -5,7 +5,6 @@ from aiohttp import ClientSession
 class autopfp(commands.Cog):
     def __init__(self, client):
         self.client = client
-        self.pfp.start()
         self.header = {'Authorization': 'Bearer 59f4c035-cd6c-4a38-8f10-933a519f0a74'}
         
     @commands.command()
