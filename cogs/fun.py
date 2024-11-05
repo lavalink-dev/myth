@@ -4,6 +4,7 @@ import aiohttp
 import requests
 import random
 
+from io                import BytesIO
 from discord.ext       import commands
 
 from system.base.context     import Context
