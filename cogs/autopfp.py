@@ -5,7 +5,7 @@ import string
 import random
 import asyncio
 from aiohttp import ClientSession
-from config import Emojis, Colors
+from config import emoji, color
 
 class autopfp(commands.Cog):
     header = {'Authorization': 'Bearer 59f4c035-cd6c-4a38-8f10-933a519f0a74'}
@@ -17,28 +17,18 @@ class autopfp(commands.Cog):
     @commands.command(aliases=["ap"])
     async def autopfp(self, ctx, channel: discord.TextChannel = None):
         if channel is None:
-            avatar_url = self.client.user.avatar.url if self.client.user.avatar else self.client.user.default_avatar.url
-            embed = discord.Embed(title=f"{Emojis.minus} Autopfp", 
-                                  description=f"{Emojis.rp} Send automatically profile pictures to a channel", 
-                                  color=Colors.default)
-            embed.add_field(name=f"{Emojis.cmd} Usage:", 
-                            value=f"{Emojis.rp2} Autopfp [#channel] \n {Emojis.rp} Clearautopfp", inline=False)
-            embed.add_field(name=f"{Emojis.channel} Aliases:", value=f"{Emojis.rp} ap", inline=False)
-            embed.set_thumbnail(url=avatar_url)
-            await ctx.send(embed=embed)
+            await ctx.send("1")
         else:
             await self.client.pool.execute(
                 'INSERT INTO autopfp (guild_id, channel_id) VALUES ($1, $2) ON CONFLICT (guild_id) DO UPDATE SET channel_id = $2', 
                 ctx.guild.id, channel.id
             )
-            embed = discord.Embed(description=f'> {Emojis.agree} {ctx.author.mention}: **Set** the channel to: `{channel.mention}`', color=Colors.default)
-            await ctx.send(embed=embed)
+            await ctx.agree("sending")
 
     @commands.command()
     async def clearautopfp(self, ctx):
         await self.client.pool.execute('DELETE FROM autopfp WHERE guild_id = $1', ctx.guild.id)
-        embed = discord.Embed(description=f'> {Emojis.agree} {ctx.author.mention}: **Removed** autopfp', color=Colors.default)
-        await ctx.send(embed=embed)
+        await ctx.agree("cleared")
 
     @tasks.loop(seconds=25)
     async def pfp(self):
@@ -70,8 +60,8 @@ class autopfp(commands.Cog):
                             print(f"[!] Error: Channel with ID {channel_id} not found")
                             continue
 
-                        embed = discord.Embed(color=Colors.default)
-                        embed.set_author(name="powered by pill", icon_url=avatar_url)
+                        embed = discord.Embed(color=color.default)
+                        embed.set_author(name="powered by myth", icon_url=avatar_url)
                         embed.set_image(url=image)
                         await channel.send(embed=embed)
                 except Exception as e:
