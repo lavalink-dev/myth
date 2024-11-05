@@ -187,3 +187,8 @@ CREATE TABLE IF NOT EXISTS vape (
     flavor TEXT,
     hits INT DEFAULT 1
 );
+
+CREATE TABLE IF NOT EXISTS autopfp (
+    guild_id BIGINT PRIMARY KEY,
+    channel_id BIGINT
+);
