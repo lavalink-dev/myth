@@ -43,7 +43,7 @@ class autopfp(commands.Cog):
             for row in rows:
                 guild_id, channel_id = row['guild_id'], row['channel_id']
                 try:
-                    async with session.post("https://signed.bio/api", headers=self.header, json={'option': random.choice(category)}) as response:
+                    async with session.get("https://signed.bio/api", headers=self.header, params={'option': random.choice(category)}) as response:
                         if response.status != 200:
                             print(f"[!] Error: API returned status code {response.status}")
                             continue
