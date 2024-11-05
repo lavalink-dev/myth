@@ -444,5 +444,21 @@ class Fun(commands.Cog):
         embed.set_thumbnail(url=user.display_avatar)
         await ctx.send(embed=embed)
 
+        embed = discord.Embed(title=f'{emojis.blade} Truth or Dare', color=color.color)
+        embed.add_field(name=f'{emojis.reply} Truth', value=f'```{random.choice(truth)}```', inline= False)
+        await ctx.send(embed=embed)
+
+    @commands.command(
+        description="ask ben your questions"
+    )
+    async def ben(self, ctx, *, question):
+        ben = ['https://media.discordapp.net/attachments/862090082613985281/977934505790820452/ezgif-3-e84e253fc9.gif', 'https://media.discordapp.net/attachments/862090082613985281/977934938261311519/ezgif-3-76a265bf17.gif', 'https://media.discordapp.net/attachments/862090082613985281/977935217895546940/ezgif-3-b08efe3886.gif', 'https://media.discordapp.net/attachments/862090082613985281/977935838606397540/ezgif-3-893e1be6f6.gif']
+
+        embed = discord.Embed(title=f"Talking Ben", color=color.color,
+                            description=f">  **Question**: {question}")
+        embed.set_author(name=f"{ctx.message.author}", icon_url=ctx.message.author.display_avatar)
+        embed.set_image(url=random.choice(ben))
+        await ctx.send(embed=embed)
+
 async def setup(client):
     await client.add_cog(Fun(client))
