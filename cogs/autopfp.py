@@ -14,7 +14,7 @@ class autopfp(commands.Cog):
         self.client = client
         self.pfp.start()
 
-    @commands.command(aliases=["ap"])
+    @commands.command()
     async def autopfp(self, ctx, channel: discord.TextChannel = None):
         if channel is None:
             await ctx.send("1")
