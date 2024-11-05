@@ -8,11 +8,10 @@ from aiohttp import ClientSession
 from config import emoji, color
 
 class autopfp(commands.Cog):
-    header = {'Authorization': 'Bearer 59f4c035-cd6c-4a38-8f10-933a519f0a74'}
-
     def __init__(self, client):
         self.client = client
         self.pfp.start()
+        self.header = {'Authorization': 'Bearer 59f4c035-cd6c-4a38-8f10-933a519f0a74'}
 
     @commands.command()
     async def autopfp(self, ctx, channel: discord.TextChannel = None):
