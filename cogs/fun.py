@@ -2,6 +2,7 @@ import discord
 import asyncpg
 import aiohttp
 import requests
+import asyncio
 import random
 
 from io                import BytesIO
