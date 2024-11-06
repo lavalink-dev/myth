@@ -35,8 +35,7 @@ class Myth(AutoShardedBot):
             owner_ids=[
                 394152799799345152, # main
                 255841984470712330, # solix
-                1168186952772747364, # alt
-                1282499485536092181 # leon the silly car developer aka the best developer on this bot >.<
+                1168186952772747364 # alt
             ],
             activity=CustomActivity(name=f"🔗 discord.gg/uid"),  
         )
