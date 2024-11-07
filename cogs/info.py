@@ -100,26 +100,37 @@ class Information(commands.Cog):
 
         badges = []
         user = member
+        
+        try:
+            req = await self.client.http.request(discord.http.Route("GET", "/users/{uid}", uid=member.id))
+            banner_id = req["banner"]
+        except Exception as e:
+            banner_id = None  
 
         if user.public_flags.hypesquad_balance:
-            badges.append("<:balance:1291122370609676370>")
+            badges.append("<:balance:1304171728632545371>")
         if user.public_flags.hypesquad_bravery:
-            badges.append("<:bravery:1291122449899061248>")
+            badges.append("<:bravery:1304171725470306304>")
         if user.public_flags.hypesquad_brilliance:
-            badges.append("<:brilliance:1291122354688102544>")
+            badges.append("<:brilliance:1304171723482071152>")
         if user.public_flags.early_supporter:
-            badges.append("<:early:1291122492970111088>")
+            badges.append("<:earlysupporter:1304171730230841394>")
         if user.public_flags.active_developer:
-            badges.append("<:activedev:1291122427094368348>")
+            badges.append("<:activedev:1304171720395198505>")
         if user.id == 394152799799345152:
-            badges.append("<:dev:1291123071498981436>")
-        if user.id == 187747524646404105:
-            badges.append("<:clown_cowboy:1302374943744458833>")
+            badges.append("<:dev:1304082940568797278>")
+        if user.id == 255841984470712330:
+            badges.append("<:dev:1304082940568797278>")
 
-        if member.premium_since:  
-            badges.append("<:nitro:1291122409293742102>")
-        if member.guild.premium_subscriber_role and member.guild.premium_subscriber_role in member.roles: 
-            badges.append("<a:boost:1291122311944081531>")
+        if banner_id:
+            badges.append('<:nitro:1304171704989257789>')
+
+        if isinstance(member, discord.Member):
+            if member in ctx.guild.premium_subscribers and not banner_id:
+                badges.append('<a:boost:1304171714783215656>')
+                badges.append('<:nitro:1304171704989257789>')
+            elif member in ctx.guild.premium_subscribers and banner_id:
+                badges.append('<a:boost:1304171714783215656>')
 
         embed.add_field(name="Joined", value=f"> {format_dt(member.joined_at, style='D') if hasattr(member, 'joined_at') else 'n/a'} \n> {format_dt(member.joined_at, style='R') if member.joined_at else 'n/a'}", inline=True)
         embed.add_field(name="Created", value=f"> {format_dt(member.created_at, style='D') if hasattr(member, 'created_at') else 'n/a'} \n> {format_dt(member.created_at, style='R') if hasattr(member, 'created_at') else 'n/a'}", inline=True)
