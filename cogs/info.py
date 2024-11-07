@@ -95,7 +95,7 @@ class Information(commands.Cog):
 
         if bio:
             embed.description = f"> {bio}"
-
+ 
         if footer:
             embed.set_footer(text=footer)
             
