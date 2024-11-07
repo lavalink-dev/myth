@@ -67,7 +67,8 @@ class Information(commands.Cog):
         view.add_item(support)
         view.add_item(inv)
         await ctx.send(embed=embed, view=view)
-        
+
+    
     @commands.command(
         description="Check a user's info", 
         aliases=["ui"]
