@@ -103,9 +103,9 @@ class Information(commands.Cog):
         
         try:
             req = await self.client.http.request(discord.http.Route("GET", "/users/{uid}", uid=member.id))
-            banner_id = req["banner"]
+            banner_id = req.get("banner")
         except Exception as e:
-            banner_id = None  
+            banner_id = None 
 
         if user.public_flags.hypesquad_balance:
             badges.append("<:balance:1304171728632545371>")
@@ -133,7 +133,7 @@ class Information(commands.Cog):
                 badges.append('<a:boost:1304171714783215656>')
 
         embed.add_field(name="Joined", value=f"> {format_dt(member.joined_at, style='D') if hasattr(member, 'joined_at') else 'n/a'} \n> {format_dt(member.joined_at, style='R') if member.joined_at else 'n/a'}", inline=True)
-        embed.add_field(name="Created", value=f"> {format_dt(member.created_at, style='D') if hasattr(member, 'created_at') else 'n/a'} \n> {format_dt(member.created_at, style='R') if hasattr(member, 'created_at') else 'n/a'}", inline=True)
+        embed.add_field(name="Created", value=f"> {format_dt(member.created_at, style='D') if hasattr(member, 'created_at') else 'n/a'} \n> {format_dt(member.created_at, style='R') if hasattr(member.created_at) else 'n/a'}", inline=True)
         embed.add_field(name="Extra", value=f"> **UID:** {uid} \n> **Badges:** {' '.join(badges) if badges else 'None'}", inline=True)
         
         if member:
