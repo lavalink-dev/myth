@@ -98,16 +98,16 @@ class Information(commands.Cog):
 
         if footer:
             embed.set_footer(text=footer)
-
-        badges = []
+            
         user = member
         
         try:
             req = await self.client.http.request(discord.http.Route("GET", "/users/{uid}", uid=member.id))
             banner_id = req.get("banner")
-        except Exception as e:
-            banner_id = None 
+        except Exception:
+            banner_id = None
 
+        badges = []
         if user.public_flags.hypesquad_balance:
             badges.append("<:balance:1304171728632545371>")
         if user.public_flags.hypesquad_bravery:
